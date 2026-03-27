@@ -44,7 +44,6 @@ Deep dives into various patterns:
 Currently exploring:
 - [x] Advanced Algorithms in Dart
 - [x] Clean Architecture in Flutter
-- [ ] Backend integration with .NET (C#)
 - [ ] Unit & Integration Testing
 
 ---
