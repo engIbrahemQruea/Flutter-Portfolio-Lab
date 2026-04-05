@@ -1,17 +1,21 @@
-# pizza_app
+# 🍕 Pizza Ordering System - Flutter & Provider
 
-A new Flutter project.
+A sophisticated, desktop-responsive pizza ordering application built with **Flutter**. This project demonstrates the transition from imperative programming (C# Style) to modern **Declarative State Management**.
 
-## Getting Started
+## 🏗️ Architectural Highlights
 
-This project is a starting point for a Flutter application.
+* **State Management:** Implemented using `Provider` and `ChangeNotifier` to ensure a single source of truth.
+* **Component-Based UI:** Modularized widgets (Size, Toppings, Crust, Summary) for better maintainability and clean code.
+* **Responsive Layout:** Used `Row`, `Expanded`, and `Wrap` to ensure the UI adapts to different window sizes on Windows/Web.
+* **Logic Decoupling:** Business logic (pricing, validation) is completely separated from the UI layer in `PizzaProvider`.
 
-A few resources to get you started if this is your first Flutter project:
+## 🛠️ Technical Implementation
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+* **Enums & Maps:** Leveraged Dart Enums and Map structures for type-safe price calculations.
+* **Optimized Rebuilds:** Used `listen: false` and grouped actions to minimize widget rebuild cycles.
+* **UI/UX Features:** Added confirmation dialogs, `AbsorbPointer` for flow control, and `RichText` for dynamic summaries.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🚀 How to Run
+1. Clone the repository.
+2. Run `flutter pub get`.
+3. Run `flutter run -d windows` (or your preferred platform).
