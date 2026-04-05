@@ -5,6 +5,7 @@ import 'package:learn_widgets/features/02_default_text_style.dart';
 import 'package:learn_widgets/features/03_foucs_widget.dart';
 import 'package:learn_widgets/features/04_check_box.dart';
 import 'package:learn_widgets/features/05_image_widget_exercise.dart';
+import 'package:learn_widgets/features/06_draw_custom_painter.dart';
 import 'package:provider/provider.dart';
 
 class LearnWidgets extends StatelessWidget {
@@ -23,9 +24,10 @@ class LearnWidgets extends StatelessWidget {
       //   home: const CheckBoxWidget(),
       // home: const CheckboxExample(),
       // home: const CheckboxExampleTwo(),
-      home: ChangeNotifierProvider(
-        create: (context) => ImageWidgetProvider(),
-        child: ImageWidgetExercise()),
+      // home: ChangeNotifierProvider(
+      //   create: (context) => ImageWidgetProvider(),
+      //   child: ImageWidgetExercise()),
+      home: const DrawCustomPainter(),
     );
   }
 }
