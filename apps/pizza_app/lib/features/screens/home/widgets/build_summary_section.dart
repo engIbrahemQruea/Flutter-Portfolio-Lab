@@ -101,6 +101,16 @@ class BuildSummarySection extends StatelessWidget {
           "Total Price: \$${provider.calculateTotal}",
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
+        if (provider.notes.isNotEmpty) ...[
+          const Divider(),
+          Text(
+            "Notes: ${provider.notes}",
+            style: const TextStyle(
+              fontStyle: FontStyle.italic,
+              color: Colors.grey,
+            ),
+          ),
+        ],
       ],
     );
   }

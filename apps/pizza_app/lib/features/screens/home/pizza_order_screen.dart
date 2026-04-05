@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pizza_app/features/screens/home/logic/pizza_provider.dart';
 import 'package:pizza_app/features/screens/home/widgets/build_crust_type_group.dart';
+import 'package:pizza_app/features/screens/home/widgets/build_note_field.dart';
 import 'package:pizza_app/features/screens/home/widgets/build_order_button.dart';
 import 'package:pizza_app/features/screens/home/widgets/build_size_group.dart';
 import 'package:pizza_app/features/screens/home/widgets/build_summary_section.dart';
@@ -43,6 +44,8 @@ class PizzaOrderScreen extends StatelessWidget {
                         const BuildCrustTypeGroup(),
                         const SizedBox(height: 10),
                         const BuildWhereEatGroup(),
+                        const SizedBox(height: 20),
+                        const BuildNotesField(),
                         const SizedBox(height: 20),
                       ],
                     ),
