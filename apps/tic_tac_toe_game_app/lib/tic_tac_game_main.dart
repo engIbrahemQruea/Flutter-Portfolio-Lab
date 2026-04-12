@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tic_tac_toe_game_app/features/screens/home/data/logic/x_o_game_provider.dart';
 import 'package:tic_tac_toe_game_app/features/screens/home/tic_tac_game_screen.dart';
 
 class TicTacGameMain extends StatelessWidget {
@@ -9,7 +11,10 @@ class TicTacGameMain extends StatelessWidget {
     return MaterialApp(
       title: 'Tic Tac Toe Game',
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      home: const TicTacGameScreen(),
+      home: ChangeNotifierProvider(
+        create: (_) => XOGameProvider(),
+        child: TicTacGameScreen(),
+      ),
     );
   }
 }
