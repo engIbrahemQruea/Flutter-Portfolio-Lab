@@ -1,3 +1,4 @@
+import 'package:advanced/001_send_data_between_forms/screen_three.dart';
 import 'package:advanced/001_send_data_between_forms/screen_tow.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +25,24 @@ class ScreenOne extends StatelessWidget {
               );
             },
             child: Text('Send Data Using Counstractor'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              // في الشاشة المرسلة يتم إرسال الـ Record هكذا:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfileScreenThree(
+                    userData: (
+                      id: 202,
+                      name: 'Quraiei',
+                      isAdmin: true,
+                    ), // تمرير مباشر ومحمي
+                  ),
+                ),
+              );
+            },
+            child: Text('Send Data Using Record'),
           ),
         ],
       ),
