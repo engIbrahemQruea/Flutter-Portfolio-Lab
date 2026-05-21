@@ -1,5 +1,6 @@
 import 'package:advanced/001_send_data_between_forms/screen_five.dart';
 import 'package:advanced/001_send_data_between_forms/screen_four.dart';
+import 'package:advanced/001_send_data_between_forms/screen_seven_typedef.dart';
 import 'package:advanced/001_send_data_between_forms/screen_three.dart';
 import 'package:advanced/001_send_data_between_forms/screen_tow.dart';
 import 'package:flutter/material.dart';
@@ -95,6 +96,17 @@ class ScreenOne extends StatelessWidget {
               );
             },
             child: Text('Send Data Using Constructor And Assert'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const delegateScreenSex(),
+                ),
+              );
+            },
+            child: Text('Send Data Using Delegate (TypeDef)'),
           ),
         ],
       ),
