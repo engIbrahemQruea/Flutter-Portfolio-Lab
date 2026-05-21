@@ -1,3 +1,4 @@
+import 'package:advanced/001_send_data_between_forms/screen_five.dart';
 import 'package:advanced/001_send_data_between_forms/screen_four.dart';
 import 'package:advanced/001_send_data_between_forms/screen_three.dart';
 import 'package:advanced/001_send_data_between_forms/screen_tow.dart';
@@ -82,6 +83,18 @@ class ScreenOne extends StatelessWidget {
               // );
             },
             child: Text('Send Data Using Named Constractor'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      ModernDetailsScreenFive(userName: 'Ibrahim'),
+                ),
+              );
+            },
+            child: Text('Send Data Using Constructor And Assert'),
           ),
         ],
       ),
