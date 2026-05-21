@@ -44,6 +44,24 @@ class ScreenOne extends StatelessWidget {
             },
             child: Text('Send Data Using Record'),
           ),
+          ElevatedButton(
+            onPressed: () {
+              // الأسلوب الاحترافي في فلاتر
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => BlocProvider(
+              //       create: (context) =>
+              //           UserDetailsCubit(repository: getIt())
+              //             ..fetchDetails(userId),
+              //       child:
+              //           const DetailsScreen(), // الشاشة هنا نظيفة وتستمع للـ State فقط
+              //     ),
+              //   ),
+              // );
+            },
+            child: Text('Send Data Using Bloc'),
+          ),
         ],
       ),
     );
