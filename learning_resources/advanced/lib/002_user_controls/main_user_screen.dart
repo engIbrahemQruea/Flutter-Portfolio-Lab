@@ -1,4 +1,5 @@
 import 'package:advanced/002_user_controls/custom_user_card_widget.dart';
+import 'package:advanced/002_user_controls/user_widget_expose_screen.dart';
 import 'package:flutter/material.dart';
 
 class MainUserScreen extends StatelessWidget {
@@ -32,6 +33,20 @@ class MainUserScreen extends StatelessWidget {
             name: 'سارة محمد',
             role: 'مصممة واجهات المستخدم',
             onProfileTap: () => print('الانتقال لبروفايل سارة'),
+          ),
+
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              // الانتقال لشاشة أخرى عند الضغط على زر مثلاً
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>  UserWidgetExposeScreen(),
+                ),
+              );
+            },
+            child: const Text("Go to User Widget Expose Screen"),
           ),
         ],
       ),
