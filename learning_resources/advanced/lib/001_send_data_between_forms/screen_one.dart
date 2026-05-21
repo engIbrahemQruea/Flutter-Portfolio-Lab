@@ -1,3 +1,4 @@
+import 'package:advanced/001_send_data_between_forms/screen_four.dart';
 import 'package:advanced/001_send_data_between_forms/screen_three.dart';
 import 'package:advanced/001_send_data_between_forms/screen_tow.dart';
 import 'package:flutter/material.dart';
@@ -61,6 +62,26 @@ class ScreenOne extends StatelessWidget {
               // );
             },
             child: Text('Send Data Using Bloc'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const DetailsScreenFour.fromId(101),
+                ),
+              );
+
+              /// Or
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) =>
+              //         const DetailsScreenFour.fromName('Ibrahim'),
+              //   ),
+              // );
+            },
+            child: Text('Send Data Using Named Constractor'),
           ),
         ],
       ),
