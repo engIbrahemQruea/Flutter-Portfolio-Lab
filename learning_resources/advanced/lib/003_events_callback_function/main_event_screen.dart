@@ -1,4 +1,6 @@
 import 'package:advanced/003_events_callback_function/custom_simple_calc.dart';
+import 'package:advanced/003_events_callback_function/custom_temperature_changed.dart';
+import 'package:advanced/003_events_callback_function/temp_monitor_screen.dart';
 import 'package:flutter/material.dart';
 
 class MainEventScreen extends StatelessWidget {
@@ -24,6 +26,33 @@ class MainEventScreen extends StatelessWidget {
                 ),
               );
             },
+          ),
+          CustomTemperatureChanged(
+            onTemperatureChanged: (args) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('${args.diffTemp}')));
+            },
+          ),
+          CustomTemperatureChanged(
+            onTemperatureChanged: (args) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('${args.diffTemp}')));
+            },
+          ),
+
+          ElevatedButton.icon(
+            icon: Icon(Icons.arrow_forward),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TemperatureMonitorScreen(),
+                ),
+              );
+            },
+            label: Text('Senstor Screen'),
           ),
 
           // Using Cubit
