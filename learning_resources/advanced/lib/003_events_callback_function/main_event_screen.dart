@@ -1,6 +1,7 @@
 import 'package:advanced/003_events_callback_function/custom_simple_calc.dart';
 import 'package:advanced/003_events_callback_function/custom_temperature_changed.dart';
 import 'package:advanced/003_events_callback_function/news_publisher_example/news_screen.dart';
+import 'package:advanced/003_events_callback_function/news_publisher_example_tow/news_console_screen.dart';
 import 'package:advanced/003_events_callback_function/temp_example_callback/thermostat_screen.dart';
 import 'package:advanced/003_events_callback_function/temp_monitor_screen.dart';
 import 'package:flutter/material.dart';
@@ -75,6 +76,16 @@ class MainEventScreen extends StatelessWidget {
               );
             },
             label: Text('News App Screen'),
+          ),
+          ElevatedButton.icon(
+            icon: Icon(Icons.arrow_forward),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NewsConsoleScreen()),
+              );
+            },
+            label: Text('News Console Screen Using StreamController'),
           ),
 
           // Using Cubit
