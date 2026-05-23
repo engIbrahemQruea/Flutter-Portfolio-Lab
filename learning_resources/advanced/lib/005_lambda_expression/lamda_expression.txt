@@ -1,0 +1,50 @@
+
+111111111111111111111111
+
+Lambda expressions are often preferred over normal (named) functions in specific scenarios because they offer some advantages, such as conciseness, inline definition, and the ability to create anonymous functions. Here are a few reasons why you might choose to use lambda expressions over normal functions:
+
+Conciseness: Lambda expressions are typically more concise than defining a separate function, especially for small, simple operations. This leads to more readable and less verbose code.
+Anonymous Functions: Lambda expressions allow you to create anonymous functions on the fly without needing to declare a separate named function. This is particularly useful when you need a function for a one-time or specific purpose.
+Inline Definitions: Lambda expressions can be defined inline within a statement or method call, making it easy to pass functions as arguments to methods or use them in LINQ queries without defining separate functions.
+Readability: In some cases, a lambda expression's compact and in-place definition can improve code readability, as it keeps the code closer to the point where the function is used.
+Functional Programming: Lambda expressions align with functional programming principles, which can lead to more expressive and declarative code in certain contexts, such as LINQ queries and event handling.
+Flexibility: Lambda expressions can capture variables from their surrounding scope (known as closures), allowing you to create more flexible and context-aware functions.
+While lambda expressions offer these advantages, it's important to note that there are cases where defining a separate named function is more appropriate. You would typically use named functions when you need to reuse the same logic in multiple places, promote code organization, or when the function is more complex and requires detailed documentation.
+
+In summary, lambda expressions are a valuable tool in C# for creating concise, inline, and anonymous functions, which can improve code readability and maintainability in specific scenarios, such as LINQ queries, event handlers, and small, one-off operations.y, lambda expressions are a valuable tool in C# for creating concise, inline, and anonymous functions, which can improve code readability and maintainability in specific scenarios, such as LINQ queries, event handlers, and small, one-off operations.
+
+
+
+
+222222222222222222222
+
+---
+
+## 🎯 المقارنة الفلسفية والتطابق مع Dart & Flutter
+
+فلاتر تعتمد على الـ Lambda Expressions (التي تسمى في دارت **Arrow Syntax** أو **Anonymous Closures**) في كل ثانية برمجية! 
+
+أكبر دليل على ذلك هو زر الـ `ElevatedButton`؛ المعامل `onPressed` يستقبل دالة مجهولة الاسم تنفذ أمراً لحظياً.
+
+| المفهوم (حسب شرح المدرب) | تطبيقه في C# | تطبيقه في Dart / Flutter |
+| :--- | :--- | :--- |
+| **Inline & Anonymous** | `list.ForEach(x => Console.WriteLine(x));` | `list.forEach((x) => print(x));` |
+| **Closure (التقاط المتغيرات)** | التقاط المتغيرات من الـ Method المحيطة. | التقاط المتغيرات من الـ State أو الـ Build Context. |
+
+---
+
+## 📱 تطبيق فلاتر تفاعلي (محاكاة الـ Closures ومرونة الـ Lambda)
+
+دعنا نبني تطبيقاً يجسد ميزة الـ **Flexibility & Closures** التي شرحها المدرب (قدرة الدالة المجهولة على التقاط متغيرات من محيطها وتغيير سلوكها ديناميكياً). سنصنع متجراً ذكياً يقوم بحساب الخصومات inline بناءً على نسب متغيرة.
+
+### 1. ملف المنطق البرمجي (`lambda_closure_logic.dart`)
+
+```dart
+// كلاس يمثل سلة المشتريات
+class CartManager {
+  // دالة تحسب السعر النهائي وتستقبل الـ Lambda (توازي Func<double, double>)
+  // لتطبيق عملية الخصم المباشر (Inline Operation)
+  double calculateFinalPrice(double price, double Function(double) discountStrategy) {
+    return discountStrategy(price);
+  }
+}
