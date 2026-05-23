@@ -1,6 +1,7 @@
 import 'package:advanced/003_events_callback_function/custom_simple_calc.dart';
 import 'package:advanced/003_events_callback_function/custom_temperature_changed.dart';
 import 'package:advanced/003_events_callback_function/new_order_event_example/order_dashboard_screen.dart';
+import 'package:advanced/003_events_callback_function/new_order_event_example_tow/order_console_screen.dart';
 import 'package:advanced/003_events_callback_function/news_publisher_example/news_screen.dart';
 import 'package:advanced/003_events_callback_function/news_publisher_example_tow/news_console_screen.dart';
 import 'package:advanced/003_events_callback_function/temp_example_callback/thermostat_screen.dart';
@@ -97,6 +98,16 @@ class MainEventScreen extends StatelessWidget {
               );
             },
             label: Text('New Order Dashboard Screen'),
+          ),
+          ElevatedButton.icon(
+            icon: Icon(Icons.arrow_forward),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => OrderConsoleScreen()),
+              );
+            },
+            label: Text('New Order Console Screen'),
           ),
 
           // Using Cubit
