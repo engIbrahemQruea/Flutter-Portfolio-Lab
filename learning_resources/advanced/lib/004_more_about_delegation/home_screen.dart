@@ -1,3 +1,4 @@
+import 'package:advanced/004_more_about_delegation/Multicast_delegate/multicast_console_screen.dart';
 import 'package:advanced/004_more_about_delegation/logger_example/logger_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +23,18 @@ class HomeScreen extends StatelessWidget {
             },
             icon: Icon(Icons.arrow_forward),
             label: Text('Logger Screen'),
+          ),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MulticastConsoleScreen(),
+                ),
+              );
+            },
+            icon: Icon(Icons.arrow_forward),
+            label: Text('Multicast Console Screen'),
           ),
         ],
       ),
