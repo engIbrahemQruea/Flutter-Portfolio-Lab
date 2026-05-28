@@ -1,7 +1,8 @@
 import 'package:advanced/018_introduction_to_cryptography/02_hasing/hashing_screen.dart';
 import 'package:advanced/018_introduction_to_cryptography/02_hasing/hashing_tow_screen.dart';
 import 'package:advanced/018_introduction_to_cryptography/03_symmetric/symmetric_screen.dart';
-import 'package:flutter/material.dart';
+import 'package:advanced/019_operator_overloading/restrictions_screen.dart';
+import 'package:flutter/material.dart' hide Colors;
 
 class MainCryptographyScreen extends StatelessWidget {
   const MainCryptographyScreen({super.key});
@@ -12,7 +13,7 @@ class MainCryptographyScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Cryptography Screen'),
         centerTitle: true,
-        backgroundColor: Colors.deepPurple.shade300,
+        backgroundColor: Colors.cyanAccent,
         elevation: 0,
       ),
       body: Column(
@@ -49,6 +50,18 @@ class MainCryptographyScreen extends StatelessWidget {
               );
             },
             label: Text('Symmetric AES Screen'),
+            icon: Icon(Icons.lock),
+          ),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RestrictionsScreen(),
+                ),
+              );
+            },
+            label: Text('Restrictions Screen'),
             icon: Icon(Icons.lock),
           ),
         ],
