@@ -1,6 +1,4 @@
-import 'package:advanced/004_more_about_delegation/home_screen.dart';
-import 'package:advanced/018_introduction_to_cryptography/main_cryptography_screen.dart';
-import 'package:advanced/020_multithreading_isolate/main_isolate_screen.dart';
+import 'package:advanced/021_intro_to_asynchronous/main_asynchronous_screen.dart';
 import 'package:flutter/material.dart';
 
 class MainApp extends StatelessWidget {
@@ -15,8 +13,9 @@ class MainApp extends StatelessWidget {
       //home: const MainUserScreen(),
       // home: const MainEventScreen(),
       //home: const HomeScreen(),
-     // home: const MainCryptographyScreen(),
-      home: const MainIsolateScreen(),
+      // home: const MainCryptographyScreen(),
+      // home: const MainIsolateScreen(),
+      home: const MainAsynchronousScreen(),
     );
   }
 }
