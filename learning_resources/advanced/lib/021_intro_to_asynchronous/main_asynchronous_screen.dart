@@ -1,6 +1,7 @@
 import 'package:advanced/021_intro_to_asynchronous/01_intro/benchmark_screen.dart';
 import 'package:advanced/021_intro_to_asynchronous/02_Task_class/task_mirror_screen.dart';
 import 'package:advanced/021_intro_to_asynchronous/02_Task_class/when_all_ex_towScreen.dart';
+import 'package:advanced/021_intro_to_asynchronous/03_task_class_with_callback_event/task_class_with_callback_screen.dart';
 import 'package:flutter/material.dart';
 
 class MainAsynchronousScreen extends StatelessWidget {
@@ -50,6 +51,18 @@ class MainAsynchronousScreen extends StatelessWidget {
               },
               icon: Icon(Icons.info_outline),
               label: Text("Task WhenAll Lab"),
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const EventCallbackScreen(),
+                  ),
+                );
+              },
+              icon: Icon(Icons.info_outline),
+              label: Text("Event Callback Lab"),
             ),
           ],
         ),
