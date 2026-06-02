@@ -1,4 +1,5 @@
-import 'package:advanced/021_intro_to_asynchronous/main_asynchronous_screen.dart';
+import 'package:advanced/022_responsive/main_responsive_screen.dart';
+import 'package:advanced/022_responsive/models/data.dart' as data;
 import 'package:flutter/material.dart';
 
 class MainApp extends StatelessWidget {
@@ -15,7 +16,8 @@ class MainApp extends StatelessWidget {
       //home: const HomeScreen(),
       // home: const MainCryptographyScreen(),
       // home: const MainIsolateScreen(),
-      home: const MainAsynchronousScreen(),
+      // home: const MainAsynchronousScreen(),
+      home:  FeedMainScreen(currentUser: data.user_0),
     );
   }
 }
