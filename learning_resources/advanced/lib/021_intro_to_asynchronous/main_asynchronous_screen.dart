@@ -4,6 +4,9 @@ import 'package:advanced/021_intro_to_asynchronous/02_Task_class/when_all_ex_tow
 import 'package:advanced/021_intro_to_asynchronous/03_task_class_with_callback_event/task_class_with_callback_screen.dart';
 import 'package:advanced/021_intro_to_asynchronous/04_task_run/task_run_screen.dart';
 import 'package:advanced/021_intro_to_asynchronous/05_task_factory/task_factory_screen.dart';
+import 'package:advanced/021_intro_to_asynchronous/06_parallel_class_data_parallelism/app_bar_screen.dart';
+import 'package:advanced/021_intro_to_asynchronous/06_parallel_class_data_parallelism/parallel_for_screen.dart';
+import 'package:advanced/021_intro_to_asynchronous/06_parallel_class_data_parallelism/parallel_screen.dart';
 import 'package:flutter/material.dart';
 
 class MainAsynchronousScreen extends StatelessWidget {
@@ -89,6 +92,42 @@ class MainAsynchronousScreen extends StatelessWidget {
               },
               icon: Icon(Icons.info_outline),
               label: Text("Task.Factory Lab"),
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ParallelScreen(),
+                  ),
+                );
+              },
+              icon: Icon(Icons.info_outline),
+              label: Text("Data Parallelism Lab"),
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ParallelForScreen(),
+                  ),
+                );
+              },
+              icon: Icon(Icons.info_outline),
+              label: Text("Data Parallelism For Lab"),
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AppBarExample(),
+                  ),
+                );
+              },
+              icon: Icon(Icons.info_outline),
+              label: Text("async AppBar Lab"),
             ),
           ],
         ),
