@@ -1,14 +1,29 @@
+import 'package:dvld/core/di/dependency_injection.dart';
 import 'package:dvld/core/routing/routes.dart';
 import 'package:dvld/features/dashboard/presentation/views/dash_board_screen.dart';
+import 'package:dvld/features/people/domain/usecases/get_list_people_use_case.dart';
+import 'package:dvld/features/people/presentation/logic/cubit/get_all_people_cubit.dart';
+import 'package:dvld/features/people/presentation/screens/people_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
-final _shellNavigatorDashboardKey = GlobalKey<NavigatorState>(debugLabel: 'dashboardShell');
-final _shellNavigatorApplicationsKey = GlobalKey<NavigatorState>(debugLabel: 'applicationsShell');
-final _shellNavigatorPeopleKey = GlobalKey<NavigatorState>(debugLabel: 'peopleShell');
-final _shellNavigatorDriversKey = GlobalKey<NavigatorState>(debugLabel: 'driversShell');
-final _shellNavigatorUsersKey = GlobalKey<NavigatorState>(debugLabel: 'usersShell');
+final _shellNavigatorDashboardKey = GlobalKey<NavigatorState>(
+  debugLabel: 'dashboardShell',
+);
+final _shellNavigatorApplicationsKey = GlobalKey<NavigatorState>(
+  debugLabel: 'applicationsShell',
+);
+final _shellNavigatorPeopleKey = GlobalKey<NavigatorState>(
+  debugLabel: 'peopleShell',
+);
+final _shellNavigatorDriversKey = GlobalKey<NavigatorState>(
+  debugLabel: 'driversShell',
+);
+final _shellNavigatorUsersKey = GlobalKey<NavigatorState>(
+  debugLabel: 'usersShell',
+);
 
 abstract class AppRouter {
   static final GoRouter router = GoRouter(
@@ -35,8 +50,8 @@ abstract class AppRouter {
             navigatorKey: _shellNavigatorApplicationsKey,
             routes: [
               GoRoute(
-                path: DRoutes.people,
-                name: DRoutes.people,
+                path: DRoutes.peopleScreen,
+                name: DRoutes.peopleScreen,
                 builder: (context, state) =>
                     const Center(child: Text('People Screen')),
               ),
@@ -47,9 +62,11 @@ abstract class AppRouter {
             routes: [
               GoRoute(
                 path: DRoutes.applications,
-                name: DRoutes.applications  ,
-                builder: (context, state) =>
-                    const Center(child: Text('Applications Screen')),
+                name: DRoutes.applications,
+                builder: (context, state) => BlocProvider(
+                  create: (context) => GetAllPeopleCubit(getIt<GetListPeopleUseCase>())..getAllPeople(),
+                  child: const PeopleScreen(),
+                ),
               ),
             ],
           ),
@@ -75,7 +92,6 @@ abstract class AppRouter {
               ),
             ],
           ),
-
         ],
       ),
       // GoRoute(
