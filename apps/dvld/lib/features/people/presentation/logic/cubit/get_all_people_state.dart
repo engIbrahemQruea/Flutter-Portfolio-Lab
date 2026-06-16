@@ -8,7 +8,7 @@ final class GetAllPeopleInitial extends GetAllPeopleState {}
 final class GetAllPeopleLoading extends GetAllPeopleState {}
 
 final class GetAllPeopleSuccess extends GetAllPeopleState {
-  final List<PeopleEntity> people;
+  final List<PeopleEntity?> people;
 
   GetAllPeopleSuccess(this.people);
 }
