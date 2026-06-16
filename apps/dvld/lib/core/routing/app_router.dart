@@ -2,6 +2,9 @@ import 'package:dvld/core/di/dependency_injection.dart';
 import 'package:dvld/core/routing/routes.dart';
 import 'package:dvld/features/dashboard/presentation/views/dash_board_screen.dart';
 import 'package:dvld/features/people/domain/usecases/get_list_people_use_case.dart';
+import 'package:dvld/features/people/domain/usecases/get_people_by_first_name_use_case.dart';
+import 'package:dvld/features/people/domain/usecases/get_people_by_id_use_case.dart';
+import 'package:dvld/features/people/domain/usecases/get_people_by_national_no_use_case.dart';
 import 'package:dvld/features/people/presentation/logic/cubit/get_all_people_cubit.dart';
 import 'package:dvld/features/people/presentation/screens/people_screen.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +67,12 @@ abstract class AppRouter {
                 path: DRoutes.applications,
                 name: DRoutes.applications,
                 builder: (context, state) => BlocProvider(
-                  create: (context) => GetAllPeopleCubit(getIt<GetListPeopleUseCase>())..getAllPeople(),
+                  create: (context) => GetAllPeopleCubit(
+                    getIt<GetListPeopleUseCase>(),
+                    getIt<GetPeopleByIdUseCase>(),
+                    getIt<GetPeopleByNationalNoUseCase>(),
+                    getIt<GetPeopleByFirstNameUseCase>(),
+                  ),
                   child: const PeopleScreen(),
                 ),
               ),

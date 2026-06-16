@@ -65,8 +65,8 @@ class PeopleDataSource extends DataGridSource {
       cells: row.getCells().map<Widget>((dataGridCell) {
         return Container(
           alignment:
-              (dataGridCell.columnName == 'id' ||
-                  dataGridCell.columnName == 'salary')
+              (dataGridCell.columnName == 'person_id' ||
+                  dataGridCell.columnName == 'national_no')
               ? Alignment.centerRight
               : Alignment.centerLeft,
           padding: EdgeInsets.symmetric(horizontal: 16.0),
