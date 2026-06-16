@@ -1,0 +1,27 @@
+import 'package:dvld/features/people/data/data_sources/local_data_sources/local_data_source.dart';
+import 'package:dvld/features/people/data/repos_imp/people_repos_imp.dart';
+import 'package:dvld/features/people/domain/repos/people_repos.dart';
+import 'package:dvld/features/people/domain/usecases/get_list_people_use_case.dart';
+import 'package:dvld/features/people/domain/usecases/get_people_by_first_name_use_case.dart';
+import 'package:dvld/features/people/domain/usecases/get_people_by_id_use_case.dart';
+import 'package:dvld/features/people/domain/usecases/get_people_by_national_no_use_case.dart';
+import 'package:dvld/features/people/presentation/logic/cubit/get_all_people_cubit.dart';
+import 'package:get_it/get_it.dart';
+
+final getIt = GetIt.instance;
+
+Future<void> setupGetIt() async {
+  // People Feature
+  // getDataSources
+  // await DatabaseHelper().database;
+  getIt.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());
+
+  getIt.registerLazySingleton<PeopleRepos>(() => PeopleReposImp(getIt()));
+  getIt.registerLazySingleton(() => GetListPeopleUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetPeopleByIdUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetPeopleByNationalNoUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetPeopleByFirstNameUseCase(getIt()));
+  getIt.registerLazySingleton<GetAllPeopleCubit>(
+    () => GetAllPeopleCubit(getIt(), getIt(), getIt(), getIt()),
+  );
+}
