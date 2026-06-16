@@ -19,4 +19,62 @@ class PeopleReposImp extends PeopleRepos {
       return Left(Failure());
     }
   }
+
+  @override
+  Future<Either<Failure, List<PeopleEntity?>>> getPeopleByFirstName({
+    required String firstName,
+  }) async {
+    try {
+      final peopleResult = await _dbHelper.getPeopleByFirstName(
+        firstName: firstName,
+      );
+      if (peopleResult.isNotEmpty) {
+        return Right(
+          peopleResult.map((model) => model!.mapToEntity()).toList(),
+        );
+      } else {
+        return Right([null]);
+      }
+    } catch (e) {
+      return Left(Failure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<PeopleEntity?>>> getPeopleById({
+    required int personID,
+  }) async {
+    try {
+      final peopleResult = await _dbHelper.getPeopleById(personID: personID);
+      if (peopleResult.isNotEmpty) {
+        return Right(
+          peopleResult.map((model) => model!.mapToEntity()).toList(),
+        );
+      } else {
+        return Right([null]);
+      }
+    } catch (e) {
+      return Left(Failure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<PeopleEntity?>>> getPeopleByNationalNo({
+    required String nationalNo,
+  }) async {
+    try {
+      final peopleResult = await _dbHelper.getPeopleByNationalNo(
+        nationalNo: nationalNo,
+      );
+      if (peopleResult.isNotEmpty) {
+        return Right(
+          peopleResult.map((model) => model!.mapToEntity()).toList(),
+        );
+      } else {
+        return Right([null]);
+      }
+    } catch (e) {
+      return Left(Failure());
+    }
+  }
 }
