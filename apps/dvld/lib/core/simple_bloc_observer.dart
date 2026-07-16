@@ -13,9 +13,38 @@ class SimpleBlocObserver extends BlocObserver {
   }
 
   @override
-  void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
-    // TODO: implement onChange
+  void onCreate(BlocBase bloc) {
+    super.onCreate(bloc);
+    debugPrint('onCreate -- ${bloc.runtimeType}');
+  }
+
+  @override
+  void onChange(BlocBase bloc, Change change) {
     super.onChange(bloc, change);
-    debugPrint('$change');
+    debugPrint('onChange -- ${bloc.runtimeType}, $change');
+  }
+
+  @override
+  void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
+    debugPrint('onError -- ${bloc.runtimeType}, $error');
+    super.onError(bloc, error, stackTrace);
+  }
+
+  @override
+  void onDone(
+    Bloc<dynamic, dynamic> bloc,
+    Object? event, [
+    Object? error,
+    StackTrace? stackTrace,
+  ]) {
+    // TODO: implement onDone
+    super.onDone(bloc, event, error, stackTrace);
+    debugPrint('onDone -- ${bloc.runtimeType}, $event');
+  }
+
+  @override
+  void onClose(BlocBase bloc) {
+    super.onClose(bloc);
+    debugPrint('onClose -- ${bloc.runtimeType}');
   }
 }
