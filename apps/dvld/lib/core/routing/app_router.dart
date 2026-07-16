@@ -5,8 +5,10 @@ import 'package:dvld/features/people/domain/usecases/get_list_people_use_case.da
 import 'package:dvld/features/people/domain/usecases/get_people_by_first_name_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_people_by_id_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_people_by_national_no_use_case.dart';
+import 'package:dvld/features/people/presentation/logic/add_pdate_form/add_update_form_cubit.dart';
 import 'package:dvld/features/people/presentation/logic/cubit/get_all_people_cubit.dart';
 import 'package:dvld/features/people/presentation/screens/people_screen.dart';
+import 'package:dvld/features/people/presentation/screens/sub_screens/add_update_people_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -75,6 +77,28 @@ abstract class AppRouter {
                   ),
                   child: const PeopleScreen(),
                 ),
+                routes: [
+                  GoRoute(
+                    path: DRoutes.addUpdatePeopleScreen,
+                    name: DRoutes.addUpdatePeopleScreen,
+                    builder: (context, state) {
+                      final personIdString = state.uri.queryParameters['personId'];
+                      final personIdInt = personIdString == null
+                          ? null
+                          : int.parse(personIdString);
+                      return BlocProvider(
+                        create: (context) => AddUpdateFormCubit(
+                          getIt(),
+                          getIt(),
+                          getIt(),
+                          getIt(),
+                          getIt(),
+                        )..getAllCountries(),
+                        child: AddUpdatePeopleScreen(personId: personIdInt),
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),
