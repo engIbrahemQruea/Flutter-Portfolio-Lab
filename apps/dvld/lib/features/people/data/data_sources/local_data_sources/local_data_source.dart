@@ -1,5 +1,7 @@
 import 'package:dvld/core/database/init_table.dart';
+import 'package:dvld/features/people/data/models/country_model.dart';
 import 'package:dvld/features/people/data/models/people_models.dart';
+import 'package:dvld/features/people/domain/entities/people_entity.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -80,7 +82,6 @@ class DatabaseHelper {
           ? maps.map((e) => PeopleModels.fromJson(e)).toList()
           : [null];
     } on Exception catch (e) {
-      debugPrint(e.toString());
       return [null];
     }
   }
@@ -98,4 +99,73 @@ class DatabaseHelper {
         ? maps.map((e) => PeopleModels.fromJson(e)).toList()
         : [null];
   }
+
+  /// Add Update Screen
+  Future<int> addNewPeople(PeopleModels peopleModels) async {
+    final db = await database;
+    return await db.insert(PersonTable.tableName, peopleModels.toJson());
+  }
+
+  Future<int> updatePeople(PeopleModels peopleModels) async {
+    final db = await database;
+    return await db.update(
+      PersonTable.tableName,
+      peopleModels.toJson(),
+      where: '${PersonTable.colId} = ?',
+      whereArgs: [peopleModels.personId],
+    );
+  }
+
+  Future<PeopleEntity?> getInfoById({required int personID}) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      PersonTable.tableName,
+      where: '${PersonTable.colId} Like ?',
+      whereArgs: ['%$personID%'],
+    );
+    return maps.isNotEmpty
+        ? PeopleModels.fromJson(maps.first).mapToEntity()
+        : null;
+  }
+
+  Future<bool> isNationalNoExists({required String nationalNo}) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      PersonTable.tableName,
+      where: '${PersonTable.colNationalNo} = ?',
+      whereArgs: [nationalNo],
+      limit: 1,
+    );
+    return maps.isNotEmpty;
+  }
+
+/// Country Query
+  Future<List<CountryModel>> getAllCountries() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      CountryTable.tableName,
+    );
+    return maps.map((e) => CountryModel.fromJson(e)).toList();
+  }
+
+  Future<String?> getCountryNameById({required int countryId}) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      CountryTable.tableName,
+      where: '${CountryTable.colId} = ?',
+      whereArgs: [countryId],
+    );
+    return maps.isNotEmpty ? maps.first[CountryTable.colName] : null;
+  }
+
+  Future<int?> getCountryIdByName({required String countryName}) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      CountryTable.tableName,
+      where: '${CountryTable.colName} = ?',
+      whereArgs: [countryName],
+    );
+    return maps.isNotEmpty ? maps.first[CountryTable.colId] : null;
+  }
+
 }

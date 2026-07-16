@@ -1,6 +1,5 @@
 import 'package:dvld/core/database/init_table.dart';
 import 'package:dvld/core/mapper_to_entity/data_mapper.dart';
-import 'package:dvld/features/people/data/models/people_enum.dart';
 import 'package:dvld/features/people/domain/entities/people_entity.dart';
 
 class PeopleModels extends DataMapper<PeopleEntity> {
@@ -11,7 +10,7 @@ class PeopleModels extends DataMapper<PeopleEntity> {
   final String? thirdName;
   final String lastName;
   final String dateOfBirth;
-  final Gender gender;
+  final int gender;
   final String address;
   final String phone;
   final String? email;
@@ -43,7 +42,7 @@ class PeopleModels extends DataMapper<PeopleEntity> {
       thirdName: json[PersonTable.colThirdName],
       lastName: json[PersonTable.colLastName],
       dateOfBirth: json[PersonTable.colDateOfBirth],
-      gender: Gender.fromInt(json[PersonTable.colGender]),
+      gender: json[PersonTable.colGender],
       address: json[PersonTable.colAddress],
       phone: json[PersonTable.colPhone],
       email: json[PersonTable.colEmail],
@@ -53,19 +52,19 @@ class PeopleModels extends DataMapper<PeopleEntity> {
   }
   Map<String, dynamic> toJson() {
     return {
-      'personId': personId,
-      'nationalNo': nationalNo,
-      'firstName': firstName,
-      'secondName': secondName,
-      'thirdName': thirdName,
-      'lastName': lastName,
-      'dateOfBirth': dateOfBirth,
-      'gender': gender.databaseValue,
-      'address': address,
-      'phone': phone,
-      'email': email,
-      'nationalityCountryId': nationalityCountryId,
-      'imagePath': imagePath,
+      PersonTable.colId: personId,
+      PersonTable.colNationalNo: nationalNo,
+      PersonTable.colFirstName: firstName,
+      PersonTable.colSecondName: secondName,
+      PersonTable.colThirdName: thirdName,
+      PersonTable.colLastName: lastName,
+      PersonTable.colDateOfBirth: dateOfBirth,
+      PersonTable.colGender: gender,
+      PersonTable.colAddress: address,
+      PersonTable.colPhone: phone,
+      PersonTable.colEmail: email,
+      PersonTable.colCountryId: nationalityCountryId,
+      PersonTable.colImagePath: imagePath,
     };
   }
 
