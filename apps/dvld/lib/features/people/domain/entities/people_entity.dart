@@ -1,4 +1,3 @@
-import 'package:dvld/features/people/data/models/people_enum.dart';
 
 class PeopleEntity {
   final int? personId;
@@ -8,7 +7,7 @@ class PeopleEntity {
   final String? thirdName;
   final String lastName;
   final String dateOfBirth;
-  final Gender gender;
+  final int gender;
   final String address;
   final String phone;
   final String? email;
