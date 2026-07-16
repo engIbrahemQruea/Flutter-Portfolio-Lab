@@ -34,7 +34,7 @@ class PeopleDataSource extends DataGridSource {
               ),
               DataGridCell<String>(
                 columnName: 'gender',
-                value: dataGridRow.gender == 1 ? 'Male' : 'Female',
+                value: dataGridRow.gender==0?'Male':'Female',
               ),
               DataGridCell<String>(
                 columnName: 'date_of_birth',

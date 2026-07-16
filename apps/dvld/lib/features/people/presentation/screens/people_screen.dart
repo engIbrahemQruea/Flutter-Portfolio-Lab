@@ -1,18 +1,66 @@
+import 'package:dvld/core/routing/routes.dart';
 import 'package:dvld/features/people/domain/entities/people_entity.dart';
 import 'package:dvld/features/people/presentation/logic/cubit/get_all_people_cubit.dart';
 import 'package:dvld/features/people/presentation/screens/people_screen_widgets/custom_row_filter_widget.dart';
 import 'package:dvld/features/people/presentation/screens/people_screen_widgets/people_data_source.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class PeopleScreen extends StatelessWidget {
   const PeopleScreen({super.key});
 
+  void _showContextMenu(
+    BuildContext context,
+    DataGridCellTapDetails details,
+    int selectedPersonId,
+  ) async {
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+
+    await showMenu(
+      context: context,
+      position: RelativeRect.fromRect(
+        details.globalPosition & const Size(0, 0), // Click point radius
+        Offset.zero & overlay.size, // Overlay bounds
+      ),
+      items: const [
+        PopupMenuItem(value: 'showInfo', child: Text('Show Info')),
+        PopupMenuItem(value: 'add', child: Text('Add New Person')),
+        PopupMenuItem(value: 'update', child: Text('Update')),
+        PopupMenuItem(value: 'edit', child: Text('Edit')),
+        PopupMenuItem(value: 'delete', child: Text('Delete')),
+        PopupMenuItem(value: 'share', child: Text('Share')),
+      ],
+    ).then((value) {
+      if (value != null) {
+        switch (value) {
+          case 'add':
+            context.pushNamed(DRoutes.addUpdatePeopleScreen);
+            break;
+          case 'update':
+            {
+              context.pushNamed(
+                DRoutes.addUpdatePeopleScreen,
+                queryParameters: {'personId': selectedPersonId.toString()},
+                //'${DRoutes.addUpdatePeopleScreen}?personId=$selectedPersonId',
+              );
+            }
+            break;
+          case 'edit':
+            return 'edit';
+          case 'delete':
+            return 'delete';
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Manage People')),
+      appBar: AppBar(centerTitle: true, title: Text('Manage People')),
       body: Column(
         children: [
           CustomRowFilterWidget(),
@@ -35,9 +83,20 @@ class PeopleScreen extends StatelessWidget {
                   source: peopleDataSource,
                   selectionMode: SelectionMode.single,
                   showCheckboxColumn: true,
-                  onCheckboxValueChanged: (details) {
-                    print(details);
+                  onCheckboxValueChanged: (details) {},
+                  onCellSecondaryTap: (details)  {
+                    final rowIndex = details.rowColumnIndex.rowIndex;
+
+                    if (rowIndex == 0) return;
+
+                    final selectedPersonId = peopleDataSource
+                        .dataGridRows[rowIndex - 1]
+                        .getCells()[0]
+                        .value;
+                     _showContextMenu(context, details, selectedPersonId);
                   },
+                  onCellLongPress: (details) => {},
+                  // showPopupMenu(context, details.globalPosition),
                   allowSorting: true,
                   allowFiltering: true,
                   showColumnHeaderIconOnHover: true,
