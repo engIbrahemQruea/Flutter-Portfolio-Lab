@@ -1,10 +1,15 @@
 import 'package:dvld/features/people/data/data_sources/local_data_sources/local_data_source.dart';
 import 'package:dvld/features/people/data/repos_imp/people_repos_imp.dart';
 import 'package:dvld/features/people/domain/repos/people_repos.dart';
+import 'package:dvld/features/people/domain/usecases/add_people_use_case.dart';
+import 'package:dvld/features/people/domain/usecases/get_info_by_id_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_list_people_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_people_by_first_name_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_people_by_id_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_people_by_national_no_use_case.dart';
+import 'package:dvld/features/people/domain/usecases/is_national_no_exists_use_case.dart';
+import 'package:dvld/features/people/domain/usecases/update_people_use_case.dart';
+import 'package:dvld/features/people/presentation/logic/add_pdate_form/add_update_form_cubit.dart';
 import 'package:dvld/features/people/presentation/logic/cubit/get_all_people_cubit.dart';
 import 'package:get_it/get_it.dart';
 
@@ -23,5 +28,19 @@ Future<void> setupGetIt() async {
   getIt.registerLazySingleton(() => GetPeopleByFirstNameUseCase(getIt()));
   getIt.registerLazySingleton<GetAllPeopleCubit>(
     () => GetAllPeopleCubit(getIt(), getIt(), getIt(), getIt()),
+  );
+
+  /// Add Update Screen
+  getIt.registerLazySingleton(() => AddPeopleUseCase(getIt()));
+  getIt.registerLazySingleton(() => UpdatePeopleUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetInfoByIdUseCase(getIt()));
+  getIt.registerLazySingleton(() => IsNationalNoExistsUseCase(getIt()));
+  // getIt.registerLazySingleton<AddUpdateScreenCubit>(
+  //   () => AddUpdateScreenCubit(getIt(), getIt(), getIt()),
+  // );
+
+  getIt.registerLazySingleton<PeopleReposImp>(() => PeopleReposImp(getIt()));
+  getIt.registerLazySingleton<AddUpdateFormCubit>(
+    () => AddUpdateFormCubit(getIt(), getIt(), getIt(), getIt(), getIt()),
   );
 }
