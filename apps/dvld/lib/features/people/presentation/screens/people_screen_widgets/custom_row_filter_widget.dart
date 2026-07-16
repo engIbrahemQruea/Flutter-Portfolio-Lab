@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:dvld/core/routing/routes.dart';
 import 'package:dvld/features/people/presentation/logic/cubit/get_all_people_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class CustomRowFilterWidget extends StatefulWidget {
   const CustomRowFilterWidget({super.key});
@@ -127,6 +129,19 @@ class _CustomRowFilterWidgetState extends State<CustomRowFilterWidget> {
                 ),
               )
             : SizedBox.shrink(),
+        Spacer(),
+        IconButton.outlined(
+          tooltip: 'Add Person',
+          onPressed: () async {
+            final isAdded = await context.pushNamed<bool>(
+              DRoutes.addUpdatePeopleScreen,
+            );
+            if (isAdded == true && context.mounted) {
+              context.read<GetAllPeopleCubit>().getAllPeople();
+            }
+          },
+          icon: Icon(Icons.add),
+        ),
       ],
     );
   }
