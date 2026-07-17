@@ -39,7 +39,9 @@ class SaveCloseButton extends StatelessWidget {
               );
 
               final personEntity = PeopleEntity(
-                personId: int.parse(controllers.personIDController.text.trim()),
+                personId: cubit.state.screenStatusMode == ScreenStatus.update
+                    ? int.parse(controllers.personIDController.text.trim())
+                    : null,
                 firstName: controllers.firstNameController.text.trim(),
                 secondName: controllers.secondNameController.text.trim(),
                 thirdName: controllers.thirdNameController.text.trim(),
