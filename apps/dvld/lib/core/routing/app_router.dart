@@ -74,6 +74,7 @@ abstract class AppRouter {
                     getIt<GetPeopleByIdUseCase>(),
                     getIt<GetPeopleByNationalNoUseCase>(),
                     getIt<GetPeopleByFirstNameUseCase>(),
+                    getIt(),
                   ),
                   child: const PeopleScreen(),
                 ),

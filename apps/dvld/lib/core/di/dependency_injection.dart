@@ -2,6 +2,7 @@ import 'package:dvld/features/people/data/data_sources/local_data_sources/local_
 import 'package:dvld/features/people/data/repos_imp/people_repos_imp.dart';
 import 'package:dvld/features/people/domain/repos/people_repos.dart';
 import 'package:dvld/features/people/domain/usecases/add_people_use_case.dart';
+import 'package:dvld/features/people/domain/usecases/delete_people_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_info_by_id_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_list_people_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_people_by_first_name_use_case.dart';
@@ -26,8 +27,9 @@ Future<void> setupGetIt() async {
   getIt.registerLazySingleton(() => GetPeopleByIdUseCase(getIt()));
   getIt.registerLazySingleton(() => GetPeopleByNationalNoUseCase(getIt()));
   getIt.registerLazySingleton(() => GetPeopleByFirstNameUseCase(getIt()));
+  getIt.registerLazySingleton(() => DeletePeopleUseCase(getIt()));
   getIt.registerLazySingleton<GetAllPeopleCubit>(
-    () => GetAllPeopleCubit(getIt(), getIt(), getIt(), getIt()),
+    () => GetAllPeopleCubit(getIt(), getIt(), getIt(), getIt(), getIt()),
   );
 
   /// Add Update Screen
