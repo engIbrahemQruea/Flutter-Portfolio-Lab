@@ -18,3 +18,15 @@ final class GetAllPeopleFailure extends GetAllPeopleState {
 
   GetAllPeopleFailure(this.errMessage);
 }
+
+final class DeletePeopleLoading extends GetAllPeopleState {}
+
+final class DeletePeopleSuccess extends GetAllPeopleState {
+  
+}
+
+final class DeletePeopleFailure extends GetAllPeopleState {
+  final String errMessage;
+
+  DeletePeopleFailure(this.errMessage);
+}

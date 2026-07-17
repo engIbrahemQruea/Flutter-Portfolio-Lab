@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:bloc/bloc.dart';
 import 'package:dvld/features/people/domain/entities/people_entity.dart';
+import 'package:dvld/features/people/domain/usecases/delete_people_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_list_people_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_people_by_first_name_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_people_by_id_use_case.dart'
@@ -16,6 +17,7 @@ class GetAllPeopleCubit extends Cubit<GetAllPeopleState> {
     this._getPeopleByIdUseCase,
     this._getPeopleByNationalNoUseCase,
     this._getPeopleByFirstNameUseCase,
+    this._deletePeopleUseCase,
   ) : super(GetAllPeopleInitial()) {
     getAllPeople();
   }
@@ -23,6 +25,7 @@ class GetAllPeopleCubit extends Cubit<GetAllPeopleState> {
   final GetPeopleByIdUseCase _getPeopleByIdUseCase;
   final GetPeopleByNationalNoUseCase _getPeopleByNationalNoUseCase;
   final GetPeopleByFirstNameUseCase _getPeopleByFirstNameUseCase;
+  final DeletePeopleUseCase _deletePeopleUseCase;
 
   Future<void> getAllPeople() async {
     emit(GetAllPeopleLoading());
@@ -57,6 +60,15 @@ class GetAllPeopleCubit extends Cubit<GetAllPeopleState> {
     result.fold(
       (failure) => emit(GetAllPeopleFailure('No Value Found in First Name')),
       (peopleName) => emit(GetAllPeopleSuccess(peopleName)),
+    );
+  }
+
+  Future<void> deletePeople({required int personID}) async {
+    emit(DeletePeopleLoading());
+    final result = await _deletePeopleUseCase.call(personID);
+    result.fold(
+      (failure) => emit(DeletePeopleFailure(failure.message)),
+      (success) => emit(DeletePeopleSuccess()),
     );
   }
 }
