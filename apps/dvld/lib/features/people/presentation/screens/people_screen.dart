@@ -1,6 +1,7 @@
 import 'package:dvld/core/routing/routes.dart';
 import 'package:dvld/features/people/domain/entities/people_entity.dart';
 import 'package:dvld/features/people/presentation/logic/cubit/get_all_people_cubit.dart';
+import 'package:dvld/features/people/presentation/screens/people_screen_widgets/bloc_listener_delete_people.dart';
 import 'package:dvld/features/people/presentation/screens/people_screen_widgets/custom_row_filter_widget.dart';
 import 'package:dvld/features/people/presentation/screens/people_screen_widgets/people_data_source.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 class PeopleScreen extends StatelessWidget {
   const PeopleScreen({super.key});
 
-  void _showContextMenu(
+  Future<void> _showContextMenu(
     BuildContext context,
     DataGridCellTapDetails details,
     int selectedPersonId,
@@ -26,20 +27,22 @@ class PeopleScreen extends StatelessWidget {
         Offset.zero & overlay.size, // Overlay bounds
       ),
       items: const [
-        PopupMenuItem(value: 'showInfo', child: Text('Show Info')),
+        PopupMenuItem(value: 'showDetails', child: Text('Show Details')),
         PopupMenuItem(value: 'add', child: Text('Add New Person')),
-        PopupMenuItem(value: 'update', child: Text('Update')),
         PopupMenuItem(value: 'edit', child: Text('Edit')),
         PopupMenuItem(value: 'delete', child: Text('Delete')),
-        PopupMenuItem(value: 'share', child: Text('Share')),
+        PopupMenuItem(value: 'sendEmail', child: Text('Send Email')),
+        PopupMenuItem(value: 'phoneCall', child: Text('Phone Call')),
       ],
-    ).then((value) {
+    ).then((value) async {
       if (value != null) {
         switch (value) {
+          case 'showDetails':
+            return 'showDetails';
           case 'add':
             context.pushNamed(DRoutes.addUpdatePeopleScreen);
             break;
-          case 'update':
+          case 'edit':
             {
               context.pushNamed(
                 DRoutes.addUpdatePeopleScreen,
@@ -48,10 +51,19 @@ class PeopleScreen extends StatelessWidget {
               );
             }
             break;
-          case 'edit':
-            return 'edit';
           case 'delete':
-            return 'delete';
+            {
+              await context.read<GetAllPeopleCubit>().deletePeople(
+                personID: selectedPersonId,
+              );
+              BlocListenerDeletePeople();
+            }
+            break;
+          case 'sendEmail':
+            return 'sendEmail';
+
+          case 'phoneCall':
+            return 'phoneCall';
         }
       }
     });
@@ -84,7 +96,7 @@ class PeopleScreen extends StatelessWidget {
                   selectionMode: SelectionMode.single,
                   showCheckboxColumn: true,
                   onCheckboxValueChanged: (details) {},
-                  onCellSecondaryTap: (details)  {
+                  onCellSecondaryTap: (details) async {
                     final rowIndex = details.rowColumnIndex.rowIndex;
 
                     if (rowIndex == 0) return;
@@ -93,7 +105,8 @@ class PeopleScreen extends StatelessWidget {
                         .dataGridRows[rowIndex - 1]
                         .getCells()[0]
                         .value;
-                     _showContextMenu(context, details, selectedPersonId);
+                    await _showContextMenu(context, details, selectedPersonId);
+                    context.read<GetAllPeopleCubit>().getAllPeople();
                   },
                   onCellLongPress: (details) => {},
                   // showPopupMenu(context, details.globalPosition),
