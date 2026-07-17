@@ -2,7 +2,6 @@ import 'package:dvld/core/database/init_table.dart';
 import 'package:dvld/features/people/data/models/country_model.dart';
 import 'package:dvld/features/people/data/models/people_models.dart';
 import 'package:dvld/features/people/domain/entities/people_entity.dart';
-import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
@@ -100,6 +99,16 @@ class DatabaseHelper {
         : [null];
   }
 
+  Future<bool> deletePeople({required int personID}) async {
+    final db = await database;
+    return await db.delete(
+          PersonTable.tableName,
+          where: '${PersonTable.colId} = ?',
+          whereArgs: [personID],
+        ) >
+        0;
+  }
+
   /// Add Update Screen
   Future<int> addNewPeople(PeopleModels peopleModels) async {
     final db = await database;
@@ -139,7 +148,7 @@ class DatabaseHelper {
     return maps.isNotEmpty;
   }
 
-/// Country Query
+  /// Country Query
   Future<List<CountryModel>> getAllCountries() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
@@ -167,5 +176,4 @@ class DatabaseHelper {
     );
     return maps.isNotEmpty ? maps.first[CountryTable.colId] : null;
   }
-
 }

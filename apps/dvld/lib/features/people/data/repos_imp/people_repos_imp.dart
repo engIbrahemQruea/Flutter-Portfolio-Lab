@@ -137,6 +137,18 @@ class PeopleReposImp extends PeopleRepos {
     }
   }
 
+  @override
+  Future<Either<Failure, bool>> deletePeople({
+    required int personID,
+  }) async {
+    try {
+      final isDeleted = await _dbHelper.deletePeople(personID: personID);
+      return Right(isDeleted);
+    } catch (e) {
+      return Left(DatabaseFailure(e.toString()));
+    }
+  }
+
   /// Country Repo Impl
 
   @override
