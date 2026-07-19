@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dvld/core/helpers/app_regex.dart';
+import 'package:dvld/core/helpers/cls_utility.dart';
 import 'package:dvld/features/people/data/repos_imp/people_repos_imp.dart';
 import 'package:dvld/features/people/domain/entities/county_entity.dart';
 import 'package:dvld/features/people/domain/entities/people_entity.dart';
@@ -95,6 +97,9 @@ class AddUpdateFormCubit extends Cubit<AddUpdateFormState> {
               address: state.address.copyWith(
                 value: people.address,
                 isValid: true,
+              ),
+              imagePickerStatus: state.imagePickerStatus.copyWith(
+                imagePath: people.imagePath,
               ),
             ),
           );
@@ -282,6 +287,39 @@ class AddUpdateFormCubit extends Cubit<AddUpdateFormState> {
       errorMessage: 'Address is required',
       onEmit: (updated) => state.copyWith(address: updated),
     );
+  }
+
+  void onChangeImagePicker({required String imagePath}) {
+    emit(
+      state.copyWith(
+        imagePickerStatus: state.imagePickerStatus.copyWith(
+          imagePath: imagePath,
+        ),
+      ),
+    );
+  }
+
+  String? handlePersonImage(String oldImagePath) {
+    final String? currentImagePath = state.imagePickerStatus.imagePath;
+    if (currentImagePath != oldImagePath) {
+      if (oldImagePath.isNotEmpty) {
+        final oldFile = File(oldImagePath);
+        if (oldFile.existsSync()) {
+          try {
+            oldFile.deleteSync();
+          } catch (e) {
+            print("Failed to delete old image: $e");
+          }
+        }
+      }
+      if (currentImagePath != null && currentImagePath.isNotEmpty) {
+        final newPath = ClsUtility.copyImageToProjectImagesFolder(
+          sourceFile: currentImagePath,
+        );
+        return newPath;
+      }
+    }
+    return currentImagePath;
   }
 
   Future<void> emitSaveAddPerson({required PeopleEntity personEntity}) async {
