@@ -34,6 +34,15 @@ class SaveCloseButton extends StatelessWidget {
 
               final cubit = context.read<AddUpdateFormCubit>();
 
+              final finalImagePath = cubit.handlePersonImage(
+                controllers.imagePathController.text.trim(),
+              );
+              debugPrint(finalImagePath);
+
+              if (finalImagePath == null) {
+                return;
+              }
+
               await cubit.getInfoCountryByName(
                 countryName: controllers.countryController.text.trim(),
               );
@@ -54,9 +63,10 @@ class SaveCloseButton extends StatelessWidget {
                 nationalityCountryId:
                     cubit.state.countryStatus.selectedCountryID!,
                 address: controllers.addressController.text.trim(),
-                imagePath: '',
+                imagePath: finalImagePath ?? '',
               );
-
+              debugPrint(finalImagePath);
+              debugPrint(personEntity.imagePath);
               cubit.state.screenStatusMode == ScreenStatus.add
                   ? await cubit.emitSaveAddPerson(personEntity: personEntity)
                   : await cubit.emitSaveUpdatePerson(
