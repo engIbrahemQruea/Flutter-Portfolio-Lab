@@ -1,8 +1,6 @@
 import 'dart:io';
 
-import 'package:dvld/core/helpers/app_dialogs.dart';
 import 'package:dvld/core/helpers/constance.dart';
-import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:uuid/uuid.dart';
 
@@ -12,16 +10,12 @@ class ClsUtility {
     return const Uuid().v4();
   }
 
-  static bool createFolderIfDoesNotExist(
-    BuildContext context,
-    String folderPath,
-  ) {
+  static bool createFolderIfDoesNotExist(String folderPath) {
     if (!Directory(folderPath).existsSync()) {
       try {
         Directory(folderPath).createSync(recursive: true);
         return true;
       } on Exception catch (e) {
-        AppDialogs.showFailure(context: context, message: e.toString());
         return false;
       }
     }
@@ -33,11 +27,8 @@ class ClsUtility {
     return generateUUID() + extn;
   }
 
-  static String? copyImageToProjectImagesFolder({
-    required BuildContext context,
-    required String sourceFile,
-  }) {
-    if (!createFolderIfDoesNotExist(context, destinationFolder)) {
+  static String? copyImageToProjectImagesFolder({required String sourceFile}) {
+    if (!createFolderIfDoesNotExist(destinationFolder)) {
       return null;
     }
 
@@ -47,7 +38,6 @@ class ClsUtility {
       File(sourceFile).copy(destinationFile);
       return destinationFile;
     } on Exception catch (e) {
-      AppDialogs.showFailure(context: context, message: e.toString());
       return null;
     }
   }
