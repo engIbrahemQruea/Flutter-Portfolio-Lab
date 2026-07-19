@@ -7,7 +7,7 @@ enum RequestStatus { initial, loading, success, failure }
 
 enum NationalNoStatus { initial, checking, valid, exists, failure }
 
-enum ImagePickerStatus { initial, picking, selected, cancelled, failure }
+enum EnImagePickerStatus { initial, picking, selected, cancelled, failure }
 
 class FormFieldState<T> extends Equatable {
   final T value;
@@ -102,6 +102,33 @@ class CountryState extends Equatable {
   ];
 }
 
+class ImagePickerState extends Equatable {
+  final EnImagePickerStatus enImagePickerStatus;
+  final String? imagePath;
+  final String? errorMessage;
+
+  const ImagePickerState({
+    required this.enImagePickerStatus,
+    this.imagePath,
+    this.errorMessage,
+  });
+
+  ImagePickerState copyWith({
+    EnImagePickerStatus? enImagePickerStatus,
+    String? imagePath,
+    String? Function()? errorMessage,
+  }) {
+    return ImagePickerState(
+      enImagePickerStatus: enImagePickerStatus ?? this.enImagePickerStatus,
+      imagePath: imagePath ?? this.imagePath,
+      errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
+    );
+  }
+
+  @override
+  List<Object?> get props => [enImagePickerStatus, imagePath, errorMessage];
+}
+
 class AddUpdateFormState extends Equatable {
   final PeopleEntity? personEntity;
 
@@ -122,7 +149,7 @@ class AddUpdateFormState extends Equatable {
   final CountryState countryStatus;
   final RequestStatus loadPersonStatus;
   final NationalNoStatus nationalNoStatus;
-  final ImagePickerStatus imagePickerStatus;
+  final ImagePickerState imagePickerStatus;
 
   const AddUpdateFormState({
     this.personEntity,
@@ -165,7 +192,9 @@ class AddUpdateFormState extends Equatable {
       ),
       loadPersonStatus: RequestStatus.initial,
       nationalNoStatus: NationalNoStatus.initial,
-      imagePickerStatus: ImagePickerStatus.initial,
+      imagePickerStatus: const ImagePickerState(
+        enImagePickerStatus: EnImagePickerStatus.initial,
+      ),
     );
   }
 
@@ -187,7 +216,7 @@ class AddUpdateFormState extends Equatable {
     CountryState? countryStatus,
     RequestStatus? loadPersonStatus,
     NationalNoStatus? nationalNoStatus,
-    ImagePickerStatus? imagePickerStatus,
+    ImagePickerState? imagePickerStatus,
   }) {
     return AddUpdateFormState(
       personEntity: personEntity ?? this.personEntity,
