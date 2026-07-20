@@ -151,7 +151,7 @@ class AddUpdateFormState extends Equatable {
   final CountryState countryStatus;
   final RequestStatus loadPersonStatus;
   final NationalNoStatus nationalNoStatus;
-  final ImagePickerState imagePickerStatus;
+  final ImagePickerState imagePickerState;
 
   const AddUpdateFormState({
     this.personEntity,
@@ -171,7 +171,7 @@ class AddUpdateFormState extends Equatable {
     required this.countryStatus,
     required this.loadPersonStatus,
     required this.nationalNoStatus,
-    required this.imagePickerStatus,
+    required this.imagePickerState,
   });
 
   factory AddUpdateFormState.initial({ScreenStatus mode = ScreenStatus.add}) {
@@ -194,7 +194,7 @@ class AddUpdateFormState extends Equatable {
       ),
       loadPersonStatus: RequestStatus.initial,
       nationalNoStatus: NationalNoStatus.initial,
-      imagePickerStatus: const ImagePickerState(
+      imagePickerState: const ImagePickerState(
         enImagePickerStatus: EnImagePickerStatus.initial,
       ),
     );
@@ -218,7 +218,7 @@ class AddUpdateFormState extends Equatable {
     CountryState? countryStatus,
     RequestStatus? loadPersonStatus,
     NationalNoStatus? nationalNoStatus,
-    ImagePickerState? imagePickerStatus,
+    ImagePickerState? imagePickerState,
   }) {
     return AddUpdateFormState(
       personEntity: personEntity ?? this.personEntity,
@@ -238,7 +238,7 @@ class AddUpdateFormState extends Equatable {
       countryStatus: countryStatus ?? this.countryStatus,
       loadPersonStatus: loadPersonStatus ?? this.loadPersonStatus,
       nationalNoStatus: nationalNoStatus ?? this.nationalNoStatus,
-      imagePickerStatus: imagePickerStatus ?? this.imagePickerStatus,
+      imagePickerState: imagePickerState ?? this.imagePickerState,
     );
   }
 
@@ -259,6 +259,6 @@ class AddUpdateFormState extends Equatable {
     countryStatus,
     loadPersonStatus,
     nationalNoStatus,
-    imagePickerStatus,
+    imagePickerState,
   ];
 }

@@ -19,7 +19,7 @@ class SetRemoveImagePicker extends StatelessWidget {
       child: Column(
         children: [
           BlocSelector<AddUpdateFormCubit, AddUpdateFormState, String?>(
-            selector: (state) => state.imagePickerStatus.imagePath,
+            selector: (state) => state.imagePickerState.imagePath,
             builder: (context, imagePath) {
               final hasImage = imagePath != null && imagePath.isNotEmpty;
               return Container(
@@ -56,7 +56,7 @@ class SetRemoveImagePicker extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           BlocSelector<AddUpdateFormCubit, AddUpdateFormState, bool>(
-            selector: (state) => state.imagePickerStatus.isSelectedPath,
+            selector: (state) => state.imagePickerState.isSelectedPath,
 
             builder: (context, isSelectedPath) {
               if (!isSelectedPath) return const SizedBox.shrink();

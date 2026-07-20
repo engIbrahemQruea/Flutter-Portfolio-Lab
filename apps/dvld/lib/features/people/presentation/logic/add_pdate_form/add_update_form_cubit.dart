@@ -98,7 +98,7 @@ class AddUpdateFormCubit extends Cubit<AddUpdateFormState> {
                 value: people.address,
                 isValid: true,
               ),
-              imagePickerStatus: state.imagePickerStatus.copyWith(
+              imagePickerState: state.imagePickerState.copyWith(
                 imagePath: people.imagePath,
               ),
             ),
@@ -292,15 +292,13 @@ class AddUpdateFormCubit extends Cubit<AddUpdateFormState> {
   void onChangeImagePicker({required String imagePath}) {
     emit(
       state.copyWith(
-        imagePickerStatus: state.imagePickerStatus.copyWith(
-          imagePath: imagePath,
-        ),
+        imagePickerState: state.imagePickerState.copyWith(imagePath: imagePath),
       ),
     );
   }
 
   String? handlePersonImage(String oldImagePath) {
-    final String? currentImagePath = state.imagePickerStatus.imagePath;
+    final String? currentImagePath = state.imagePickerState.imagePath;
     if (currentImagePath != oldImagePath) {
       if (oldImagePath.isNotEmpty) {
         final oldFile = File(oldImagePath);
