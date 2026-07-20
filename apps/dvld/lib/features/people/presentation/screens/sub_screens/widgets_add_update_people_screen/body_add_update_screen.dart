@@ -75,9 +75,10 @@ class _BodyAddUpdateScreenState extends State<BodyAddUpdateScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 30),
+                const SizedBox(width: 20),
 
                 SetRemoveImagePicker(),
+                const SizedBox(width: 10),
               ],
             ),
             const SizedBox(height: 30),
