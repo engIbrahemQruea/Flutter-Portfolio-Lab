@@ -107,6 +107,8 @@ class ImagePickerState extends Equatable {
   final String? imagePath;
   final String? errorMessage;
 
+  get isSelectedPath => imagePath != null && imagePath != '';
+
   const ImagePickerState({
     required this.enImagePickerStatus,
     this.imagePath,
