@@ -3,14 +3,12 @@ import 'dart:io';
 
 import 'package:dvld/core/widgets/app_button.dart';
 import 'package:dvld/features/people/presentation/logic/add_pdate_form/add_update_form_cubit.dart';
-import 'package:dvld/features/people/presentation/logic/controllers/add_update_people_form_controllers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 class SetRemoveImagePicker extends StatelessWidget {
   const SetRemoveImagePicker({super.key});
-
 
   static final ImagePicker _picker = ImagePicker();
 
@@ -20,24 +18,30 @@ class SetRemoveImagePicker extends StatelessWidget {
       width: 150,
       child: Column(
         children: [
-          BlocBuilder<AddUpdateFormCubit, AddUpdateFormState>(
-            builder: (context, state) {
+          BlocSelector<AddUpdateFormCubit, AddUpdateFormState, String?>(
+            selector: (state) => state.imagePickerStatus.imagePath,
+            builder: (context, imagePath) {
+              final hasImage = imagePath != null && imagePath.isNotEmpty;
               return Container(
-                width: 130,
-                height: 140,
+                width: 150,
+                height: 160,
                 decoration: BoxDecoration(
                   color: Colors.grey[300],
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: Colors.grey),
                 ),
-                child:
-                    state.imagePickerStatus.imagePath == null ||
-                        state.imagePickerStatus.imagePath == ''
-                    ? const Icon(Icons.person, size: 50, color: Colors.grey)
-                    : Image.file(
-                        File(state.imagePickerStatus.imagePath!),
+                child: hasImage
+                    ? Image.file(
+                        File(imagePath),
                         fit: BoxFit.cover,
-                      ),
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(
+                              Icons.broken_image,
+                              size: 50,
+                              color: Colors.grey,
+                            ),
+                      )
+                    : const Icon(Icons.person, size: 50, color: Colors.grey),
               );
             },
           ),
@@ -46,26 +50,40 @@ class SetRemoveImagePicker extends StatelessWidget {
             label: 'Set Image',
             icon: const Icon(Icons.upload_file),
             onPressed: () async {
-              final image = await _picker.pickImage(
-                source: ImageSource.gallery,
-              );
-              if (image != null) {
-                context.read<AddUpdateFormCubit>().onChangeImagePicker(
-                  imagePath: image.path,
-                );
-              }
+              await pickAndChangeImage(context);
             },
             size: AppButtonSize.small,
           ),
           const SizedBox(height: 8),
-          AppButton.custom(
-            label: 'Delete Image',
-            icon: const Icon(Icons.remove),
-            size: AppButtonSize.small,
-            onPressed: () {},
+          BlocSelector<AddUpdateFormCubit, AddUpdateFormState, bool>(
+            selector: (state) => state.imagePickerStatus.isSelectedPath,
+
+            builder: (context, isSelectedPath) {
+              if (!isSelectedPath) return const SizedBox.shrink();
+
+              return AppButton.custom(
+                label: 'Remove Image',
+                icon: const Icon(Icons.remove),
+                size: AppButtonSize.small,
+                onPressed: () {
+                  context.read<AddUpdateFormCubit>().onChangeImagePicker(
+                    imagePath: '',
+                  );
+                },
+              );
+            },
           ),
         ],
       ),
     );
+  }
+
+  Future<void> pickAndChangeImage(BuildContext context) async {
+    final image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      context.read<AddUpdateFormCubit>().onChangeImagePicker(
+        imagePath: image.path,
+      );
+    }
   }
 }
