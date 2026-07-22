@@ -4,6 +4,7 @@ abstract class DRoutes {
   static const String peopleScreen = '/peopleScreen';
   //Sub screen to People Screen
   static const String addUpdatePeopleScreen = '/addUpdatePeopleScreen';
+  static const String personDetailsScreen = '/personDetailsScreen';
   static const String drivers = '/drivers';
   static const String users = '/users';
 }

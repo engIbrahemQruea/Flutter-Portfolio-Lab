@@ -7,6 +7,7 @@ import 'package:dvld/features/people/domain/usecases/get_people_by_id_use_case.d
 import 'package:dvld/features/people/domain/usecases/get_people_by_national_no_use_case.dart';
 import 'package:dvld/features/people/presentation/logic/add_pdate_form/add_update_form_cubit.dart';
 import 'package:dvld/features/people/presentation/logic/cubit/get_all_people_cubit.dart';
+import 'package:dvld/features/people/presentation/person_details_screen/person_details_screen.dart';
 import 'package:dvld/features/people/presentation/screens/people_screen.dart';
 import 'package:dvld/features/people/presentation/screens/sub_screens/add_update_people_screen.dart';
 import 'package:flutter/material.dart';
@@ -83,7 +84,8 @@ abstract class AppRouter {
                     path: DRoutes.addUpdatePeopleScreen,
                     name: DRoutes.addUpdatePeopleScreen,
                     builder: (context, state) {
-                      final personIdString = state.uri.queryParameters['personId'];
+                      final personIdString =
+                          state.uri.queryParameters['personId'];
                       final personIdInt = personIdString == null
                           ? null
                           : int.parse(personIdString);
@@ -97,6 +99,18 @@ abstract class AppRouter {
                         )..getAllCountries(),
                         child: AddUpdatePeopleScreen(personId: personIdInt),
                       );
+                    },
+                  ),
+                  GoRoute(
+                    path: DRoutes.personDetailsScreen,
+                    name: DRoutes.personDetailsScreen,
+                    builder: (context, state) {
+                      final personIdString =
+                          state.uri.queryParameters['personId'];
+                      final personIdInt = personIdString == null
+                          ? null
+                          : int.parse(personIdString);
+                      return PersonDetailsScreen();
                     },
                   ),
                 ],
