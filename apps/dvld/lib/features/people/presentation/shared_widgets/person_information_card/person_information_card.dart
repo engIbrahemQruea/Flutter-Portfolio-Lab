@@ -10,20 +10,38 @@ class PersonInformationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card.outlined(
+    return Padding(
+      padding: const .symmetric(horizontal: 10, vertical: 10),
       child: Column(
+        crossAxisAlignment: .start,
         children: [
-          Row(
-            children: [
-              PersonBasicInfo(),
-              const SizedBox(width: 20),
-              PersonImage(),
-            ],
+          const Text(
+            'Person Information',
+            style: TextStyle(
+              fontSize: 20,
+              textBaseline: TextBaseline.ideographic,
+            ),
           ),
-          verticalSpace(10),
-          PersonContactInfo(),
-          verticalSpace(10),
-          PersonAddressInfo(),
+          Card.outlined(
+            child: Padding(
+              padding: const .symmetric(horizontal: 10, vertical: 10),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      PersonBasicInfo(),
+                      const SizedBox(width: 20),
+                      PersonImage(),
+                    ],
+                  ),
+                  verticalSpace(10),
+                  PersonContactInfo(),
+                  verticalSpace(10),
+                  PersonAddressInfo(),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
