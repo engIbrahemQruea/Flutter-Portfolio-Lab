@@ -6,6 +6,7 @@ class AppTextField extends StatelessWidget {
     Key? key,
     required this.label,
     this.controller,
+    this.initialValue,
     this.focusNode,
     this.validator,
     this.keyboardType,
@@ -27,6 +28,7 @@ class AppTextField extends StatelessWidget {
 
   final String label;
   final TextEditingController? controller;
+  final String? initialValue;
   final FocusNode? focusNode;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
@@ -50,6 +52,7 @@ class AppTextField extends StatelessWidget {
     final theme = Theme.of(context);
     return TextFormField(
       controller: controller,
+      initialValue: initialValue,
       focusNode: focusNode,
       validator: validator,
       keyboardType: keyboardType,
