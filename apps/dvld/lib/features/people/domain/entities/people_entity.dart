@@ -1,4 +1,3 @@
-
 class PeopleEntity {
   final int? personId;
   final String nationalNo;
@@ -29,4 +28,6 @@ class PeopleEntity {
     required this.nationalityCountryId,
     this.imagePath,
   });
+
+  String get fullName => '$firstName $secondName ${thirdName ?? ''} $lastName';
 }
