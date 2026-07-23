@@ -137,6 +137,18 @@ class DatabaseHelper {
         : null;
   }
 
+  Future<PeopleEntity?> getInfoByNationalNo({required String nationalNo}) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      PersonTable.tableName,
+      where: '${PersonTable.colNationalNo} = ?',
+      whereArgs: [nationalNo],
+    );
+    return maps.isNotEmpty
+        ? PeopleModels.fromJson(maps.first).mapToEntity()
+        : null;
+  }
+
   Future<bool> isNationalNoExists({required String nationalNo}) async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
