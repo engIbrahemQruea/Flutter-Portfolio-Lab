@@ -26,6 +26,8 @@ Future<Either<Failure, PeopleEntity?>> getInfoPeopleById({required int personID}
 
   Future<Either<Failure, bool>> deletePeople({required int personID});
 
+  Future<Either<Failure, PeopleEntity?>> getInfoByNationalNo({required String nationalNo}); 
+
 /// Country Repos
 Future<Either<Failure, List<CountyEntity>>> getAllCountries();
 Future<Either<Failure, String?>> getCountryNameById({required int countryId});
