@@ -13,6 +13,7 @@ import 'package:dvld/features/people/domain/usecases/update_people_use_case.dart
 import 'package:dvld/features/people/presentation/logic/add_pdate_form/add_update_form_cubit.dart';
 import 'package:dvld/features/people/presentation/logic/cubit/get_all_people_cubit.dart';
 import 'package:dvld/features/people/presentation/person_details_screen/logic/person_details_cubit/person_details_cubit.dart';
+import 'package:dvld/features/people/presentation/shared_widgets/person_selector/cubit/person_selector_cubit.dart';
 import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;
@@ -48,5 +49,12 @@ Future<void> setupGetIt() async {
   );
 
   /// Person Details Screen
-  getIt.registerFactory<PersonDetailsCubit>(() => PersonDetailsCubit(getIt()));
+  getIt.registerFactory<PersonDetailsCubit>(
+    () => PersonDetailsCubit(getIt(), getIt()),
+  );
+
+  /// Person Selector Composition Widget
+  getIt.registerFactory<PersonSelectorCubit>(
+    () => PersonSelectorCubit(getIt(), getIt()),
+  );
 }
