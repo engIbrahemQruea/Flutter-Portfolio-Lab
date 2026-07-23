@@ -124,6 +124,24 @@ class PeopleReposImp extends PeopleRepos {
   }
 
   @override
+  Future<Either<Failure, PeopleEntity?>> getInfoByNationalNo({
+    required String nationalNo,
+  }) async {
+    try {
+      final peopleResult = await _dbHelper.getInfoByNationalNo(
+        nationalNo: nationalNo,
+      );
+      if (peopleResult != null) {
+        return Right(peopleResult);
+      } else {
+        return Right(null);
+      }
+    } catch (e) {
+      return Left(DatabaseFailure(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, bool>> isNationalNoExists({
     required String nationalNo,
   }) async {
@@ -138,9 +156,7 @@ class PeopleReposImp extends PeopleRepos {
   }
 
   @override
-  Future<Either<Failure, bool>> deletePeople({
-    required int personID,
-  }) async {
+  Future<Either<Failure, bool>> deletePeople({required int personID}) async {
     try {
       final isDeleted = await _dbHelper.deletePeople(personID: personID);
       return Right(isDeleted);
