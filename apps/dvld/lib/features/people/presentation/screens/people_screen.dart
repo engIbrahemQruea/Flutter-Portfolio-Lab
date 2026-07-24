@@ -132,6 +132,14 @@ class PeopleScreen extends StatelessWidget {
         isOperationSuccess = true;
         break;
 
+      case PersonMenuAction.showDetails:
+        final result = await context.pushNamed<bool>(
+          DRoutes.personDetailsScreen,
+          queryParameters: {'personId': selectedPersonId.toString()},
+        );
+        isOperationSuccess = result ?? false;
+        break;
+
       default:
         break;
     }
