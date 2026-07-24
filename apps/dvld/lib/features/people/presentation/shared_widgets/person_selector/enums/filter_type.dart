@@ -1,0 +1,1 @@
+enum EnFilterType { personID, nationalNo }
