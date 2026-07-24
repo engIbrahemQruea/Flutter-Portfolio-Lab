@@ -23,7 +23,9 @@ Future<void> setupGetIt() async {
   // People Feature
   // getDataSources
   // await DatabaseHelper().database;
-  getIt.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());
+  getIt.registerLazySingleton<PeopleLocalDataSource>(
+    () => PeopleLocalDataSource(),
+  );
 
   getIt.registerLazySingleton<PeopleRepos>(() => PeopleReposImp(getIt()));
   getIt.registerLazySingleton(() => GetListPeopleUseCase(getIt()));

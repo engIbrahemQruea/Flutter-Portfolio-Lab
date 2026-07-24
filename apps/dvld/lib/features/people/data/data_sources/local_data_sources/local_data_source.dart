@@ -4,15 +4,16 @@ import 'package:dvld/features/people/data/models/people_models.dart';
 import 'package:dvld/features/people/domain/entities/people_entity.dart';
 import 'package:sqflite/sqflite.dart';
 
-class DatabaseHelper {
-  static final DatabaseHelper _instance = DatabaseHelper._internal();
+class PeopleLocalDataSource {
+  static final PeopleLocalDataSource _instance =
+      PeopleLocalDataSource._internal();
 
-  DatabaseHelper._internal();
+  PeopleLocalDataSource._internal();
 
   static Database? _database;
   final String _databaseName = 'dvld_database.db';
 
-  factory DatabaseHelper() => _instance;
+  factory PeopleLocalDataSource() => _instance;
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -137,7 +138,9 @@ class DatabaseHelper {
         : null;
   }
 
-  Future<PeopleEntity?> getInfoByNationalNo({required String nationalNo}) async {
+  Future<PeopleEntity?> getInfoByNationalNo({
+    required String nationalNo,
+  }) async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
       PersonTable.tableName,

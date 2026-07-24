@@ -8,7 +8,7 @@ import 'package:dvld/features/people/domain/entities/people_entity.dart';
 import 'package:dvld/features/people/domain/repos/people_repos.dart';
 
 class PeopleReposImp extends PeopleRepos {
-  final DatabaseHelper _dbHelper;
+  final PeopleLocalDataSource _dbHelper;
   PeopleReposImp(this._dbHelper);
   @override
   Future<Either<Failure, List<PeopleEntity>>> getListPeople() async {
