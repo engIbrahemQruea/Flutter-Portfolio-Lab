@@ -4,6 +4,7 @@ import 'package:dvld/features/people/domain/repos/people_repos.dart';
 import 'package:dvld/features/people/domain/usecases/add_people_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/delete_people_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_info_by_id_use_case.dart';
+import 'package:dvld/features/people/domain/usecases/get_info_by_national_no_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_list_people_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_people_by_first_name_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_people_by_id_use_case.dart';
@@ -54,6 +55,7 @@ Future<void> setupGetIt() async {
   );
 
   /// Person Selector Composition Widget
+  getIt.registerLazySingleton(() => GetInfoByNationalNoUseCase(getIt()));
   getIt.registerFactory<PersonSelectorCubit>(
     () => PersonSelectorCubit(getIt(), getIt()),
   );
