@@ -1,5 +1,5 @@
-import 'package:dvld/core/database/init_table.dart';
 import 'package:dvld/core/mapper_to_entity/data_mapper.dart';
+import 'package:dvld/features/people/data/data_sources/local_data_sources/people_table.dart';
 import 'package:dvld/features/people/domain/entities/county_entity.dart';
 
 class CountryModel extends DataMapper<CountyEntity> {
