@@ -1,55 +1,15 @@
-import 'package:dvld/core/database/init_table.dart';
+import 'package:dvld/core/database/app_database.dart';
+import 'package:dvld/features/people/data/data_sources/local_data_sources/people_table.dart';
 import 'package:dvld/features/people/data/models/country_model.dart';
 import 'package:dvld/features/people/data/models/people_models.dart';
 import 'package:dvld/features/people/domain/entities/people_entity.dart';
-import 'package:sqflite/sqflite.dart';
 
 class PeopleLocalDataSource {
-  static final PeopleLocalDataSource _instance =
-      PeopleLocalDataSource._internal();
-
-  PeopleLocalDataSource._internal();
-
-  static Database? _database;
-  final String _databaseName = 'dvld_database.db';
-
-  factory PeopleLocalDataSource() => _instance;
-
-  Future<Database> get database async {
-    if (_database != null) return _database!;
-    _database = await _initDatabase();
-    return _database!;
-  }
-
-  Future<Database> _initDatabase() async {
-    final path = await getDatabasesPath() + _databaseName;
-    return await openDatabase(
-      path,
-      version: 1,
-      onConfigure: (db) async {
-        await db.execute('PRAGMA foreign_keys = ON');
-      },
-      onCreate: _onCreate,
-    );
-  }
-
-  Future<void> close() async {
-    final db = _database;
-    if (db != null) {
-      await db.close();
-      _database = null;
-    }
-  }
-
-  Future<void> _onCreate(Database db, int version) async {
-    await db.execute(CountryTable.createTableQuery);
-    await db.execute(CountryTable.seedCountriesQuery);
-    await db.execute(PersonTable.createTableQuery);
-    await db.execute(PersonTable.seedPeopleQuery);
-  }
+  final AppDatabase appDatabase;
+  PeopleLocalDataSource(this.appDatabase);
 
   Future<List<PeopleModels>> getListPeople() async {
-    final db = await database;
+    final db = await appDatabase.database;
     final List<Map<String, dynamic>> maps = await db.query(
       PersonTable.tableName,
     );
@@ -57,7 +17,7 @@ class PeopleLocalDataSource {
   }
 
   Future<List<PeopleModels?>> getPeopleById({required int personID}) async {
-    final db = await database;
+    final db = await appDatabase.database;
     final List<Map<String, dynamic>> maps = await db.query(
       PersonTable.tableName,
       where: '${PersonTable.colId} Like ?',
@@ -72,7 +32,7 @@ class PeopleLocalDataSource {
     required String nationalNo,
   }) async {
     try {
-      final db = await database;
+      final db = await appDatabase.database;
       final List<Map<String, dynamic>> maps = await db.query(
         PersonTable.tableName,
         where: '${PersonTable.colNationalNo} LIKE ?',
@@ -89,7 +49,7 @@ class PeopleLocalDataSource {
   Future<List<PeopleModels?>> getPeopleByFirstName({
     required String firstName,
   }) async {
-    final db = await database;
+    final db = await appDatabase.database;
     final List<Map<String, dynamic>> maps = await db.query(
       PersonTable.tableName,
       where: '${PersonTable.colFirstName} Like ?',
@@ -101,7 +61,7 @@ class PeopleLocalDataSource {
   }
 
   Future<bool> deletePeople({required int personID}) async {
-    final db = await database;
+    final db = await appDatabase.database;
     return await db.delete(
           PersonTable.tableName,
           where: '${PersonTable.colId} = ?',
@@ -112,12 +72,12 @@ class PeopleLocalDataSource {
 
   /// Add Update Screen
   Future<int> addNewPeople(PeopleModels peopleModels) async {
-    final db = await database;
+    final db = await appDatabase.database;
     return await db.insert(PersonTable.tableName, peopleModels.toJson());
   }
 
   Future<int> updatePeople(PeopleModels peopleModels) async {
-    final db = await database;
+    final db = await appDatabase.database;
     return await db.update(
       PersonTable.tableName,
       peopleModels.toJson(),
@@ -127,7 +87,7 @@ class PeopleLocalDataSource {
   }
 
   Future<PeopleEntity?> getInfoById({required int personID}) async {
-    final db = await database;
+    final db = await appDatabase.database;
     final List<Map<String, dynamic>> maps = await db.query(
       PersonTable.tableName,
       where: '${PersonTable.colId} Like ?',
@@ -141,7 +101,7 @@ class PeopleLocalDataSource {
   Future<PeopleEntity?> getInfoByNationalNo({
     required String nationalNo,
   }) async {
-    final db = await database;
+    final db = await appDatabase.database;
     final List<Map<String, dynamic>> maps = await db.query(
       PersonTable.tableName,
       where: '${PersonTable.colNationalNo} = ?',
@@ -153,7 +113,7 @@ class PeopleLocalDataSource {
   }
 
   Future<bool> isNationalNoExists({required String nationalNo}) async {
-    final db = await database;
+    final db = await appDatabase.database;
     final List<Map<String, dynamic>> maps = await db.query(
       PersonTable.tableName,
       where: '${PersonTable.colNationalNo} = ?',
@@ -165,7 +125,7 @@ class PeopleLocalDataSource {
 
   /// Country Query
   Future<List<CountryModel>> getAllCountries() async {
-    final db = await database;
+    final db = await appDatabase.database;
     final List<Map<String, dynamic>> maps = await db.query(
       CountryTable.tableName,
     );
@@ -173,7 +133,7 @@ class PeopleLocalDataSource {
   }
 
   Future<String?> getCountryNameById({required int countryId}) async {
-    final db = await database;
+    final db = await appDatabase.database;
     final List<Map<String, dynamic>> maps = await db.query(
       CountryTable.tableName,
       where: '${CountryTable.colId} = ?',
@@ -183,7 +143,7 @@ class PeopleLocalDataSource {
   }
 
   Future<int?> getCountryIdByName({required String countryName}) async {
-    final db = await database;
+    final db = await appDatabase.database;
     final List<Map<String, dynamic>> maps = await db.query(
       CountryTable.tableName,
       where: '${CountryTable.colName} = ?',
