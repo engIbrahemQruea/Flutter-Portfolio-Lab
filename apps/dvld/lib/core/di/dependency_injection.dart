@@ -1,4 +1,6 @@
+import 'package:dvld/core/database/app_database.dart';
 import 'package:dvld/features/people/data/data_sources/local_data_sources/local_data_source.dart';
+import 'package:dvld/features/people/data/data_sources/local_data_sources/people_table.dart';
 import 'package:dvld/features/people/data/repos_imp/people_repos_imp.dart';
 import 'package:dvld/features/people/domain/repos/people_repos.dart';
 import 'package:dvld/features/people/domain/usecases/add_people_use_case.dart';
@@ -20,11 +22,13 @@ import 'package:get_it/get_it.dart';
 final getIt = GetIt.instance;
 
 Future<void> setupGetIt() async {
-  // People Feature
-  // getDataSources
-  // await DatabaseHelper().database;
+  final appDatabase = AppDatabase();
+
+  appDatabase.registerTable(PeopleTable());
+
+  getIt.registerSingleton<AppDatabase>(appDatabase);
   getIt.registerLazySingleton<PeopleLocalDataSource>(
-    () => PeopleLocalDataSource(),
+    () => PeopleLocalDataSource(getIt() ),
   );
 
   getIt.registerLazySingleton<PeopleRepos>(() => PeopleReposImp(getIt()));
@@ -42,9 +46,7 @@ Future<void> setupGetIt() async {
   getIt.registerLazySingleton(() => UpdatePeopleUseCase(getIt()));
   getIt.registerLazySingleton(() => GetInfoByIdUseCase(getIt()));
   getIt.registerLazySingleton(() => IsNationalNoExistsUseCase(getIt()));
-  // getIt.registerLazySingleton<AddUpdateScreenCubit>(
-  //   () => AddUpdateScreenCubit(getIt(), getIt(), getIt()),
-  // );
+
 
   getIt.registerLazySingleton<PeopleReposImp>(() => PeopleReposImp(getIt()));
   getIt.registerLazySingleton<AddUpdateFormCubit>(
