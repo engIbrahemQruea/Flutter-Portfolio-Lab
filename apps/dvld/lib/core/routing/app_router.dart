@@ -1,6 +1,7 @@
 import 'package:dvld/core/di/dependency_injection.dart';
 import 'package:dvld/core/routing/routes.dart';
 import 'package:dvld/features/dashboard/presentation/views/dash_board_screen.dart';
+import 'package:dvld/features/manage_users/presentation/screens/manage_users_screen.dart';
 import 'package:dvld/features/people/domain/usecases/get_list_people_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_people_by_first_name_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_people_by_id_use_case.dart';
@@ -136,10 +137,10 @@ abstract class AppRouter {
             navigatorKey: _shellNavigatorUsersKey,
             routes: [
               GoRoute(
-                path: DRoutes.users,
-                name: DRoutes.users,
+                path: DRoutes.manageUsersScreen,
+                name: DRoutes.manageUsersScreen,
                 builder: (context, state) =>
-                    const Center(child: Text('Users Screen')),
+                    const ManageUsersScreen(),
               ),
             ],
           ),
