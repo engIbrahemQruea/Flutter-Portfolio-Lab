@@ -1,6 +1,7 @@
 import 'package:dvld/core/di/dependency_injection.dart';
 import 'package:dvld/core/routing/routes.dart';
 import 'package:dvld/features/dashboard/presentation/views/dash_board_screen.dart';
+import 'package:dvld/features/manage_users/presentation/logic/cubit/manage_users_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/screens/manage_users_screen.dart';
 import 'package:dvld/features/people/domain/usecases/get_list_people_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_people_by_first_name_use_case.dart';
@@ -139,8 +140,10 @@ abstract class AppRouter {
               GoRoute(
                 path: DRoutes.manageUsersScreen,
                 name: DRoutes.manageUsersScreen,
-                builder: (context, state) =>
-                    const ManageUsersScreen(),
+                builder: (context, state) => BlocProvider(
+                  create: (context) => getIt<ManageUsersCubit>()..getAllUsers(),
+                  child: const ManageUsersScreen(),
+                ),
               ),
             ],
           ),
