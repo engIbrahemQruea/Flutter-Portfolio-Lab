@@ -1,4 +1,14 @@
 import 'package:dvld/core/database/app_database.dart';
+import 'package:dvld/features/manage_users/data/datasources/user_local_data_source.dart';
+import 'package:dvld/features/manage_users/data/datasources/user_table.dart';
+import 'package:dvld/features/manage_users/data/repositoriesImp/user_repository_impl.dart';
+import 'package:dvld/features/manage_users/domain/repositories/user_repository.dart';
+import 'package:dvld/features/manage_users/domain/usecases/get_all_users_usecase.dart';
+import 'package:dvld/features/manage_users/domain/usecases/get_user_info_by_password_use_case.dart';
+import 'package:dvld/features/manage_users/domain/usecases/get_user_info_by_person_id_use_case.dart';
+import 'package:dvld/features/manage_users/domain/usecases/get_user_info_by_user_id_use_case.dart';
+import 'package:dvld/features/manage_users/domain/usecases/get_user_info_by_user_name_use_case.dart';
+import 'package:dvld/features/manage_users/presentation/logic/cubit/manage_users_cubit.dart';
 import 'package:dvld/features/people/data/data_sources/local_data_sources/local_data_source.dart';
 import 'package:dvld/features/people/data/data_sources/local_data_sources/people_table.dart';
 import 'package:dvld/features/people/data/repos_imp/people_repos_imp.dart';
@@ -28,7 +38,7 @@ Future<void> setupGetIt() async {
 
   getIt.registerSingleton<AppDatabase>(appDatabase);
   getIt.registerLazySingleton<PeopleLocalDataSource>(
-    () => PeopleLocalDataSource(getIt() ),
+    () => PeopleLocalDataSource(getIt()),
   );
 
   getIt.registerLazySingleton<PeopleRepos>(() => PeopleReposImp(getIt()));
@@ -47,7 +57,6 @@ Future<void> setupGetIt() async {
   getIt.registerLazySingleton(() => GetInfoByIdUseCase(getIt()));
   getIt.registerLazySingleton(() => IsNationalNoExistsUseCase(getIt()));
 
-
   getIt.registerLazySingleton<PeopleReposImp>(() => PeopleReposImp(getIt()));
   getIt.registerLazySingleton<AddUpdateFormCubit>(
     () => AddUpdateFormCubit(getIt(), getIt(), getIt(), getIt(), getIt()),
@@ -62,5 +71,31 @@ Future<void> setupGetIt() async {
   getIt.registerLazySingleton(() => GetInfoByNationalNoUseCase(getIt()));
   getIt.registerFactory<PersonSelectorCubit>(
     () => PersonSelectorCubit(getIt(), getIt()),
+  );
+
+  /// Manage Users Features/Screens
+
+  appDatabase.registerTable(UserTable());
+
+  getIt.registerLazySingleton<UserLocalDataSource>(
+    () => UserLocalDataSource(getIt()),
+  );
+
+  getIt.registerLazySingleton<UserRepository>(
+    () => UserRepositoryImpl(getIt()),
+  );
+
+  getIt.registerLazySingleton(() => GetAllUsersUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => GetUserInfoByUserIdUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => GetUserInfoByPersonIdUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => GetUserInfoByUserNameUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => GetUserInfoByPasswordUseCase(getIt()));
+
+  getIt.registerFactory<ManageUsersCubit>(
+    () => ManageUsersCubit(getIt(), getIt(), getIt(), getIt(), getIt()),
   );
 }
