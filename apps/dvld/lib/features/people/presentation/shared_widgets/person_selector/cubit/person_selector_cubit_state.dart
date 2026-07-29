@@ -4,45 +4,46 @@ enum EnRequestStatus { initial, loading, success, failure }
 
 class PersonSelectorCubitState extends Equatable {
   const PersonSelectorCubitState({
-    this.filterType = EnFilterType.personID,
+    this.filterTypeOption = EnFilterTypeOption.personID,
     this.filterInputValue,
+    this.countryName,
     this.personEntity,
     this.errorMessage,
     this.searchStatus = EnRequestStatus.initial,
   });
 
-  //   factory PersonSelectorCubitState.initial() => const PersonSelectorCubitState(
-  //  filterType: EnFilterType.personID,
-  //  filterValue: '',
-
-  //   );
-
-  final EnFilterType filterType;
-
+  final EnFilterTypeOption filterTypeOption;
   final String? filterInputValue;
-
+  final String? countryName;
   final PeopleEntity? personEntity;
-
   final EnRequestStatus searchStatus;
-
   final String? errorMessage;
 
   PersonSelectorCubitState copyWith({
-    EnFilterType? filterType,
+    EnFilterTypeOption? filterTypeOption,
     String? filterInputValue,
-    PeopleEntity? personEntity,
+    String? countryName,
+    PeopleEntity? Function()? personEntity,
     EnRequestStatus? searchStatus,
     String? Function()? errorMessage,
   }) {
     return PersonSelectorCubitState(
-      filterType: filterType ?? this.filterType,
+      filterTypeOption: filterTypeOption ?? this.filterTypeOption,
       filterInputValue: filterInputValue ?? this.filterInputValue,
-      personEntity: personEntity ?? this.personEntity,
+      countryName: countryName ?? this.countryName,
+      personEntity: personEntity != null ? personEntity() : this.personEntity,
       searchStatus: searchStatus ?? this.searchStatus,
       errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
     );
   }
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [
+    filterTypeOption,
+    filterInputValue,
+    countryName,
+    personEntity,
+    searchStatus,
+    errorMessage,
+  ];
 }
