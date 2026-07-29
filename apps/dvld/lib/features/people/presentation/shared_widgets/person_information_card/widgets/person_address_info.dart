@@ -2,14 +2,13 @@
 import 'package:dvld/core/helpers/spacing.dart';
 import 'package:dvld/core/widgets/app_text_field.dart';
 import 'package:dvld/features/people/domain/entities/people_entity.dart';
-import 'package:dvld/features/people/presentation/person_details_screen/logic/person_details_cubit/person_details_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PersonAddressInfo extends StatelessWidget {
-  const PersonAddressInfo({Key? key, this.person}) : super(key: key);
+  const PersonAddressInfo({super.key, this.person, this.countryName});
 
   final PeopleEntity? person;
+  final String? countryName;
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +17,7 @@ class PersonAddressInfo extends StatelessWidget {
         Expanded(
           child: AppTextField(
             label: 'Country',
-            initialValue:
-                context.read<PersonDetailsCubit>().countryName ?? '[????]',
+            initialValue: countryName ?? '[????]',
             prefixIcon: Icons.location_on,
             isReadOnly: true,
           ),

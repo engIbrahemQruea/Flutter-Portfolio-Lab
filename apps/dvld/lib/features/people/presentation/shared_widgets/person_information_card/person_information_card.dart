@@ -8,11 +8,16 @@ import 'package:dvld/features/people/presentation/shared_widgets/person_informat
 import 'package:flutter/material.dart';
 
 class PersonInformationCard extends StatelessWidget {
-  const PersonInformationCard({Key? key, this.person, this.onEdit})
-    : super(key: key);
+  const PersonInformationCard({
+    super.key,
+    this.person,
+    this.onEdit,
+    this.countryName,
+  });
 
   final PeopleEntity? person;
   final void Function(int personId)? onEdit;
+  final String? countryName;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +48,7 @@ class PersonInformationCard extends StatelessWidget {
                   verticalSpace(10),
                   PersonContactInfo(person: person),
                   verticalSpace(10),
-                  PersonAddressInfo(person: person),
+                  PersonAddressInfo(person: person, countryName: countryName),
                 ],
               ),
             ),
