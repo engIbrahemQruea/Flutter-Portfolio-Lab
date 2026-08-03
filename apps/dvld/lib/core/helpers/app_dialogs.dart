@@ -5,6 +5,7 @@ class AppDialogs {
   static void showSuccess({
     required BuildContext context,
     required String message,
+    title = 'عملية ناجحة',
     String buttonText = 'موافق',
     VoidCallback? onPressed,
   }) {
@@ -17,7 +18,7 @@ class AppDialogs {
         color: Colors.green,
         size: 48,
       ),
-      title: 'عملية ناجحة',
+      title: title,
       titleColor: Colors.green,
       onPressed: onPressed,
     );
@@ -27,6 +28,7 @@ class AppDialogs {
     required BuildContext context,
     required String message,
     String buttonText = 'حاول مجدداً',
+    String title = 'حدث خطأ ما',
     VoidCallback? onPressed,
   }) {
     _showGenericDialog(
@@ -38,9 +40,41 @@ class AppDialogs {
         color: Colors.red,
         size: 48,
       ),
-      title: 'حدث خطأ ما',
+      title: title,
       titleColor: Colors.red,
       onPressed: onPressed,
+    );
+  }
+
+  static void showLoading({
+    required BuildContext context,
+    String message = 'جاري التحميل...',
+  }) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: .circular(16)),
+          contentPadding: const .symmetric(horizontal: 24, vertical: 20),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(height: 16),
+              Text(
+                message,
+                textAlign: .center,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.black87,
+                  height: 1.4,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
