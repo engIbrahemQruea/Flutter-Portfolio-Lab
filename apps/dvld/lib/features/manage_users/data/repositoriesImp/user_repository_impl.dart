@@ -90,4 +90,44 @@ class UserRepositoryImpl implements UserRepository {
       return Left(DatabaseFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> isUserExistForPersonID({
+    required int personID,
+  }) async {
+    try {
+      return Right(
+        await _userLocalDataSource.isUserExistForPersonID(personID: personID),
+      );
+    } on Exception catch (e) {
+      return Left(DatabaseFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserEntity?>> addNewUser({
+    required UserEntity userEntity,
+  }) async {
+    try {
+      final userModel = UserModel.fromEntity(userEntity).toMap();
+      final newUser = await _userLocalDataSource.addNewUser(userMap: userModel);
+      return Right(newUser != null ? UserModel.fromMap(newUser).mapToEntity():null);
+    } on Exception catch (e) {
+      return Left(DatabaseFailure(e.toString()));
+    }
+  }
+
+  @override
+Future<Either<Failure, UserEntity?>> updateUser({
+    required UserEntity userEntity,
+  }) async {
+    try {
+      final userModel = UserModel.fromEntity(userEntity).toMap();
+      final updatedUser = await _userLocalDataSource.updateUser(userMap: userModel);
+      return Right(updatedUser != null ? UserModel.fromMap(updatedUser).mapToEntity() : null);
+    } on Exception catch (e) {
+      return Left(DatabaseFailure(e.toString()));
+    }
+  }
+
 }
