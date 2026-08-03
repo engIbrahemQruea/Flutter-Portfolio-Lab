@@ -9,4 +9,7 @@ abstract class UserRepository {
   Future<Either<Failure, UserEntity?>> getUserInfoByPersonID({required int personID});
   Future<Either<Failure, UserEntity?>> getUserInfoByUserName({required String userName});
   Future<Either<Failure, UserEntity?>> getUserInfoByPassword({required String password});
+  Future<Either<Failure, bool>>isUserExistForPersonID({required int personID});
+  Future<Either<Failure,UserEntity?>>addNewUser({required UserEntity userEntity});
+  Future<Either<Failure,UserEntity?>>updateUser({required UserEntity userEntity});
 }
