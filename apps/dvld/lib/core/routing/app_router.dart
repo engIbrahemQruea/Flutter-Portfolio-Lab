@@ -1,7 +1,9 @@
 import 'package:dvld/core/di/dependency_injection.dart';
 import 'package:dvld/core/routing/routes.dart';
 import 'package:dvld/features/dashboard/presentation/views/dash_board_screen.dart';
+import 'package:dvld/features/manage_users/presentation/logic/add_update_user_screen_cubit/add_update_user_form_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/logic/cubit/manage_users_cubit.dart';
+import 'package:dvld/features/manage_users/presentation/screens/add_update_users_screen/add_update_users_screen.dart';
 import 'package:dvld/features/manage_users/presentation/screens/manage_users_screen.dart';
 import 'package:dvld/features/people/domain/usecases/get_list_people_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_people_by_first_name_use_case.dart';
@@ -13,6 +15,7 @@ import 'package:dvld/features/people/presentation/person_details_screen/logic/pe
 import 'package:dvld/features/people/presentation/person_details_screen/person_details_screen.dart';
 import 'package:dvld/features/people/presentation/screens/people_screen.dart';
 import 'package:dvld/features/people/presentation/screens/sub_screens/add_update_people_screen.dart';
+import 'package:dvld/features/people/presentation/shared_widgets/person_selector/cubit/person_selector_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -144,6 +147,30 @@ abstract class AppRouter {
                   create: (context) => getIt<ManageUsersCubit>()..getAllUsers(),
                   child: const ManageUsersScreen(),
                 ),
+                routes: [
+                  GoRoute(
+                    path: DRoutes.addUpdateUsersScreen,
+                    name: DRoutes.addUpdateUsersScreen,
+                    builder: (context, state) {
+                      final userIdString = state.uri.queryParameters['userId'];
+                      final userIdInt = userIdString == null
+                          ? null
+                          : int.parse(userIdString);
+                      return MultiBlocProvider(
+                        providers: [
+                          BlocProvider(
+                            create: (context) =>
+                                getIt<AddUpdateUserFormCubit>()..onInit(userId: userIdInt),
+                          ),
+                          BlocProvider(
+                            create: (context) => getIt<PersonSelectorCubit>(),
+                          ),
+                        ],
+                        child: AddUpdateUsersScreen(),
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),
