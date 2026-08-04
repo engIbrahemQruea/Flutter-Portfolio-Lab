@@ -1,15 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
-import 'package:flutter/material.dart';
 
 import 'package:dvld/features/people/domain/entities/people_entity.dart';
+import 'package:flutter/material.dart';
 
 class PersonImage extends StatelessWidget {
-  const PersonImage({
-    Key? key,
-    this.person,
-    this.onEdit,
-  }) : super(key: key);
+  const PersonImage({super.key, this.person, this.onEdit});
 
   final PeopleEntity? person;
 
@@ -20,21 +16,23 @@ class PersonImage extends StatelessWidget {
     return Column(
       spacing: 35,
       children: [
-        InkWell(
-          onTap: () => onEdit?.call(person!.personId!),
-          child: RichText(
-            text: TextSpan(
-              text: 'Edit Person Info',
-              style: TextStyle(
-                decoration: TextDecoration.underline,
-                color: Colors.blue,
-                fontSize: 16,
-                decorationColor: Colors.red,
-                decorationThickness: 2.0,
+        person == null
+            ? SizedBox.shrink()
+            : InkWell(
+                onTap: () => onEdit?.call(person!.personId!),
+                child: RichText(
+                  text: TextSpan(
+                    text: 'Edit Person Info',
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      color: Colors.blue,
+                      fontSize: 16,
+                      decorationColor: Colors.red,
+                      decorationThickness: 2.0,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
         Container(
           width: 180,
           height: 180,
