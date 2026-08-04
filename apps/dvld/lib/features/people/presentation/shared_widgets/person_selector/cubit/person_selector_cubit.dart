@@ -67,6 +67,21 @@ class PersonSelectorCubit extends Cubit<PersonSelectorCubitState> {
     }
   }
 
+  Future<void> loadInfoPersonByPersonID({required int? personID}) async {
+    if (personID == null ) {
+      emit(
+        state.copyWith(
+          searchStatus: EnRequestStatus.failure,
+          errorMessage: () => 'Invalid Person selected',
+        ),
+      );
+      return;
+    }
+
+    final result = await _getInfoByIdUseCase.call(personID);
+    _handleResult(result);
+  }
+
   Future<void> _handleResult(Either<Failure, PeopleEntity?> result) async {
     await result.fold(
       (failure) async {
