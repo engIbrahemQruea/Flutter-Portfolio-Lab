@@ -21,40 +21,37 @@ class PersonInformationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const .symmetric(horizontal: 10, vertical: 10),
-      child: Column(
-        crossAxisAlignment: .start,
-        children: [
-          const Text(
-            'Person Information',
-            style: TextStyle(
-              fontSize: 20,
-              textBaseline: TextBaseline.ideographic,
+    return Column(
+      crossAxisAlignment: .start,
+      children: [
+        const Text(
+          'Person Information',
+          style: TextStyle(
+            fontSize: 20,
+            textBaseline: TextBaseline.ideographic,
+          ),
+        ),
+        Card.outlined(
+          child: Padding(
+            padding: const .symmetric(horizontal: 10, vertical: 10),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    PersonBasicInfo(personInfo: person),
+                    const SizedBox(width: 20),
+                    PersonImage(person: person, onEdit: onEdit),
+                  ],
+                ),
+                verticalSpace(10),
+                PersonContactInfo(person: person),
+                verticalSpace(10),
+                PersonAddressInfo(person: person, countryName: countryName),
+              ],
             ),
           ),
-          Card.outlined(
-            child: Padding(
-              padding: const .symmetric(horizontal: 10, vertical: 10),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      PersonBasicInfo(personInfo: person),
-                      const SizedBox(width: 20),
-                      PersonImage(person: person, onEdit: onEdit),
-                    ],
-                  ),
-                  verticalSpace(10),
-                  PersonContactInfo(person: person),
-                  verticalSpace(10),
-                  PersonAddressInfo(person: person, countryName: countryName),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
