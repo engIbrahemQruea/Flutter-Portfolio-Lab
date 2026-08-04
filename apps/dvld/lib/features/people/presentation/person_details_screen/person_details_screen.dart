@@ -31,6 +31,7 @@ class PersonDetailsScreen extends StatelessWidget {
                 if (state is PersonDetailsSuccess) {
                   return PersonInformationCard(
                     person: state.peopleEntity,
+                    countryName: context.read<PersonDetailsCubit>().countryName,
                     onEdit: state.peopleEntity == null
                         ? null
                         : (personId) async {
