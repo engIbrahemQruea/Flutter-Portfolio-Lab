@@ -16,7 +16,7 @@ class FilterInput extends StatelessWidget {
           suffixIcon: const Icon(Icons.search),
         ),
         onChanged: (value) =>
-            context.read<PersonSelectorCubit>().onChangedFilterValue(value),
+            context.read<PersonSelectorCubit>().onChangedFilterValue(value.trim()),
       ),
     );
   }

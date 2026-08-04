@@ -12,7 +12,7 @@ class PersonFilter extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card.outlined(
       child: Padding(
-        padding: const .symmetric(horizontal: 5, vertical: 5),
+        padding: const .symmetric(horizontal: 15, vertical: 5),
         child: Row(
           children: [
             Text('Find By :', style: Theme.of(context).textTheme.titleMedium),
