@@ -90,8 +90,9 @@ class PeopleLocalDataSource {
     final db = await appDatabase.database;
     final List<Map<String, dynamic>> maps = await db.query(
       PersonTable.tableName,
-      where: '${PersonTable.colId} Like ?',
-      whereArgs: ['%$personID%'],
+      where: '${PersonTable.colId} = ?',
+      whereArgs: [personID],
+      limit: 1,
     );
     return maps.isNotEmpty
         ? PeopleModels.fromJson(maps.first).mapToEntity()
@@ -106,6 +107,7 @@ class PeopleLocalDataSource {
       PersonTable.tableName,
       where: '${PersonTable.colNationalNo} = ?',
       whereArgs: [nationalNo],
+      limit: 1,
     );
     return maps.isNotEmpty
         ? PeopleModels.fromJson(maps.first).mapToEntity()

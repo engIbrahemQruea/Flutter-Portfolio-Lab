@@ -1,9 +1,11 @@
 import 'package:dvld/core/helpers/spacing.dart';
+import 'package:dvld/core/routing/routes.dart';
 import 'package:dvld/features/manage_users/presentation/helpers/enum_users_filter_option.dart';
 import 'package:dvld/features/manage_users/presentation/logic/cubit/manage_users_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/screens/widgets/search_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class FilterUsersBy extends StatelessWidget {
   const FilterUsersBy({super.key});
@@ -31,19 +33,19 @@ class FilterUsersBy extends StatelessWidget {
 
         SearchTextFormField(),
 
-        // Spacer(),
-        // IconButton.outlined(
-        //   tooltip: 'Add Person',
-        //   onPressed: () async {
-        //     final isAdded = await context.pushNamed<bool>(
-        //       DRoutes.addUpdatePeopleScreen,
-        //     );
-        //     if (isAdded == true && context.mounted) {
-        //       context.read<GetAllPeopleCubit>().getAllPeople();
-        //     }
-        //   },
-        //   icon: Icon(Icons.add),
-        // ),
+        Spacer(),
+        IconButton.outlined(
+          tooltip: 'Add User',
+          onPressed: () async {
+            final isAdded = await context.pushNamed<bool>(
+              DRoutes.addUpdateUsersScreen,
+            );
+            // if (isAdded == true && context.mounted) {
+            //   context.read<GetAllPeopleCubit>().getAllPeople();
+            // }
+          },
+          icon: Icon(Icons.add),
+        ),
       ],
     );
   }
