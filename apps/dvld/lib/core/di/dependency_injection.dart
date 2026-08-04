@@ -3,11 +3,15 @@ import 'package:dvld/features/manage_users/data/datasources/user_local_data_sour
 import 'package:dvld/features/manage_users/data/datasources/user_table.dart';
 import 'package:dvld/features/manage_users/data/repositoriesImp/user_repository_impl.dart';
 import 'package:dvld/features/manage_users/domain/repositories/user_repository.dart';
+import 'package:dvld/features/manage_users/domain/usecases/add_new_user_use_case.dart';
 import 'package:dvld/features/manage_users/domain/usecases/get_all_users_usecase.dart';
 import 'package:dvld/features/manage_users/domain/usecases/get_user_info_by_password_use_case.dart';
 import 'package:dvld/features/manage_users/domain/usecases/get_user_info_by_person_id_use_case.dart';
 import 'package:dvld/features/manage_users/domain/usecases/get_user_info_by_user_id_use_case.dart';
 import 'package:dvld/features/manage_users/domain/usecases/get_user_info_by_user_name_use_case.dart';
+import 'package:dvld/features/manage_users/domain/usecases/is_user_exist_for_person_id_use_case.dart';
+import 'package:dvld/features/manage_users/domain/usecases/update_user_use_case.dart';
+import 'package:dvld/features/manage_users/presentation/logic/add_update_user_screen_cubit/add_update_user_form_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/logic/cubit/manage_users_cubit.dart';
 import 'package:dvld/features/people/data/data_sources/local_data_sources/local_data_source.dart';
 import 'package:dvld/features/people/data/data_sources/local_data_sources/people_table.dart';
@@ -15,6 +19,7 @@ import 'package:dvld/features/people/data/repos_imp/people_repos_imp.dart';
 import 'package:dvld/features/people/domain/repos/people_repos.dart';
 import 'package:dvld/features/people/domain/usecases/add_people_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/delete_people_use_case.dart';
+import 'package:dvld/features/people/domain/usecases/get_country_name_by_id_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_info_by_id_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_info_by_national_no_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_list_people_use_case.dart';
@@ -56,6 +61,7 @@ Future<void> setupGetIt() async {
   getIt.registerLazySingleton(() => UpdatePeopleUseCase(getIt()));
   getIt.registerLazySingleton(() => GetInfoByIdUseCase(getIt()));
   getIt.registerLazySingleton(() => IsNationalNoExistsUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetCountryNameByIdUseCase(getIt()));
 
   getIt.registerLazySingleton<PeopleReposImp>(() => PeopleReposImp(getIt()));
   getIt.registerLazySingleton<AddUpdateFormCubit>(
@@ -70,7 +76,7 @@ Future<void> setupGetIt() async {
   /// Person Selector Composition Widget
   getIt.registerLazySingleton(() => GetInfoByNationalNoUseCase(getIt()));
   getIt.registerFactory<PersonSelectorCubit>(
-    () => PersonSelectorCubit(getIt(), getIt()),
+    () => PersonSelectorCubit(getIt(), getIt(), getIt()),
   );
 
   /// Manage Users Features/Screens
@@ -95,7 +101,17 @@ Future<void> setupGetIt() async {
 
   getIt.registerLazySingleton(() => GetUserInfoByPasswordUseCase(getIt()));
 
+  getIt.registerLazySingleton(() => IsUserExistForPersonIdUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => AddNewUserUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => UpdateUserUseCase(getIt()));
+
   getIt.registerFactory<ManageUsersCubit>(
     () => ManageUsersCubit(getIt(), getIt(), getIt(), getIt(), getIt()),
+  );
+
+  getIt.registerFactory<AddUpdateUserFormCubit>(
+    () => AddUpdateUserFormCubit(getIt(), getIt(), getIt(), getIt(), getIt()),
   );
 }
