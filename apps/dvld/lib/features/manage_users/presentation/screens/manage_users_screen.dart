@@ -1,13 +1,170 @@
 import 'package:dvld/core/helpers/spacing.dart';
+import 'package:dvld/core/routing/routes.dart';
 import 'package:dvld/features/manage_users/presentation/helpers/user_data_source.dart';
 import 'package:dvld/features/manage_users/presentation/logic/cubit/manage_users_cubit.dart';
+import 'package:dvld/features/manage_users/presentation/screens/add_update_users_screen/helpers/enum_user_menu_action.dart';
 import 'package:dvld/features/manage_users/presentation/screens/widgets/filter_users_by.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class ManageUsersScreen extends StatelessWidget {
   const ManageUsersScreen({super.key});
+
+  Future<EnUserMenuAction?> _showContextMenu(
+    BuildContext context,
+    DataGridCellTapDetails details,
+    int selectedPersonId,
+  ) async {
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromLTWH(details.globalPosition.dx, details.globalPosition.dy, 1, 1),
+      Offset.zero & overlay.size,
+    );
+
+    final EnUserMenuAction? selectedAction = await showMenu<EnUserMenuAction>(
+      context: context,
+      position: position,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      elevation: 14,
+      menuPadding: const EdgeInsets.all(8),
+      items: [
+        PopupMenuItem(
+          value: EnUserMenuAction.showDetails,
+          child: Row(
+            children: [
+              Icon(Icons.person_search_outlined, size: 20, color: Colors.blue),
+              SizedBox(width: 12),
+              Text(EnUserMenuAction.showDetails.label),
+            ],
+          ),
+        ),
+        PopupMenuDivider(height: 2),
+
+        PopupMenuItem(
+          value: EnUserMenuAction.add,
+          child: Row(
+            children: [
+              Icon(
+                Icons.person_add_alt_1_outlined,
+                size: 20,
+                color: Colors.green,
+              ),
+              SizedBox(width: 12),
+              Text(EnUserMenuAction.add.label),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: EnUserMenuAction.edit,
+          child: Row(
+            children: [
+              Icon(Icons.edit_outlined, size: 20, color: Colors.orange),
+              SizedBox(width: 12),
+              Text(EnUserMenuAction.edit.label),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: EnUserMenuAction.delete,
+          child: Row(
+            children: [
+              Icon(Icons.delete_outline_rounded, size: 20, color: Colors.red),
+              SizedBox(width: 12),
+              Text(EnUserMenuAction.delete.label),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: EnUserMenuAction.changePassword,
+          child: Row(
+            children: [
+              Icon(Icons.lock_outline_rounded, size: 20, color: Colors.purple),
+              SizedBox(width: 12),
+              Text(EnUserMenuAction.changePassword.label),
+            ],
+          ),
+        ),
+
+        PopupMenuDivider(height: 2),
+
+        PopupMenuItem(
+          value: EnUserMenuAction.sendEmail,
+          child: Row(
+            children: [
+              Icon(Icons.mail_outline_rounded, size: 20, color: Colors.indigo),
+              SizedBox(width: 12),
+              Text(EnUserMenuAction.sendEmail.label),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: EnUserMenuAction.phoneCall,
+          child: Row(
+            children: [
+              Icon(Icons.phone_enabled_outlined, size: 20, color: Colors.teal),
+              SizedBox(width: 12),
+              Text(EnUserMenuAction.phoneCall.label),
+            ],
+          ),
+        ),
+      ],
+    );
+
+    if (selectedAction == null || !context.mounted) return null;
+
+    bool isOperationSuccess = false;
+
+    switch (selectedAction) {
+      case EnUserMenuAction.add:
+        final result = await context.pushNamed<bool>(
+          DRoutes.addUpdateUsersScreen,
+        );
+        isOperationSuccess = result ?? false;
+        break;
+
+      case EnUserMenuAction.edit:
+        final result = await context.pushNamed<bool>(
+          DRoutes.addUpdateUsersScreen,
+          queryParameters: {'userId': selectedPersonId.toString()},
+        );
+        isOperationSuccess = result ?? false;
+        break;
+
+      case EnUserMenuAction.delete:
+        // await context.read<GetAllPeopleCubit>().deletePeople(
+        //   personID: selectedPersonId,
+        // );
+        // isOperationSuccess = true;
+        break;
+
+      case EnUserMenuAction.showDetails:
+        // final result = await context.pushNamed<bool>(
+        //   DRoutes.personDetailsScreen,
+        //   queryParameters: {'personId': selectedPersonId.toString()},
+        // );
+        // isOperationSuccess = result ?? false;
+        break;
+
+      case EnUserMenuAction.changePassword:
+        // Handle change password action
+        break;
+
+      case EnUserMenuAction.sendEmail:
+        // Handle send email action
+        break;
+
+      case EnUserMenuAction.phoneCall:
+        // Handle phone call action
+        break;
+    }
+
+    if (!isOperationSuccess) return null;
+    return selectedAction;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +180,9 @@ class ManageUsersScreen extends StatelessWidget {
             FilterUsersBy(),
             verticalSpace(20),
             BlocBuilder<ManageUsersCubit, ManageUsersCubitState>(
-              // buildWhen: (previous, current) =>
-              //     previous.users != current.users ||
-              //     previous.usersStatus != current.usersStatus ||
-              //     previous.selectedFilterOption != current.selectedFilterOption,
+              buildWhen: (previous, current) =>
+                  previous.users != current.users ||
+                  previous.usersStatus != current.usersStatus,
               builder: (context, state) {
                 if (state.usersStatus == EnManageUsersStatus.loading) {
                   return const Center(child: CircularProgressIndicator());
@@ -69,6 +225,25 @@ class ManageUsersScreen extends StatelessWidget {
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
+
+                    onCellSecondaryTap: (details) async {
+                      final rowIndex = details.rowColumnIndex.rowIndex;
+                      if (rowIndex == 0) return;
+
+                      final selectedUserId = UserDataSource(
+                        users: users,
+                      ).dataGridRows[rowIndex - 1].getCells()[0].value;
+
+                      final action = await _showContextMenu(
+                        context,
+                        details,
+                        selectedUserId,
+                      );
+
+                      if (context.mounted && action != null) {
+                        context.read<ManageUsersCubit>().getAllUsers();
+                      }
+                    },
                     columns: _buildGridColumns(),
                   );
                 }
