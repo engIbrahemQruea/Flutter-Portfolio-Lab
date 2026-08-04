@@ -5,6 +5,7 @@ import 'package:dvld/features/manage_users/presentation/logic/add_update_user_sc
 import 'package:dvld/features/manage_users/presentation/logic/cubit/manage_users_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/screens/add_update_users_screen/add_update_users_screen.dart';
 import 'package:dvld/features/manage_users/presentation/screens/manage_users_screen.dart';
+import 'package:dvld/features/manage_users/presentation/screens/show_details_user_screen/widgets/show_details_user_screen.dart';
 import 'package:dvld/features/people/domain/usecases/get_list_people_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_people_by_first_name_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_people_by_id_use_case.dart';
@@ -160,7 +161,8 @@ abstract class AppRouter {
                         providers: [
                           BlocProvider(
                             create: (context) =>
-                                getIt<AddUpdateUserFormCubit>()..onInit(userId: userIdInt),
+                                getIt<AddUpdateUserFormCubit>()
+                                  ..onInit(userId: userIdInt),
                           ),
                           BlocProvider(
                             create: (context) => getIt<PersonSelectorCubit>(),
@@ -168,6 +170,18 @@ abstract class AppRouter {
                         ],
                         child: AddUpdateUsersScreen(),
                       );
+                    },
+                  ),
+
+                  GoRoute(
+                    path: DRoutes.showDetailsUserScreen,
+                    name: DRoutes.showDetailsUserScreen,
+                    builder: (context, state) {
+                      final userIdString = state.uri.queryParameters['userId'];
+                      final userIdInt = userIdString == null
+                          ? null
+                          : int.parse(userIdString);
+                      return ShowDetailsUserScreen();
                     },
                   ),
                 ],
