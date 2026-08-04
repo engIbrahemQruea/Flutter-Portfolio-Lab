@@ -112,9 +112,9 @@ class PeopleReposImp extends PeopleRepos {
     required int personID,
   }) async {
     try {
-      final peopleResult = await _dbHelper.getPeopleById(personID: personID);
-      if (peopleResult.isNotEmpty) {
-        return Right(peopleResult[0]!.mapToEntity());
+      final peopleResult = await _dbHelper.getInfoById(personID: personID);
+      if (peopleResult != null) {
+        return Right(peopleResult);
       } else {
         return Right(null);
       }
