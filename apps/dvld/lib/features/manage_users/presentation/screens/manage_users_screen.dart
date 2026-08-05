@@ -15,7 +15,7 @@ class ManageUsersScreen extends StatelessWidget {
   Future<EnUserMenuAction?> _showContextMenu(
     BuildContext context,
     DataGridCellTapDetails details,
-    int selectedPersonId,
+    int selectedUserId,
   ) async {
     final RenderBox overlay =
         Overlay.of(context).context.findRenderObject() as RenderBox;
@@ -129,7 +129,7 @@ class ManageUsersScreen extends StatelessWidget {
       case EnUserMenuAction.edit:
         final result = await context.pushNamed<bool>(
           DRoutes.addUpdateUsersScreen,
-          queryParameters: {'userId': selectedPersonId.toString()},
+          queryParameters: {'userId': selectedUserId.toString()},
         );
         isOperationSuccess = result ?? false;
         break;
@@ -142,11 +142,11 @@ class ManageUsersScreen extends StatelessWidget {
         break;
 
       case EnUserMenuAction.showDetails:
-        // final result = await context.pushNamed<bool>(
-        //   DRoutes.personDetailsScreen,
-        //   queryParameters: {'personId': selectedPersonId.toString()},
-        // );
-        // isOperationSuccess = result ?? false;
+        final result = await context.pushNamed<bool>(
+          DRoutes.showDetailsUserScreen,
+          queryParameters: {'userId': selectedUserId.toString()},
+        );
+        isOperationSuccess = result ?? false;
         break;
 
       case EnUserMenuAction.changePassword:
