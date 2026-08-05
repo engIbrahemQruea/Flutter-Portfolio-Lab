@@ -13,6 +13,7 @@ import 'package:dvld/features/manage_users/domain/usecases/is_user_exist_for_per
 import 'package:dvld/features/manage_users/domain/usecases/update_user_use_case.dart';
 import 'package:dvld/features/manage_users/presentation/logic/add_update_user_screen_cubit/add_update_user_form_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/logic/cubit/manage_users_cubit.dart';
+import 'package:dvld/features/manage_users/presentation/logic/user_information_card_cubit/user_information_card_cubit.dart';
 import 'package:dvld/features/people/data/data_sources/local_data_sources/local_data_source.dart';
 import 'package:dvld/features/people/data/data_sources/local_data_sources/people_table.dart';
 import 'package:dvld/features/people/data/repos_imp/people_repos_imp.dart';
@@ -111,7 +112,13 @@ Future<void> setupGetIt() async {
     () => ManageUsersCubit(getIt(), getIt(), getIt(), getIt(), getIt()),
   );
 
+  /// Add Update User Screen
   getIt.registerFactory<AddUpdateUserFormCubit>(
     () => AddUpdateUserFormCubit(getIt(), getIt(), getIt(), getIt(), getIt()),
+  );
+
+  /// Show Details User Screen
+  getIt.registerFactory<UserInformationCardCubit>(
+    () => UserInformationCardCubit(getIt(), getIt(), getIt()),
   );
 }
