@@ -3,9 +3,10 @@ import 'package:dvld/core/routing/routes.dart';
 import 'package:dvld/features/dashboard/presentation/views/dash_board_screen.dart';
 import 'package:dvld/features/manage_users/presentation/logic/add_update_user_screen_cubit/add_update_user_form_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/logic/cubit/manage_users_cubit.dart';
+import 'package:dvld/features/manage_users/presentation/logic/user_information_card_cubit/user_information_card_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/screens/add_update_users_screen/add_update_users_screen.dart';
 import 'package:dvld/features/manage_users/presentation/screens/manage_users_screen.dart';
-import 'package:dvld/features/manage_users/presentation/screens/show_details_user_screen/widgets/show_details_user_screen.dart';
+import 'package:dvld/features/manage_users/presentation/screens/show_details_user_screen/show_details_user_screen.dart';
 import 'package:dvld/features/people/domain/usecases/get_list_people_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_people_by_first_name_use_case.dart';
 import 'package:dvld/features/people/domain/usecases/get_people_by_id_use_case.dart';
@@ -181,7 +182,12 @@ abstract class AppRouter {
                       final userIdInt = userIdString == null
                           ? null
                           : int.parse(userIdString);
-                      return ShowDetailsUserScreen();
+                      return BlocProvider(
+                        create: (context) =>
+                            getIt<UserInformationCardCubit>()
+                              ..getUserDetails(userId: userIdInt),
+                        child: ShowDetailsUserScreen(),
+                      );
                     },
                   ),
                 ],
