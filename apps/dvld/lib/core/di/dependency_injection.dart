@@ -4,6 +4,8 @@ import 'package:dvld/features/manage_users/data/datasources/user_table.dart';
 import 'package:dvld/features/manage_users/data/repositoriesImp/user_repository_impl.dart';
 import 'package:dvld/features/manage_users/domain/repositories/user_repository.dart';
 import 'package:dvld/features/manage_users/domain/usecases/add_new_user_use_case.dart';
+import 'package:dvld/features/manage_users/domain/usecases/change_user_password_use_case.dart';
+import 'package:dvld/features/manage_users/domain/usecases/delete_user_use_case.dart';
 import 'package:dvld/features/manage_users/domain/usecases/get_all_users_usecase.dart';
 import 'package:dvld/features/manage_users/domain/usecases/get_user_info_by_password_use_case.dart';
 import 'package:dvld/features/manage_users/domain/usecases/get_user_info_by_person_id_use_case.dart';
@@ -12,6 +14,7 @@ import 'package:dvld/features/manage_users/domain/usecases/get_user_info_by_user
 import 'package:dvld/features/manage_users/domain/usecases/is_user_exist_for_person_id_use_case.dart';
 import 'package:dvld/features/manage_users/domain/usecases/update_user_use_case.dart';
 import 'package:dvld/features/manage_users/presentation/logic/add_update_user_screen_cubit/add_update_user_form_cubit.dart';
+import 'package:dvld/features/manage_users/presentation/logic/change_password_user_screen_cubit/cubit/change_password_user_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/logic/cubit/manage_users_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/logic/user_information_card_cubit/user_information_card_cubit.dart';
 import 'package:dvld/features/people/data/data_sources/local_data_sources/local_data_source.dart';
@@ -108,8 +111,12 @@ Future<void> setupGetIt() async {
 
   getIt.registerLazySingleton(() => UpdateUserUseCase(getIt()));
 
+  getIt.registerLazySingleton(() => DeleteUserUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => ChangeUserPasswordUseCase(getIt()));
+
   getIt.registerFactory<ManageUsersCubit>(
-    () => ManageUsersCubit(getIt(), getIt(), getIt(), getIt(), getIt()),
+    () => ManageUsersCubit(getIt(), getIt(), getIt(), getIt(), getIt(), getIt()),
   );
 
   /// Add Update User Screen
@@ -120,5 +127,10 @@ Future<void> setupGetIt() async {
   /// Show Details User Screen
   getIt.registerFactory<UserInformationCardCubit>(
     () => UserInformationCardCubit(getIt(), getIt(), getIt()),
+  );
+
+  /// Change Password User Screen
+  getIt.registerFactory<ChangePasswordUserCubit>(
+    () => ChangePasswordUserCubit(getIt()),
   );
 }
