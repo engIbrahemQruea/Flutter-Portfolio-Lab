@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:dvld/features/manage_users/domain/entities/user_entity.dart';
+import 'package:dvld/features/manage_users/domain/usecases/delete_user_use_case.dart';
 import 'package:dvld/features/manage_users/domain/usecases/get_all_users_usecase.dart';
 import 'package:dvld/features/manage_users/domain/usecases/get_user_info_by_password_use_case.dart';
 import 'package:dvld/features/manage_users/domain/usecases/get_user_info_by_person_id_use_case.dart';
@@ -19,6 +20,7 @@ class ManageUsersCubit extends Cubit<ManageUsersCubitState> {
     this._byPersonIdUseCase,
     this._byUserNameUseCase,
     this._byUserIDUseCase,
+    this._deleteUserUseCase,
   ) : super(ManageUsersCubitState.initial());
 
   final GetAllUsersUseCase _getAllUsersUseCase;
@@ -27,6 +29,7 @@ class ManageUsersCubit extends Cubit<ManageUsersCubitState> {
   final GetUserInfoByPersonIdUseCase _byPersonIdUseCase;
   final GetUserInfoByUserNameUseCase _byUserNameUseCase;
   final GetUserInfoByUserIdUseCase _byUserIDUseCase;
+  final DeleteUserUseCase _deleteUserUseCase;
 
   Future<void> getAllUsers() async {
     emit(state.copyWith(usersStatus: EnManageUsersStatus.loading));
@@ -47,6 +50,34 @@ class ManageUsersCubit extends Cubit<ManageUsersCubitState> {
             users: users,
           ),
         );
+      },
+    );
+  }
+
+  Future<void> deleteUser({required int userID}) async {
+    if (userID <= 0) {
+      emit(
+        state.copyWith(
+          usersStatus: EnManageUsersStatus.failure,
+          errorMessage: () => 'Please fill all required fields correctly',
+        ),
+      );
+      return;
+    }
+
+    emit(state.copyWith(usersStatus: EnManageUsersStatus.loading));
+    final result = await _deleteUserUseCase.call(userID);
+    result.fold(
+      (failure) {
+        emit(
+          state.copyWith(
+            usersStatus: EnManageUsersStatus.failure,
+            errorMessage: () => failure.message,
+          ),
+        );
+      },
+      (users) {
+        emit(state.copyWith(usersStatus: EnManageUsersStatus.success));
       },
     );
   }
