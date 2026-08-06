@@ -1,99 +1,211 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
-class AppDialogs {
-  static void showSuccess({
+/// [AppDialogs] - Unified, Theme-Aware, and Production-Ready Dialog System.
+/// Designed for clean navigation control and async result handling.
+abstract class AppDialogs {
+  AppDialogs._(); // Private constructor to prevent instantiation
+
+  // ===========================================================================
+  // 1. UTILITY METHOD FOR SAFE DISMISSAL
+  // ===========================================================================
+
+  /// Closes the topmost dialog safely using rootNavigator to prevent breaking GoRouter stack.
+  static void dismiss<T>(BuildContext context, [T? result]) {
+    if (Navigator.of(context, rootNavigator: true).canPop()) {
+      Navigator.of(context, rootNavigator: true).pop(result);
+    }
+  }
+
+  // ===========================================================================
+  // 2. PUBLIC DIALOG VARIANTS
+  // ===========================================================================
+
+  /// Shows a Success Dialog
+  static Future<void> showSuccess({
     required BuildContext context,
     required String message,
-    title = 'عملية ناجحة',
+    String title = 'عملية ناجحة',
     String buttonText = 'موافق',
     VoidCallback? onPressed,
   }) {
-    _showGenericDialog(
+    final theme = Theme.of(context);
+    return _showBaseDialog(
       context: context,
+      title: title,
       message: message,
-      buttonText: buttonText,
       icon: const Icon(
         Icons.check_circle_rounded,
         color: Colors.green,
         size: 48,
       ),
-      title: title,
-      titleColor: Colors.green,
-      onPressed: onPressed,
+      primaryButtonText: buttonText,
+      primaryButtonColor: Colors.green,
+      onPrimaryPressed: () {
+        dismiss(context);
+        onPressed?.call();
+      },
     );
   }
 
-  static void showFailure({
+  /// Shows an Error/Failure Dialog
+  static Future<void> showFailure({
     required BuildContext context,
     required String message,
-    String buttonText = 'حاول مجدداً',
     String title = 'حدث خطأ ما',
+    String buttonText = 'حاول مجدداً',
     VoidCallback? onPressed,
   }) {
-    _showGenericDialog(
+    final theme = Theme.of(context);
+    return _showBaseDialog(
       context: context,
+      title: title,
       message: message,
-      buttonText: buttonText,
       icon: const Icon(
         Icons.error_outline_rounded,
         color: Colors.red,
         size: 48,
       ),
-      title: title,
-      titleColor: Colors.red,
-      onPressed: onPressed,
-    );
-  }
-
-  static void showLoading({
-    required BuildContext context,
-    String message = 'جاري التحميل...',
-  }) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: .circular(16)),
-          contentPadding: const .symmetric(horizontal: 24, vertical: 20),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const CircularProgressIndicator(),
-              const SizedBox(height: 16),
-              Text(
-                message,
-                textAlign: .center,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black87,
-                  height: 1.4,
-                ),
-              ),
-            ],
-          ),
-        );
+      primaryButtonText: buttonText,
+      primaryButtonColor: theme.colorScheme.error,
+      onPrimaryPressed: () {
+        dismiss(context);
+        onPressed?.call();
       },
     );
   }
 
-  static void _showGenericDialog({
+  /// Shows a Warning Dialog
+  static Future<void> showWarning({
     required BuildContext context,
     required String message,
-    required String buttonText,
-    required Widget icon,
-    required String title,
-    required Color titleColor,
+    String title = 'تحذير',
+    String buttonText = 'فهمت',
     VoidCallback? onPressed,
   }) {
-    showDialog(
+    return _showBaseDialog(
+      context: context,
+      title: title,
+      message: message,
+      icon: const Icon(
+        Icons.warning_amber_rounded,
+        color: Colors.amber,
+        size: 48,
+      ),
+      primaryButtonText: buttonText,
+      primaryButtonColor: Colors.amber.shade800,
+      onPrimaryPressed: () {
+        dismiss(context);
+        onPressed?.call();
+      },
+    );
+  }
+
+  /// Shows a Confirmation Dialog (Returns `Future<bool?>` for elegant awaiting)
+  /// Example: `final confirmed = await AppDialogs.showConfirmation(...);`
+  static Future<bool?> showConfirmation({
+    required BuildContext context,
+    required String message,
+    String title = 'تأكيد الإجراء',
+    String confirmText = 'تأكيد',
+    String cancelText = 'إلغاء',
+    Color? confirmColor,
+    Widget? icon,
+    bool isDestructive = false,
+  }) {
+    final theme = Theme.of(context);
+    final effectiveColor =
+        confirmColor ??
+        (isDestructive ? theme.colorScheme.error : theme.colorScheme.primary);
+
+    return _showBaseDialog<bool>(
+      context: context,
+      title: title,
+      message: message,
+      icon:
+          icon ??
+          Icon(
+            isDestructive
+                ? Icons.delete_forever_rounded
+                : Icons.help_outline_rounded,
+            color: effectiveColor,
+            size: 48,
+          ),
+      primaryButtonText: confirmText,
+      primaryButtonColor: effectiveColor,
+      onPrimaryPressed: () => dismiss(context, true),
+      secondaryButtonText: cancelText,
+      onSecondaryPressed: () => dismiss(context, false),
+    );
+  }
+
+  /// Shows a Non-Dismissible Loading Dialog
+  static Future<void> showLoading({
+    required BuildContext context,
+    String message = 'جاري التحميل...',
+  }) {
+    final theme = Theme.of(context);
+    return showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) {
+      useRootNavigator: true,
+      builder: (ctx) => PopScope(
+        canPop: false, // Prevents back-button dismissal during loading
+        child: AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: 20,
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator.adaptive(),
+              const SizedBox(height: 16),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  height: 1.4,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ===========================================================================
+  // 3. PRIVATE CORE BASE DIALOG BUILDER
+  // ===========================================================================
+
+  static Future<T?> _showBaseDialog<T>({
+    required BuildContext context,
+    required String title,
+    required String message,
+    required Widget icon,
+    required String primaryButtonText,
+    required Color primaryButtonColor,
+    required VoidCallback onPrimaryPressed,
+    String? secondaryButtonText,
+    VoidCallback? onSecondaryPressed,
+    bool barrierDismissible = false,
+  }) {
+    final theme = Theme.of(context);
+
+    return showDialog<T>(
+      context: context,
+      barrierDismissible: barrierDismissible,
+      useRootNavigator: true,
+      builder: (BuildContext ctx) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: .circular(16)),
-          contentPadding: const .symmetric(horizontal: 24, vertical: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          contentPadding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -101,51 +213,72 @@ class AppDialogs {
               const SizedBox(height: 16),
               Text(
                 title,
-                style: TextStyle(
+                textAlign: TextAlign.center,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
                   fontSize: 18,
-                  fontWeight: .bold,
-                  color: titleColor,
                 ),
               ),
               const SizedBox(height: 12),
               Text(
                 message,
-                textAlign: .center,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black87,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
                   height: 1.4,
                 ),
               ),
+              const SizedBox(height: 20),
             ],
           ),
-          actionsAlignment: .center,
-          actionsPadding: const .only(bottom: 16),
+          actionsPadding: const EdgeInsets.only(
+            bottom: 16,
+            left: 16,
+            right: 16,
+          ),
           actions: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: titleColor,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 12,
+            Row(
+              children: [
+                if (secondaryButtonText != null) ...[
+                  Expanded(
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        side: BorderSide(color: theme.dividerColor),
+                      ),
+                      onPressed: onSecondaryPressed,
+                      child: Text(
+                        secondaryButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                ],
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryButtonColor,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      elevation: 0,
+                    ),
+                    onPressed: onPrimaryPressed,
+                    child: Text(
+                      primaryButtonText,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                elevation: 0,
-              ),
-              onPressed: () {
-                context.pop();
-                if (onPressed != null) onPressed();
-              },
-              child: Text(
-                buttonText,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              ],
             ),
           ],
         );
