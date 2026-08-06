@@ -101,4 +101,29 @@ class UserLocalDataSource {
 
     return getUserInfoById(userID: id);
   }
+
+  Future<bool> changeUserPassword({
+    required Map<String, dynamic> userMap,
+  }) async {
+    final db = await appDatabase.database;
+    final id = userMap[UserTable.colUserId];
+    if (id == null) return false;
+    final rowsAffected = await db.update(
+      UserTable.tableName,
+      userMap,
+      where: '${UserTable.colUserId} = ?',
+      whereArgs: [id],
+    );
+    return rowsAffected == 1;
+  }
+
+  Future<bool> deleteUser({required int userID}) async {
+    final db = await appDatabase.database;
+    final rowsAffected = await db.delete(
+      UserTable.tableName,
+      where: '${UserTable.colUserId} = ?',
+      whereArgs: [userID],
+    );
+    return rowsAffected == 1;
+  }
 }
