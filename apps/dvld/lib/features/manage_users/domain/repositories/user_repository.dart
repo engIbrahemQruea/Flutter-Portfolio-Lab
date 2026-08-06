@@ -12,4 +12,6 @@ abstract class UserRepository {
   Future<Either<Failure, bool>>isUserExistForPersonID({required int personID});
   Future<Either<Failure,UserEntity?>>addNewUser({required UserEntity userEntity});
   Future<Either<Failure,UserEntity?>>updateUser({required UserEntity userEntity});
+  Future<Either<Failure,bool>>changeUserPassword({required UserEntity userEntity});
+  Future<Either<Failure,bool>>deleteUser({required int userID});
 }
