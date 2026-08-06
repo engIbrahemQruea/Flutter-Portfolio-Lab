@@ -2,9 +2,11 @@ import 'package:dvld/core/di/dependency_injection.dart';
 import 'package:dvld/core/routing/routes.dart';
 import 'package:dvld/features/dashboard/presentation/views/dash_board_screen.dart';
 import 'package:dvld/features/manage_users/presentation/logic/add_update_user_screen_cubit/add_update_user_form_cubit.dart';
+import 'package:dvld/features/manage_users/presentation/logic/change_password_user_screen_cubit/cubit/change_password_user_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/logic/cubit/manage_users_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/logic/user_information_card_cubit/user_information_card_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/screens/add_update_users_screen/add_update_users_screen.dart';
+import 'package:dvld/features/manage_users/presentation/screens/change_password_user_screen/change_password_user_screen.dart';
 import 'package:dvld/features/manage_users/presentation/screens/manage_users_screen.dart';
 import 'package:dvld/features/manage_users/presentation/screens/show_details_user_screen/show_details_user_screen.dart';
 import 'package:dvld/features/people/domain/usecases/get_list_people_use_case.dart';
@@ -187,6 +189,28 @@ abstract class AppRouter {
                             getIt<UserInformationCardCubit>()
                               ..getUserDetails(userId: userIdInt),
                         child: ShowDetailsUserScreen(),
+                      );
+                    },
+                  ),
+
+                  GoRoute(
+                    path: DRoutes.changePasswordUserScreen,
+                    name: DRoutes.changePasswordUserScreen,
+                    builder: (context, state) {
+                      final userIdString = state.uri.queryParameters['userId'];
+                      final userIdInt = userIdString == null
+                          ? null
+                          : int.parse(userIdString);
+                      return MultiBlocProvider(
+                        providers: [
+                          BlocProvider(
+                            create: (context) =>
+                                getIt<UserInformationCardCubit>()
+                                  ..getUserDetails(userId: userIdInt),
+                          ),
+                          BlocProvider(create: (context) => getIt<ChangePasswordUserCubit>()),
+                        ],
+                        child: ChangePasswordUserScreen(),
                       );
                     },
                   ),
