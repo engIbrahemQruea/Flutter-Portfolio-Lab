@@ -4,6 +4,7 @@ import 'package:dvld/features/manage_users/data/datasources/user_local_data_sour
 import 'package:dvld/features/manage_users/data/models/user_model.dart';
 import 'package:dvld/features/manage_users/domain/entities/user_entity.dart';
 import 'package:dvld/features/manage_users/domain/repositories/user_repository.dart';
+import 'package:sqflite/sqflite.dart';
 
 class UserRepositoryImpl implements UserRepository {
   UserRepositoryImpl(this._userLocalDataSource);
@@ -111,23 +112,77 @@ class UserRepositoryImpl implements UserRepository {
     try {
       final userModel = UserModel.fromEntity(userEntity).toMap();
       final newUser = await _userLocalDataSource.addNewUser(userMap: userModel);
-      return Right(newUser != null ? UserModel.fromMap(newUser).mapToEntity():null);
+      return Right(
+        newUser != null ? UserModel.fromMap(newUser).mapToEntity() : null,
+      );
     } on Exception catch (e) {
       return Left(DatabaseFailure(e.toString()));
     }
   }
 
   @override
-Future<Either<Failure, UserEntity?>> updateUser({
+  Future<Either<Failure, UserEntity?>> updateUser({
     required UserEntity userEntity,
   }) async {
     try {
       final userModel = UserModel.fromEntity(userEntity).toMap();
-      final updatedUser = await _userLocalDataSource.updateUser(userMap: userModel);
-      return Right(updatedUser != null ? UserModel.fromMap(updatedUser).mapToEntity() : null);
+      final updatedUser = await _userLocalDataSource.updateUser(
+        userMap: userModel,
+      );
+      return Right(
+        updatedUser != null
+            ? UserModel.fromMap(updatedUser).mapToEntity()
+            : null,
+      );
     } on Exception catch (e) {
       return Left(DatabaseFailure(e.toString()));
     }
   }
 
+  @override
+  Future<Either<Failure, bool>> changeUserPassword({
+    required UserEntity userEntity,
+  }) async {
+    try {
+      final userModel = UserModel.fromEntity(userEntity).toMap();
+      final result = await _userLocalDataSource.changeUserPassword(
+        userMap: userModel,
+      );
+
+      if (!result) {
+        return const Left(
+          NotFoundFailure('Dont Found User To Change Password'),
+        );
+      }
+
+      return Right(result);
+    } on DatabaseException catch (e) {
+      return Left(DatabaseFailure(e.toString()));
+    } catch (e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> deleteUser({required int userID}) async {
+    try {
+      final result = await _userLocalDataSource.deleteUser(userID: userID);
+
+      if (!result) {
+        return const Left(
+          NotFoundFailure('Dont Found User To Delete In Database'),
+        );
+      }
+
+      return Right(result);
+    } on DatabaseException catch (e) {
+      if (e.toString().contains('FOREIGN KEY constraint failed')) {
+        return const Left(LinkedRecordFailure());
+      }
+
+      return Left(DatabaseFailure(e.toString()));
+    } catch (e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
 }
