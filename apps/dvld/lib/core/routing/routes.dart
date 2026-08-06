@@ -10,5 +10,6 @@ abstract class DRoutes {
   //Sub screen to Manage Users Screen
   static const String addUpdateUsersScreen = '/addUpdateUsersScreen';
   static const String showDetailsUserScreen = '/showDetailsUserScreen';
+  static const String changePasswordUserScreen = '/changePasswordUserScreen';
   static const String drivers = '/drivers';
 }
