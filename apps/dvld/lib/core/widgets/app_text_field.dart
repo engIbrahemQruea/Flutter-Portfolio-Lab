@@ -8,6 +8,7 @@ class AppTextField extends StatelessWidget {
     this.controller,
     this.initialValue,
     this.focusNode,
+    this.autoFocus,
     this.validator,
     this.keyboardType,
     this.textInputAction,
@@ -30,6 +31,7 @@ class AppTextField extends StatelessWidget {
   final TextEditingController? controller;
   final String? initialValue;
   final FocusNode? focusNode;
+  final bool? autoFocus;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
@@ -54,6 +56,7 @@ class AppTextField extends StatelessWidget {
       controller: controller,
       initialValue: initialValue,
       focusNode: focusNode,
+      autofocus: autoFocus ?? false,
       validator: validator,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
