@@ -1,3 +1,4 @@
+import 'package:dvld/core/helpers/app_dialogs.dart';
 import 'package:dvld/core/helpers/spacing.dart';
 import 'package:dvld/core/routing/routes.dart';
 import 'package:dvld/features/manage_users/presentation/helpers/user_data_source.dart';
@@ -135,10 +136,28 @@ class ManageUsersScreen extends StatelessWidget {
         break;
 
       case EnUserMenuAction.delete:
-        // await context.read<GetAllPeopleCubit>().deletePeople(
-        //   personID: selectedPersonId,
-        // );
-        // isOperationSuccess = true;
+        final confirmAction = await AppDialogs.showConfirmation(
+          context: context,
+          title: 'Delete User',
+          confirmColor: Colors.red,
+          icon: const Icon(Icons.delete_forever_rounded, color: Colors.red),
+          confirmText: 'Delete',
+          cancelText: 'Cancel',
+          message: 'Are you sure you want to delete this user?',
+        );
+
+        if (confirmAction != null && confirmAction) {
+          await context.read<ManageUsersCubit>().deleteUser(
+            userID: selectedUserId,
+          );
+          await AppDialogs.showSuccess(
+            context: context,
+            title: "Success",
+            buttonText: "OK",
+            message: 'Deleted User Successfully ',
+          );
+        }
+        isOperationSuccess = confirmAction ?? false;
         break;
 
       case EnUserMenuAction.showDetails:
@@ -150,7 +169,11 @@ class ManageUsersScreen extends StatelessWidget {
         break;
 
       case EnUserMenuAction.changePassword:
-        // Handle change password action
+        final result = await context.pushNamed<bool>(
+          DRoutes.changePasswordUserScreen,
+          queryParameters: {'userId': selectedUserId.toString()},
+        );
+        isOperationSuccess = result ?? false;
         break;
 
       case EnUserMenuAction.sendEmail:
