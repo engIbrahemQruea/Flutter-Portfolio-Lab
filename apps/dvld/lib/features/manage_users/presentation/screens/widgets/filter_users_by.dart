@@ -2,6 +2,7 @@ import 'package:dvld/core/helpers/spacing.dart';
 import 'package:dvld/core/routing/routes.dart';
 import 'package:dvld/features/manage_users/presentation/helpers/enum_users_filter_option.dart';
 import 'package:dvld/features/manage_users/presentation/logic/cubit/manage_users_cubit.dart';
+import 'package:dvld/features/manage_users/presentation/screens/widgets/is_active_option_drop_down_menu_field_widget.dart';
 import 'package:dvld/features/manage_users/presentation/screens/widgets/search_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,7 +32,16 @@ class FilterUsersBy extends StatelessWidget {
           ),
         ),
 
-        SearchTextFormField(),
+        BlocBuilder<ManageUsersCubit, ManageUsersCubitState>(
+          buildWhen: (previous, current) =>
+              previous.selectedFilterOption != current.selectedFilterOption,
+          builder: (context, state) {
+            return cubit.state.selectedFilterOption ==
+                    EnUsersFilterOption.isActive
+                ? const IsActiveOptionDropDownMenuFieldWidget()
+                : SearchTextFormField();
+          },
+        ),
 
         Spacer(),
         IconButton.outlined(
@@ -40,9 +50,9 @@ class FilterUsersBy extends StatelessWidget {
             final isAdded = await context.pushNamed<bool>(
               DRoutes.addUpdateUsersScreen,
             );
-            // if (isAdded == true && context.mounted) {
-            //   context.read<GetAllPeopleCubit>().getAllPeople();
-            // }
+            if (isAdded == true && context.mounted) {
+              context.read<ManageUsersCubit>().getAllUsers();
+            }
           },
           icon: Icon(Icons.add),
         ),
