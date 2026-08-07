@@ -219,8 +219,10 @@ class ManageUsersScreen extends StatelessWidget {
                   );
                 }
                 if (state.usersStatus == EnManageUsersStatus.success) {
-                  final users = state.users;
-                  if (users == null || users.isEmpty) {
+                  final users = state.isFilterByIsActive
+                      ? state.filteredUsers
+                      : state.users;
+                  if (users.isEmpty) {
                     return const Center(
                       child: Text(
                         'No Users Found 😔',
@@ -232,7 +234,7 @@ class ManageUsersScreen extends StatelessWidget {
                     );
                   }
                   return SfDataGrid(
-                    source: UserDataSource(users: users!),
+                    source: UserDataSource(users: users),
                     selectionMode: SelectionMode.single,
                     allowSorting: true,
                     allowFiltering: true,
@@ -244,7 +246,7 @@ class ManageUsersScreen extends StatelessWidget {
                     headerGridLinesVisibility: GridLinesVisibility.both,
                     footer: Center(
                       child: Text(
-                        'Total Users: ${state.users!.length} ',
+                        'Total Users: ${users.length} ',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
