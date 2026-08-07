@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:dartz/dartz.dart';
+import 'package:dvld/core/error/failure.dart';
 import 'package:dvld/features/manage_users/domain/entities/user_entity.dart';
 import 'package:dvld/features/manage_users/domain/usecases/delete_user_use_case.dart';
 import 'package:dvld/features/manage_users/domain/usecases/get_all_users_usecase.dart';
@@ -24,62 +26,60 @@ class ManageUsersCubit extends Cubit<ManageUsersCubitState> {
   ) : super(ManageUsersCubitState.initial());
 
   final GetAllUsersUseCase _getAllUsersUseCase;
-  Timer? _debounceTimer;
   final GetUserInfoByPasswordUseCase _byPasswordUseCase;
   final GetUserInfoByPersonIdUseCase _byPersonIdUseCase;
   final GetUserInfoByUserNameUseCase _byUserNameUseCase;
   final GetUserInfoByUserIdUseCase _byUserIDUseCase;
   final DeleteUserUseCase _deleteUserUseCase;
 
+  Timer? _debounceTimer;
+
   Future<void> getAllUsers() async {
     emit(state.copyWith(usersStatus: EnManageUsersStatus.loading));
+
     final result = await _getAllUsersUseCase.call();
     result.fold(
-      (failure) {
-        emit(
-          state.copyWith(
-            usersStatus: EnManageUsersStatus.failure,
-            errorMessage: () => failure.message,
-          ),
-        );
-      },
-      (users) {
-        emit(
-          state.copyWith(
-            usersStatus: EnManageUsersStatus.success,
-            users: users,
-          ),
-        );
-      },
+      (failure) => emit(
+        state.copyWith(
+          usersStatus: EnManageUsersStatus.failure,
+          errorMessage: () => failure.message,
+        ),
+      ),
+      (users) => emit(
+        state.copyWith(
+          usersStatus: EnManageUsersStatus.success,
+          users: users,
+          filteredUsers: users,
+        ),
+      ),
     );
   }
 
   Future<void> deleteUser({required int userID}) async {
     if (userID <= 0) {
-      emit(
-        state.copyWith(
-          usersStatus: EnManageUsersStatus.failure,
-          errorMessage: () => 'Please fill all required fields correctly',
-        ),
-      );
+      _emitError('Please fill all required fields correctly');
       return;
     }
 
     emit(state.copyWith(usersStatus: EnManageUsersStatus.loading));
     final result = await _deleteUserUseCase.call(userID);
-    result.fold(
-      (failure) {
-        emit(
-          state.copyWith(
-            usersStatus: EnManageUsersStatus.failure,
-            errorMessage: () => failure.message,
-          ),
-        );
-      },
-      (users) {
-        emit(state.copyWith(usersStatus: EnManageUsersStatus.success));
-      },
-    );
+
+    result.fold((failure) => _emitError(failure.message), (_) {
+      final updatedUsers = state.users
+          .where((u) => u.userID != userID)
+          .toList();
+      final updatedFilteredUsers = state.filteredUsers
+          .where((u) => u.userID != userID)
+          .toList();
+
+      emit(
+        state.copyWith(
+          usersStatus: EnManageUsersStatus.success,
+          users: updatedUsers,
+          filteredUsers: updatedFilteredUsers,
+        ),
+      );
+    });
   }
 
   void onChangeFilterOption(EnUsersFilterOption filterOption) {
@@ -87,28 +87,39 @@ class ManageUsersCubit extends Cubit<ManageUsersCubitState> {
       state.copyWith(
         selectedFilterOption: filterOption,
         filteredUsers: state.users,
+        searchQuery: ()=>'',
       ),
     );
   }
 
   void onSelectedFilterIsActiveOption(IsActiveOption isActiveOption) {
     emit(state.copyWith(selectedFilterIsActiveOption: isActiveOption));
-    _applyFilter('isActive');
+    _applyFilterIsActiveOption();
   }
 
   void onSearchQueryChanged(String query) {
-    emit(state.copyWith(searchQuery: query));
+    emit(state.copyWith(searchQuery:()=> query));
 
     _debounceTimer?.cancel();
-    _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
-      await _applyFilter(query.trim());
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+      _applyFilter(query.trim());
     });
   }
 
   Future<void> _applyFilter(String query) async {
     if (query.isEmpty ||
         state.selectedFilterOption == EnUsersFilterOption.none) {
-      await getAllUsers();
+      emit(
+        state.copyWith(
+          filteredUsers: state.users,
+          usersStatus: EnManageUsersStatus.success,
+        ),
+      );
+      return;
+    }
+
+    if (state.selectedFilterOption == EnUsersFilterOption.isActive) {
+      _applyFilterIsActiveOption();
       return;
     }
 
@@ -117,124 +128,91 @@ class ManageUsersCubit extends Cubit<ManageUsersCubitState> {
     switch (state.selectedFilterOption) {
       case EnUsersFilterOption.password:
         final result = await _byPasswordUseCase.call(query);
-        _handleResult(result);
+        _handleSearchResult(result);
         break;
 
       case EnUsersFilterOption.personID:
         final id = int.tryParse(query);
         if (id != null) {
           final result = await _byPersonIdUseCase.call(id);
-          _handleResult(result);
+          _handleSearchResult(result);
         } else {
-          emit(
-            state.copyWith(
-              usersStatus: EnManageUsersStatus.failure,
-              errorMessage: () => 'Invalid Person ID',
-            ),
-          );
+          _emitError('Invalid Person ID');
         }
         break;
 
       case EnUsersFilterOption.userName:
         final result = await _byUserNameUseCase.call(query);
-        _handleResult(result);
+        _handleSearchResult(result);
         break;
+
       case EnUsersFilterOption.userID:
         final id = int.tryParse(query);
         if (id != null) {
           final result = await _byUserIDUseCase.call(id);
-          _handleResult(result);
+          _handleSearchResult(result);
         } else {
-          emit(
-            state.copyWith(
-              usersStatus: EnManageUsersStatus.failure,
-              errorMessage: () => 'Invalid User ID',
-            ),
-          );
+          _emitError('Invalid User ID');
         }
         break;
 
       case EnUsersFilterOption.isActive:
-        // await getAllUsers();
-        _applyFilterIsActiveOption();
-        break;
-
       case EnUsersFilterOption.none:
-        await getAllUsers();
         break;
     }
   }
 
   void _applyFilterIsActiveOption() {
-    if (state.selectedFilterOption != EnUsersFilterOption.isActive) {
-      return;
-    }
+    if (state.selectedFilterOption != EnUsersFilterOption.isActive) return;
 
-    switch (state.selectedFilterIsActiveOption) {
-      case IsActiveOption.all:
-        emit(
-          state.copyWith(
-            filteredUsers: state.users,
-            usersStatus: EnManageUsersStatus.success,
-          ),
-        );
-        break;
+    final filteredList = switch (state.selectedFilterIsActiveOption) {
+      IsActiveOption.all => state.users,
+      IsActiveOption.yes => state.users.where((u) => u.isActive).toList(),
+      IsActiveOption.no => state.users.where((u) => !u.isActive).toList(),
+    };
 
-      case IsActiveOption.no:
-        final user = state.users
-            .where((element) => element.isActive == false)
-            .toList();
-        emit(
-          state.copyWith(
-            filteredUsers: user,
-            usersStatus: EnManageUsersStatus.success,
-          ),
-        );
-        break;
-
-      case IsActiveOption.yes:
-        final user = state.users
-            .where((element) => element.isActive == true)
-            .toList();
-        emit(
-          state.copyWith(
-            filteredUsers: user,
-            usersStatus: EnManageUsersStatus.success,
-          ),
-        );
-        break;
-    }
+    emit(
+      state.copyWith(
+        filteredUsers: filteredList,
+        usersStatus: EnManageUsersStatus.success,
+      ),
+    );
   }
 
-  void _handleResult(dynamic result) {
-    result.fold(
-      (failure) {
-        emit(
-          state.copyWith(
-            usersStatus: EnManageUsersStatus.failure,
-            errorMessage: () => failure.message,
-          ),
-        );
-      },
-      (users) {
-        final List<UserEntity>? userList = switch (users) {
-          List<UserEntity> list => list,
-          UserEntity user => [user],
-          _ => [],
-        };
-        emit(
-          state.copyWith(
-            usersStatus: EnManageUsersStatus.success,
-            users: userList,
-          ),
-        );
-      },
+  void _handleSearchResult<T>(Either<Failure, T> result) {
+    result.fold((failure) => _emitError(failure.message), (data) {
+      final List<UserEntity> userList = switch (data) {
+        List<UserEntity> list => list,
+        UserEntity user => [user],
+        _ => [],
+      };
+
+      emit(
+        state.copyWith(
+          usersStatus: EnManageUsersStatus.success,
+          filteredUsers: userList,
+        ),
+      );
+    });
+  }
+
+  void _emitError(String message) {
+    emit(
+      state.copyWith(
+        usersStatus: EnManageUsersStatus.failure,
+        errorMessage: () => message,
+      ),
     );
   }
 
   void clearSearch() {
-    emit(state.copyWith(searchQuery: ''));
-    _applyFilter('');
+    emit(
+      state.copyWith(
+        searchQuery: ()=>'',
+        filteredUsers: state.users,
+        usersStatus: EnManageUsersStatus.success,
+      ),
+    );
   }
 
   @override
