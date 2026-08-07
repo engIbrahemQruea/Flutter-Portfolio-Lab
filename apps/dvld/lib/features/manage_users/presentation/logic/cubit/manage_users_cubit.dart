@@ -83,7 +83,17 @@ class ManageUsersCubit extends Cubit<ManageUsersCubitState> {
   }
 
   void onChangeFilterOption(EnUsersFilterOption filterOption) {
-    emit(state.copyWith(selectedFilterOption: filterOption));
+    emit(
+      state.copyWith(
+        selectedFilterOption: filterOption,
+        filteredUsers: state.users,
+      ),
+    );
+  }
+
+  void onSelectedFilterIsActiveOption(IsActiveOption isActiveOption) {
+    emit(state.copyWith(selectedFilterIsActiveOption: isActiveOption));
+    _applyFilter('isActive');
   }
 
   void onSearchQueryChanged(String query) {
@@ -145,12 +155,53 @@ class ManageUsersCubit extends Cubit<ManageUsersCubitState> {
         break;
 
       case EnUsersFilterOption.isActive:
-        final result = await _getAllUsersUseCase.call();
-        _handleResult(result);
+        // await getAllUsers();
+        _applyFilterIsActiveOption();
         break;
 
       case EnUsersFilterOption.none:
         await getAllUsers();
+        break;
+    }
+  }
+
+  void _applyFilterIsActiveOption() {
+    if (state.selectedFilterOption != EnUsersFilterOption.isActive) {
+      return;
+    }
+
+    switch (state.selectedFilterIsActiveOption) {
+      case IsActiveOption.all:
+        emit(
+          state.copyWith(
+            filteredUsers: state.users,
+            usersStatus: EnManageUsersStatus.success,
+          ),
+        );
+        break;
+
+      case IsActiveOption.no:
+        final user = state.users
+            .where((element) => element.isActive == false)
+            .toList();
+        emit(
+          state.copyWith(
+            filteredUsers: user,
+            usersStatus: EnManageUsersStatus.success,
+          ),
+        );
+        break;
+
+      case IsActiveOption.yes:
+        final user = state.users
+            .where((element) => element.isActive == true)
+            .toList();
+        emit(
+          state.copyWith(
+            filteredUsers: user,
+            usersStatus: EnManageUsersStatus.success,
+          ),
+        );
         break;
     }
   }
