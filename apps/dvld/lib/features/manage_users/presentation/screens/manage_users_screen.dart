@@ -18,122 +18,102 @@ class ManageUsersScreen extends StatelessWidget {
     DataGridCellTapDetails details,
     int selectedUserId,
   ) async {
-    final RenderBox overlay =
-        Overlay.of(context).context.findRenderObject() as RenderBox;
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
 
-    final RelativeRect position = RelativeRect.fromRect(
+    final position = RelativeRect.fromRect(
       Rect.fromLTWH(details.globalPosition.dx, details.globalPosition.dy, 1, 1),
       Offset.zero & overlay.size,
     );
 
-    final EnUserMenuAction? selectedAction = await showMenu<EnUserMenuAction>(
+    final selectedAction = await showMenu<EnUserMenuAction>(
       context: context,
       position: position,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       elevation: 14,
       menuPadding: const EdgeInsets.all(8),
       items: [
-        PopupMenuItem(
-          value: EnUserMenuAction.showDetails,
-          child: Row(
-            children: [
-              Icon(Icons.person_search_outlined, size: 20, color: Colors.blue),
-              SizedBox(width: 12),
-              Text(EnUserMenuAction.showDetails.label),
-            ],
-          ),
+        _buildMenuItem(
+          EnUserMenuAction.showDetails,
+          Icons.person_search_outlined,
+          Colors.blue,
         ),
-        PopupMenuDivider(height: 2),
-
-        PopupMenuItem(
-          value: EnUserMenuAction.add,
-          child: Row(
-            children: [
-              Icon(
-                Icons.person_add_alt_1_outlined,
-                size: 20,
-                color: Colors.green,
-              ),
-              SizedBox(width: 12),
-              Text(EnUserMenuAction.add.label),
-            ],
-          ),
+        const PopupMenuDivider(height: 2),
+        _buildMenuItem(
+          EnUserMenuAction.add,
+          Icons.person_add_alt_1_outlined,
+          Colors.green,
         ),
-        PopupMenuItem(
-          value: EnUserMenuAction.edit,
-          child: Row(
-            children: [
-              Icon(Icons.edit_outlined, size: 20, color: Colors.orange),
-              SizedBox(width: 12),
-              Text(EnUserMenuAction.edit.label),
-            ],
-          ),
+        _buildMenuItem(
+          EnUserMenuAction.edit,
+          Icons.edit_outlined,
+          Colors.orange,
         ),
-        PopupMenuItem(
-          value: EnUserMenuAction.delete,
-          child: Row(
-            children: [
-              Icon(Icons.delete_outline_rounded, size: 20, color: Colors.red),
-              SizedBox(width: 12),
-              Text(EnUserMenuAction.delete.label),
-            ],
-          ),
+        _buildMenuItem(
+          EnUserMenuAction.delete,
+          Icons.delete_outline_rounded,
+          Colors.red,
         ),
-        PopupMenuItem(
-          value: EnUserMenuAction.changePassword,
-          child: Row(
-            children: [
-              Icon(Icons.lock_outline_rounded, size: 20, color: Colors.purple),
-              SizedBox(width: 12),
-              Text(EnUserMenuAction.changePassword.label),
-            ],
-          ),
+        _buildMenuItem(
+          EnUserMenuAction.changePassword,
+          Icons.lock_outline_rounded,
+          Colors.purple,
         ),
-
-        PopupMenuDivider(height: 2),
-
-        PopupMenuItem(
-          value: EnUserMenuAction.sendEmail,
-          child: Row(
-            children: [
-              Icon(Icons.mail_outline_rounded, size: 20, color: Colors.indigo),
-              SizedBox(width: 12),
-              Text(EnUserMenuAction.sendEmail.label),
-            ],
-          ),
+        const PopupMenuDivider(height: 2),
+        _buildMenuItem(
+          EnUserMenuAction.sendEmail,
+          Icons.mail_outline_rounded,
+          Colors.indigo,
         ),
-        PopupMenuItem(
-          value: EnUserMenuAction.phoneCall,
-          child: Row(
-            children: [
-              Icon(Icons.phone_enabled_outlined, size: 20, color: Colors.teal),
-              SizedBox(width: 12),
-              Text(EnUserMenuAction.phoneCall.label),
-            ],
-          ),
+        _buildMenuItem(
+          EnUserMenuAction.phoneCall,
+          Icons.phone_enabled_outlined,
+          Colors.teal,
         ),
       ],
     );
 
     if (selectedAction == null || !context.mounted) return null;
 
+    return _handleMenuAction(context, selectedAction, selectedUserId);
+  }
+
+  PopupMenuItem<EnUserMenuAction> _buildMenuItem(
+    EnUserMenuAction action,
+    IconData icon,
+    Color color,
+  ) {
+    return PopupMenuItem(
+      value: action,
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: color),
+          const SizedBox(width: 12),
+          Text(action.label),
+        ],
+      ),
+    );
+  }
+
+  Future<EnUserMenuAction?> _handleMenuAction(
+    BuildContext context,
+    EnUserMenuAction action,
+    int userId,
+  ) async {
     bool isOperationSuccess = false;
 
-    switch (selectedAction) {
+    switch (action) {
       case EnUserMenuAction.add:
         final result = await context.pushNamed<bool>(
           DRoutes.addUpdateUsersScreen,
         );
         isOperationSuccess = result ?? false;
-        break;
 
       case EnUserMenuAction.edit:
         final result = await context.pushNamed<bool>(
           DRoutes.addUpdateUsersScreen,
-          queryParameters: {'userId': selectedUserId.toString()},
+          queryParameters: {'userId': userId.toString()},
         );
         isOperationSuccess = result ?? false;
-        break;
 
       case EnUserMenuAction.delete:
         final confirmAction = await AppDialogs.showConfirmation(
@@ -146,47 +126,38 @@ class ManageUsersScreen extends StatelessWidget {
           message: 'Are you sure you want to delete this user?',
         );
 
-        if (confirmAction != null && confirmAction) {
-          await context.read<ManageUsersCubit>().deleteUser(
-            userID: selectedUserId,
-          );
+        if (confirmAction == true && context.mounted) {
+          await context.read<ManageUsersCubit>().deleteUser(userID: userId);
+          if (!context.mounted) return null;
           await AppDialogs.showSuccess(
             context: context,
             title: "Success",
             buttonText: "OK",
-            message: 'Deleted User Successfully ',
+            message: 'Deleted User Successfully',
           );
+          isOperationSuccess = true;
         }
-        isOperationSuccess = confirmAction ?? false;
-        break;
 
       case EnUserMenuAction.showDetails:
         final result = await context.pushNamed<bool>(
           DRoutes.showDetailsUserScreen,
-          queryParameters: {'userId': selectedUserId.toString()},
+          queryParameters: {'userId': userId.toString()},
         );
         isOperationSuccess = result ?? false;
-        break;
 
       case EnUserMenuAction.changePassword:
         final result = await context.pushNamed<bool>(
           DRoutes.changePasswordUserScreen,
-          queryParameters: {'userId': selectedUserId.toString()},
+          queryParameters: {'userId': userId.toString()},
         );
         isOperationSuccess = result ?? false;
-        break;
 
       case EnUserMenuAction.sendEmail:
-        // Handle send email action
-        break;
-
       case EnUserMenuAction.phoneCall:
-        // Handle phone call action
         break;
     }
 
-    if (!isOperationSuccess) return null;
-    return selectedAction;
+    return isOperationSuccess ? action : null;
   }
 
   @override
@@ -200,80 +171,87 @@ class ManageUsersScreen extends StatelessWidget {
         child: Column(
           children: [
             verticalSpace(20),
-            FilterUsersBy(),
+            const FilterUsersBy(),
             verticalSpace(20),
-            BlocBuilder<ManageUsersCubit, ManageUsersCubitState>(
-              buildWhen: (previous, current) =>
-                  previous.users != current.users ||
-                  previous.usersStatus != current.usersStatus,
-              builder: (context, state) {
-                if (state.usersStatus == EnManageUsersStatus.loading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (state.usersStatus == EnManageUsersStatus.failure) {
-                  return Center(
-                    child: Text(
-                      state.errorMessage ?? 'Something went wrong',
-                      style: const TextStyle(color: Colors.red),
-                    ),
-                  );
-                }
-                if (state.usersStatus == EnManageUsersStatus.success) {
-                  final users = state.isFilterByIsActive
-                      ? state.filteredUsers
-                      : state.users;
-                  if (users.isEmpty) {
-                    return const Center(
+            Expanded(
+              child: BlocBuilder<ManageUsersCubit, ManageUsersCubitState>(
+                buildWhen: (previous, current) =>
+                    previous.users != current.users ||
+                    previous.filteredUsers != current.filteredUsers ||
+                    previous.selectedFilterOption !=
+                        current.selectedFilterOption ||
+                    previous.usersStatus != current.usersStatus,
+                builder: (context, state) {
+                  if (state.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (state.isFailure) {
+                    return Center(
                       child: Text(
-                        'No Users Found 😔',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        state.errorMessage ?? 'Something went wrong',
+                        style: const TextStyle(color: Colors.red),
                       ),
                     );
                   }
-                  return SfDataGrid(
-                    source: UserDataSource(users: users),
-                    selectionMode: SelectionMode.single,
-                    allowSorting: true,
-                    allowFiltering: true,
-                    showColumnHeaderIconOnHover: true,
-                    columnWidthMode: ColumnWidthMode.auto,
-                    columnWidthCalculationRange:
-                        ColumnWidthCalculationRange.allRows,
-                    gridLinesVisibility: GridLinesVisibility.both,
-                    headerGridLinesVisibility: GridLinesVisibility.both,
-                    footer: Center(
-                      child: Text(
-                        'Total Users: ${users.length} ',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
 
-                    onCellSecondaryTap: (details) async {
-                      final rowIndex = details.rowColumnIndex.rowIndex;
-                      if (rowIndex == 0) return;
+                  if (state.isSuccess) {
+                    final users = state.isFilterByIsActive
+                        ? state.filteredUsers
+                        : state.users;
 
-                      final selectedUserId = UserDataSource(
-                        users: users,
-                      ).dataGridRows[rowIndex - 1].getCells()[0].value;
-
-                      final action = await _showContextMenu(
-                        context,
-                        details,
-                        selectedUserId,
+                    if (users.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          'No Users Found 😔',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       );
+                    }
 
-                      if (context.mounted && action != null) {
-                        context.read<ManageUsersCubit>().getAllUsers();
-                      }
-                    },
-                    columns: _buildGridColumns(),
-                  );
-                }
-                return const Center(child: Text('No Data FFFound'));
-              },
+                    return SfDataGrid(
+                      source: UserDataSource(users: users),
+                      selectionMode: SelectionMode.single,
+                      allowSorting: true,
+                      allowFiltering: true,
+                      showColumnHeaderIconOnHover: true,
+                      columnWidthMode: ColumnWidthMode.auto,
+                      columnWidthCalculationRange:
+                          ColumnWidthCalculationRange.allRows,
+                      gridLinesVisibility: GridLinesVisibility.both,
+                      headerGridLinesVisibility: GridLinesVisibility.both,
+                      footer: Center(
+                        child: Text(
+                          'Total Users: ${users.length}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      onCellSecondaryTap: (details) async {
+                        final rowIndex = details.rowColumnIndex.rowIndex;
+                        if (rowIndex <= 0 || rowIndex > users.length) return;
+
+                        final selectedUserId = users[rowIndex - 1].userID;
+
+                        final action = await _showContextMenu(
+                          context,
+                          details,
+                          selectedUserId!,
+                        );
+
+                        if (context.mounted && action != null) {
+                          context.read<ManageUsersCubit>().getAllUsers();
+                        }
+                      },
+                      columns: _buildGridColumns(),
+                    );
+                  }
+
+                  return const Center(child: Text('No Data Found'));
+                },
+              ),
             ),
           ],
         ),
@@ -282,7 +260,7 @@ class ManageUsersScreen extends StatelessWidget {
   }
 
   List<GridColumn> _buildGridColumns() {
-    final Map<String, String> columnMap = {
+    const columnMap = {
       'user_id': 'User ID',
       'person_id': 'Person ID',
       'user_name': 'User Name',
@@ -290,15 +268,16 @@ class ManageUsersScreen extends StatelessWidget {
       'is_active': 'Is Active',
     };
 
-    return columnMap.entries.map((entry) {
-      return GridColumn(
-        columnName: entry.key,
-        label: Container(
-          padding: const EdgeInsets.all(8.0),
-          alignment: Alignment.center,
-          child: Text(entry.value, overflow: TextOverflow.ellipsis),
+    return [
+      for (final MapEntry(:key, :value) in columnMap.entries)
+        GridColumn(
+          columnName: key,
+          label: Container(
+            padding: const EdgeInsets.all(8.0),
+            alignment: Alignment.center,
+            child: Text(value, overflow: TextOverflow.ellipsis),
+          ),
         ),
-      );
-    }).toList();
+    ];
   }
 }
