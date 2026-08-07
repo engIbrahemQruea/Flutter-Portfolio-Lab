@@ -43,7 +43,7 @@ class SearchTextFormField extends StatelessWidget {
           previous.searchQuery != current.searchQuery ||
           previous.selectedFilterOption != current.selectedFilterOption,
       builder: (context, state) {
-        if (state.isFilterAction) {
+        if (state.hasNoFilter) {
           return const SizedBox.shrink();
         }
 
