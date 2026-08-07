@@ -180,7 +180,8 @@ class ManageUsersScreen extends StatelessWidget {
                     previous.filteredUsers != current.filteredUsers ||
                     previous.selectedFilterOption !=
                         current.selectedFilterOption ||
-                    previous.usersStatus != current.usersStatus,
+                    previous.usersStatus != current.usersStatus ||
+                    previous.searchQuery != current.searchQuery,
                 builder: (context, state) {
                   if (state.isLoading) {
                     return const Center(child: CircularProgressIndicator());
@@ -196,7 +197,8 @@ class ManageUsersScreen extends StatelessWidget {
                   }
 
                   if (state.isSuccess) {
-                    final users = state.isFilterByIsActive
+                    final isFiltering = !state.hasNoFilter;
+                    final users = isFiltering
                         ? state.filteredUsers
                         : state.users;
 
