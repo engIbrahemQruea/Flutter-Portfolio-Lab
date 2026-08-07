@@ -10,12 +10,12 @@ enum EnUsersFilterOption {
   const EnUsersFilterOption(this.label);
 }
 
-enum EnIsActiveOption {
+enum IsActiveOption {
   all('All'),
   yes('Yes'),
   no('No');
 
   final String label;
 
-  const EnIsActiveOption(this.label);
+  const IsActiveOption(this.label);
 }
