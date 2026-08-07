@@ -4,25 +4,17 @@ part of 'manage_users_cubit.dart';
 enum EnManageUsersStatus { initial, loading, success, failure }
 
 class ManageUsersCubitState extends Equatable {
-  const ManageUsersCubitState(
-    this.users,
-    this.filteredUsers,
-    this.usersStatus,
-    this.selectedFilterOption,
-    this.selectedFilterIsActiveOption,
+  const ManageUsersCubitState({
+    this.users = const [],
+    this.filteredUsers = const [],
+    this.usersStatus = EnManageUsersStatus.initial,
+    this.selectedFilterOption = EnUsersFilterOption.none,
+    this.selectedFilterIsActiveOption = IsActiveOption.all,
     this.searchQuery,
     this.errorMessage,
-  );
+  });
 
-  factory ManageUsersCubitState.initial() => const ManageUsersCubitState(
-    [],
-    [],
-    EnManageUsersStatus.initial,
-    EnUsersFilterOption.none,
-    IsActiveOption.all,
-    null,
-    null,
-  );
+  factory ManageUsersCubitState.initial() => const ManageUsersCubitState();
 
   final List<UserEntity> users;
   final List<UserEntity> filteredUsers;
@@ -32,7 +24,11 @@ class ManageUsersCubitState extends Equatable {
   final String? searchQuery;
   final String? errorMessage;
 
-  bool get isFilterAction => selectedFilterOption == EnUsersFilterOption.none;
+  bool get isLoading => usersStatus == EnManageUsersStatus.loading;
+  bool get isSuccess => usersStatus == EnManageUsersStatus.success;
+  bool get isFailure => usersStatus == EnManageUsersStatus.failure;
+
+  bool get hasNoFilter => selectedFilterOption == EnUsersFilterOption.none;
   bool get isFilterByIsActive =>
       selectedFilterOption == EnUsersFilterOption.isActive;
 
@@ -42,17 +38,18 @@ class ManageUsersCubitState extends Equatable {
     EnManageUsersStatus? usersStatus,
     EnUsersFilterOption? selectedFilterOption,
     IsActiveOption? selectedFilterIsActiveOption,
-    String? searchQuery,
+    String? Function()? searchQuery,
     String? Function()? errorMessage,
   }) {
     return ManageUsersCubitState(
-      users ?? this.users,
-      filteredUsers ?? this.filteredUsers,
-      usersStatus ?? this.usersStatus,
-      selectedFilterOption ?? this.selectedFilterOption,
-      selectedFilterIsActiveOption ?? this.selectedFilterIsActiveOption,
-      searchQuery ?? this.searchQuery,
-      errorMessage != null ? errorMessage() : this.errorMessage,
+      users: users ?? this.users,
+      filteredUsers: filteredUsers ?? this.filteredUsers,
+      usersStatus: usersStatus ?? this.usersStatus,
+      selectedFilterOption: selectedFilterOption ?? this.selectedFilterOption,
+      selectedFilterIsActiveOption:
+          selectedFilterIsActiveOption ?? this.selectedFilterIsActiveOption,
+      searchQuery: searchQuery != null ? searchQuery() : this.searchQuery,
+      errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
     );
   }
 
