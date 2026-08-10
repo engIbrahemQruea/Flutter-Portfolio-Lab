@@ -1,6 +1,8 @@
 import 'package:dvld/core/di/dependency_injection.dart';
 import 'package:dvld/core/routing/routes.dart';
 import 'package:dvld/features/dashboard/presentation/views/dash_board_screen.dart';
+import 'package:dvld/features/login/presentation/logic/login_screen_cubit/login_screen_cubit.dart';
+import 'package:dvld/features/login/presentation/screens/login_screen.dart';
 import 'package:dvld/features/manage_users/presentation/logic/add_update_user_screen_cubit/add_update_user_form_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/logic/change_password_user_screen_cubit/cubit/change_password_user_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/logic/cubit/manage_users_cubit.dart';
@@ -43,9 +45,19 @@ final _shellNavigatorUsersKey = GlobalKey<NavigatorState>(
 
 abstract class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: DRoutes.dashboard,
+    initialLocation: DRoutes.loginScreen,
     navigatorKey: _rootNavigatorKey,
     routes: [
+      
+      GoRoute(
+        path: DRoutes.loginScreen,
+        name: DRoutes.loginScreen,
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<LoginScreenCubit>(),
+          child: const LoginScreen(),
+        ),
+      ),
+
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return DashboardScreen(navigationShell: navigationShell);
@@ -208,7 +220,10 @@ abstract class AppRouter {
                                 getIt<UserInformationCardCubit>()
                                   ..getUserDetails(userId: userIdInt),
                           ),
-                          BlocProvider(create: (context) => getIt<ChangePasswordUserCubit>()),
+                          BlocProvider(
+                            create: (context) =>
+                                getIt<ChangePasswordUserCubit>(),
+                          ),
                         ],
                         child: ChangePasswordUserScreen(),
                       );
