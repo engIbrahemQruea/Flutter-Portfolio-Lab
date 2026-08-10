@@ -1,5 +1,6 @@
 abstract class DRoutes {
-  static const String dashboard = '/';
+  static const String loginScreen = '/';
+  static const String dashboard = '/dashboard';
   static const String applications = '/applications';
   static const String peopleScreen = '/peopleScreen';
   static const String manageUsersScreen = '/manageUsersScreen';
