@@ -28,8 +28,7 @@ abstract class AppDialogs {
     String buttonText = 'موافق',
     VoidCallback? onPressed,
   }) {
-    final theme = Theme.of(context);
-    return _showBaseDialog(
+    return _showBaseDialog<void>(
       context: context,
       title: title,
       message: message,
@@ -40,8 +39,8 @@ abstract class AppDialogs {
       ),
       primaryButtonText: buttonText,
       primaryButtonColor: Colors.green,
-      onPrimaryPressed: () {
-        dismiss(context);
+      onPrimaryPressed: (dialogCtx) {
+        dismiss(dialogCtx);
         onPressed?.call();
       },
     );
@@ -56,7 +55,7 @@ abstract class AppDialogs {
     VoidCallback? onPressed,
   }) {
     final theme = Theme.of(context);
-    return _showBaseDialog(
+    return _showBaseDialog<void>(
       context: context,
       title: title,
       message: message,
@@ -67,8 +66,8 @@ abstract class AppDialogs {
       ),
       primaryButtonText: buttonText,
       primaryButtonColor: theme.colorScheme.error,
-      onPrimaryPressed: () {
-        dismiss(context);
+      onPrimaryPressed: (dialogCtx) {
+        dismiss(dialogCtx);
         onPressed?.call();
       },
     );
@@ -82,7 +81,7 @@ abstract class AppDialogs {
     String buttonText = 'فهمت',
     VoidCallback? onPressed,
   }) {
-    return _showBaseDialog(
+    return _showBaseDialog<void>(
       context: context,
       title: title,
       message: message,
@@ -93,15 +92,14 @@ abstract class AppDialogs {
       ),
       primaryButtonText: buttonText,
       primaryButtonColor: Colors.amber.shade800,
-      onPrimaryPressed: () {
-        dismiss(context);
+      onPrimaryPressed: (dialogCtx) {
+        dismiss(dialogCtx);
         onPressed?.call();
       },
     );
   }
 
   /// Shows a Confirmation Dialog (Returns `Future<bool?>` for elegant awaiting)
-  /// Example: `final confirmed = await AppDialogs.showConfirmation(...);`
   static Future<bool?> showConfirmation({
     required BuildContext context,
     required String message,
@@ -132,9 +130,9 @@ abstract class AppDialogs {
           ),
       primaryButtonText: confirmText,
       primaryButtonColor: effectiveColor,
-      onPrimaryPressed: () => dismiss(context, true),
+      onPrimaryPressed: (dialogCtx) => dismiss(dialogCtx, true),
       secondaryButtonText: cancelText,
-      onSecondaryPressed: () => dismiss(context, false),
+      onSecondaryPressed: (dialogCtx) => dismiss(dialogCtx, false),
     );
   }
 
@@ -149,7 +147,8 @@ abstract class AppDialogs {
       barrierDismissible: false,
       useRootNavigator: true,
       builder: (ctx) => PopScope(
-        canPop: false, // Prevents back-button dismissal during loading
+        canPop: false,
+
         child: AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -189,9 +188,9 @@ abstract class AppDialogs {
     required Widget icon,
     required String primaryButtonText,
     required Color primaryButtonColor,
-    required VoidCallback onPrimaryPressed,
+    required Function(BuildContext dialogContext) onPrimaryPressed,
     String? secondaryButtonText,
-    VoidCallback? onSecondaryPressed,
+    Function(BuildContext dialogContext)? onSecondaryPressed,
     bool barrierDismissible = false,
   }) {
     final theme = Theme.of(context);
@@ -249,7 +248,7 @@ abstract class AppDialogs {
                         ),
                         side: BorderSide(color: theme.dividerColor),
                       ),
-                      onPressed: onSecondaryPressed,
+                      onPressed: () => onSecondaryPressed?.call(ctx),
                       child: Text(
                         secondaryButtonText,
                         style: theme.textTheme.labelLarge?.copyWith(
@@ -260,6 +259,7 @@ abstract class AppDialogs {
                   ),
                   const SizedBox(width: 12),
                 ],
+
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -271,10 +271,13 @@ abstract class AppDialogs {
                       ),
                       elevation: 0,
                     ),
-                    onPressed: onPrimaryPressed,
+                    onPressed: () => onPrimaryPressed(ctx),
                     child: Text(
                       primaryButtonText,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
