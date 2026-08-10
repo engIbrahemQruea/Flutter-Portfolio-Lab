@@ -1,4 +1,10 @@
 import 'package:dvld/core/database/app_database.dart';
+import 'package:dvld/core/helpers/shared_pref_helper.dart';
+import 'package:dvld/features/login/data/datasources/login_local_data_source.dart';
+import 'package:dvld/features/login/data/login_repository_impl/login_repository_impl.dart';
+import 'package:dvld/features/login/domain/login_repository/login_repository.dart';
+import 'package:dvld/features/login/domain/login_use_cases/login_use_case.dart';
+import 'package:dvld/features/login/presentation/logic/login_screen_cubit/login_screen_cubit.dart';
 import 'package:dvld/features/manage_users/data/datasources/user_local_data_source.dart';
 import 'package:dvld/features/manage_users/data/datasources/user_table.dart';
 import 'package:dvld/features/manage_users/data/repositoriesImp/user_repository_impl.dart';
@@ -37,6 +43,7 @@ import 'package:dvld/features/people/presentation/logic/cubit/get_all_people_cub
 import 'package:dvld/features/people/presentation/person_details_screen/logic/person_details_cubit/person_details_cubit.dart';
 import 'package:dvld/features/people/presentation/shared_widgets/person_selector/cubit/person_selector_cubit.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final getIt = GetIt.instance;
 
@@ -46,11 +53,30 @@ Future<void> setupGetIt() async {
   appDatabase.registerTable(PeopleTable());
 
   getIt.registerSingleton<AppDatabase>(appDatabase);
+
+  /// Shared Preferences Helper Class
+  final sharedPreferences = await SharedPreferences.getInstance();
+  getIt.registerLazySingleton<SharedPrefHelper>(
+    () => SharedPrefHelper(sharedPreferences),
+  );
+
+  /// Login Screen
+  getIt.registerLazySingleton<LoginRepository>(
+    () => LoginRepositoryImpl(getIt()),
+  );
+  getIt.registerLazySingleton<LoginLocalDataSource>(
+    () => LoginLocalDataSource(appDatabase: getIt()),
+  );
+  getIt.registerLazySingleton(() => LoginUseCase(loginRepository: getIt()));
+  getIt.registerFactory<LoginScreenCubit>(
+    () => LoginScreenCubit(getIt(), getIt()),
+  );
+
+  /// People Screen
+  getIt.registerLazySingleton<PeopleRepos>(() => PeopleReposImp(getIt()));
   getIt.registerLazySingleton<PeopleLocalDataSource>(
     () => PeopleLocalDataSource(getIt()),
   );
-
-  getIt.registerLazySingleton<PeopleRepos>(() => PeopleReposImp(getIt()));
   getIt.registerLazySingleton(() => GetListPeopleUseCase(getIt()));
   getIt.registerLazySingleton(() => GetPeopleByIdUseCase(getIt()));
   getIt.registerLazySingleton(() => GetPeopleByNationalNoUseCase(getIt()));
@@ -60,7 +86,7 @@ Future<void> setupGetIt() async {
     () => GetAllPeopleCubit(getIt(), getIt(), getIt(), getIt(), getIt()),
   );
 
-  /// Add Update Screen
+  /// Add Update People Screen
   getIt.registerLazySingleton(() => AddPeopleUseCase(getIt()));
   getIt.registerLazySingleton(() => UpdatePeopleUseCase(getIt()));
   getIt.registerLazySingleton(() => GetInfoByIdUseCase(getIt()));
@@ -116,7 +142,8 @@ Future<void> setupGetIt() async {
   getIt.registerLazySingleton(() => ChangeUserPasswordUseCase(getIt()));
 
   getIt.registerFactory<ManageUsersCubit>(
-    () => ManageUsersCubit(getIt(), getIt(), getIt(), getIt(), getIt(), getIt()),
+    () =>
+        ManageUsersCubit(getIt(), getIt(), getIt(), getIt(), getIt(), getIt()),
   );
 
   /// Add Update User Screen
