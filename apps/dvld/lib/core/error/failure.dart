@@ -17,55 +17,58 @@ class ServerFailure extends Failure {
   const ServerFailure(super.message);
 }
 
+class LocalDatabaseException extends DatabaseFailure {
+  const LocalDatabaseException([super.message = 'error in query database']);
+}
+
 class LinkedRecordFailure extends DatabaseFailure {
   const LinkedRecordFailure([
-    String message = 'لا يمكن حذف السجل لأنه مرتبط ببيانات أخرى في النظام',
-  ]) : super(message);
+    super.message = 'لا يمكن حذف السجل لأنه مرتبط ببيانات أخرى في النظام',
+  ]);
 }
 
 // Failure Not Found
 class NotFoundFailure extends DatabaseFailure {
   const NotFoundFailure([
-    String message = 'لم يتم العثور على السجل المطلوب في قاعدة البيانات',
-  ]) : super(message);
+    super.message = 'لم يتم العثور على السجل المطلوب في قاعدة البيانات',
+  ]);
 }
 
-// Failure From Validation Duplicate
+// Failure From Validation Duplicate (Unique Constraint)
 class DuplicateEntryFailure extends DatabaseFailure {
   const DuplicateEntryFailure([
-    String message = 'هذه البيانات (مثل اسم المستخدم أو الرقم) مسجلة مسبقاً',
-  ]) : super(message);
+    super.message = 'هذه البيانات (مثل اسم المستخدم أو الرقم) مسجلة مسبقاً',
+  ]);
 }
 
 // Failure with status code 400
 class NoInternetFailure extends ServerFailure {
   const NoInternetFailure([
-    String message = 'لا يوجد اتصال بالإنترنت، يرجى التحقق من الشبكة',
-  ]) : super(message);
+    super.message = 'لا يوجد اتصال بالإنترنت، يرجى التحقق من الشبكة',
+  ]);
 }
 
 // Failure with status code 401
 class UnauthorizedFailure extends ServerFailure {
   const UnauthorizedFailure([
-    String message = 'جلسة العمل انتهت، يرجى إعادة تسجيل الدخول',
-  ]) : super(message);
+    super.message = 'جلسة العمل انتهت، يرجى إعادة تسجيل الدخول',
+  ]);
 }
 
 // Failure with status code 500
 class InternalServerFailure extends ServerFailure {
   const InternalServerFailure([
-    String message = 'حدث خطأ في خادم البيانات، يرجى المحاولة لاحقاً',
-  ]) : super(message);
+    super.message = 'حدث خطأ في خادم البيانات، يرجى المحاولة لاحقاً',
+  ]);
 }
 
 class CacheFailure extends Failure {
-  const CacheFailure([String message = 'فشل في قراءة أو حفظ البيانات المؤقتة'])
-    : super(message);
+  const CacheFailure([super.message = 'فشل في قراءة أو حفظ البيانات المؤقتة']);
 }
 
 // unexpected failure
 class UnexpectedFailure extends Failure {
   const UnexpectedFailure([
-    String message = 'حدث خطأ غير متوقع، يرجى التواصل مع الدعم الفني',
-  ]) : super(message);
+    super.message = 'حدث خطأ غير متوقع، يرجى التواصل مع الدعم الفني',
+  ]);
 }
