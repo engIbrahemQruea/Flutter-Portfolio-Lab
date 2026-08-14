@@ -1,16 +1,31 @@
 abstract class DRoutes {
   static const String loginScreen = '/';
   static const String dashboard = '/dashboard';
-  static const String applications = '/applications';
-  static const String peopleScreen = '/peopleScreen';
-  static const String manageUsersScreen = '/manageUsersScreen';
-  //Sub screen to People Screen
-  static const String addUpdatePeopleScreen = '/addUpdatePeopleScreen';
-  static const String personDetailsScreen = '/personDetailsScreen';
 
-  //Sub screen to Manage Users Screen
-  static const String addUpdateUsersScreen = '/addUpdateUsersScreen';
-  static const String showDetailsUserScreen = '/showDetailsUserScreen';
-  static const String changePasswordUserScreen = '/changePasswordUserScreen';
+  /// Applications Screen And Sub Screens
+  static const String applications = '/applications';
+  static const String applicationTypes = '$applications/applicationTypes';
+  static const String updateApplicationTypes =
+      '$applicationTypes/updateApplicationTypes';
+  static const String testTypesScreen = '$applications/testTypes';
+  static const String updateTestTypesScreen =
+      '$testTypesScreen/updateTestTypes';
+
+  /// People Screen And Sub Screens
+  static const String peopleScreen = '/peopleScreen';
+  static const String addUpdatePeopleScreen =
+      '$peopleScreen/addUpdatePeopleScreen';
+  static const String personDetailsScreen = '$peopleScreen/personDetailsScreen';
+
+  /// Manage Users Screen And Sub Screens
+  static const String manageUsersScreen = '/manageUsersScreen';
+  static const String addUpdateUsersScreen =
+      '$manageUsersScreen/addUpdateUsersScreen';
+  static const String showDetailsUserScreen =
+      '$manageUsersScreen/showDetailsUserScreen';
+  static const String changePasswordUserScreen =
+      '$manageUsersScreen/changePasswordUserScreen';
+
+  /// Drivers Screen
   static const String drivers = '/drivers';
 }

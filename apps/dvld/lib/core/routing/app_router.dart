@@ -3,6 +3,10 @@ import 'package:dvld/core/routing/routes.dart';
 import 'package:dvld/features/dashboard/presentation/views/dash_board_screen.dart';
 import 'package:dvld/features/login/presentation/logic/login_screen_cubit/login_screen_cubit.dart';
 import 'package:dvld/features/login/presentation/screens/login_screen.dart';
+import 'package:dvld/features/manage_application/application_types/ui/logic/application_types_screen_cubit/application_types_screen_cubit.dart';
+import 'package:dvld/features/manage_application/application_types/ui/logic/update_application_types_screen_cubit/update_application_types_screen_cubit.dart';
+import 'package:dvld/features/manage_application/application_types/ui/screens/application_types_screen.dart';
+import 'package:dvld/features/manage_application/application_types/ui/screens/update_application_types_screen/update_application_types_screen.dart';
 import 'package:dvld/features/manage_users/presentation/logic/add_update_user_screen_cubit/add_update_user_form_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/logic/change_password_user_screen_cubit/cubit/change_password_user_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/logic/cubit/manage_users_cubit.dart';
@@ -48,7 +52,6 @@ abstract class AppRouter {
     initialLocation: DRoutes.loginScreen,
     navigatorKey: _rootNavigatorKey,
     routes: [
-      
       GoRoute(
         path: DRoutes.loginScreen,
         name: DRoutes.loginScreen,
@@ -78,10 +81,52 @@ abstract class AppRouter {
             navigatorKey: _shellNavigatorApplicationsKey,
             routes: [
               GoRoute(
-                path: DRoutes.peopleScreen,
-                name: DRoutes.peopleScreen,
+                path: DRoutes.applications,
+                name: DRoutes.applications,
                 builder: (context, state) =>
-                    const Center(child: Text('People Screen')),
+                    const Center(child: Text('Applications Screen')),
+
+                routes: [
+                  GoRoute(
+                    path: DRoutes.applicationTypes,
+                    name: DRoutes.applicationTypes,
+                    builder: (context, state) => BlocProvider(
+                      create: (context) =>
+                          getIt<ApplicationTypesScreenCubit>()
+                            ..getAllApplicationTypes(),
+                      child: const ApplicationTypesScreen(),
+                    ),
+
+                    routes: [
+                      GoRoute(
+                        path: DRoutes.updateApplicationTypes,
+                        name: DRoutes.updateApplicationTypes,
+                        builder: (context, state) {
+                          final appTypeIdString =
+                              state.uri.queryParameters['appTypeId'];
+                          final appTypeIdInt = appTypeIdString == null
+                              ? null
+                              : int.parse(appTypeIdString);
+                          return BlocProvider(
+                            create: (context) =>
+                                getIt<UpdateApplicationTypesScreenCubit>()
+                                  ..loadApplicationTypeById(
+                                    applicationType: appTypeIdInt,
+                                  ),
+                            child: const UpdateApplicationTypesScreen(),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+
+                  GoRoute(
+                    path: DRoutes.testTypesScreen,
+                    name: DRoutes.testTypesScreen,
+                    builder: (context, state) =>
+                        const Center(child: Text('Test Types Screen')),
+                  ),
+                ],
               ),
             ],
           ),
@@ -89,8 +134,8 @@ abstract class AppRouter {
             navigatorKey: _shellNavigatorPeopleKey,
             routes: [
               GoRoute(
-                path: DRoutes.applications,
-                name: DRoutes.applications,
+                path: DRoutes.peopleScreen,
+                name: DRoutes.peopleScreen,
                 builder: (context, state) => BlocProvider(
                   create: (context) => GetAllPeopleCubit(
                     getIt<GetListPeopleUseCase>(),
