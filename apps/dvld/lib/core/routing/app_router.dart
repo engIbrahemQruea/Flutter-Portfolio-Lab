@@ -7,8 +7,9 @@ import 'package:dvld/features/manage_application/application_types/ui/logic/appl
 import 'package:dvld/features/manage_application/application_types/ui/logic/update_application_types_screen_cubit/update_application_types_screen_cubit.dart';
 import 'package:dvld/features/manage_application/application_types/ui/screens/application_types_screen.dart';
 import 'package:dvld/features/manage_application/application_types/ui/screens/update_application_types_screen/update_application_types_screen.dart';
-import 'package:dvld/features/manage_application/test_types/ui/logic/test_types_screen_cubit/test_types_screen_cubit.dart';
+import 'package:dvld/features/manage_application/test_types/ui/logic/index_test_type_cubit.dart';
 import 'package:dvld/features/manage_application/test_types/ui/screens/index_test_types_screen.dart';
+import 'package:dvld/features/manage_application/test_types/ui/screens/update_test_types_screen.dart';
 import 'package:dvld/features/manage_users/presentation/logic/add_update_user_screen_cubit/add_update_user_form_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/logic/change_password_user_screen_cubit/cubit/change_password_user_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/logic/cubit/manage_users_cubit.dart';
@@ -126,9 +127,28 @@ abstract class AppRouter {
                     path: DRoutes.testTypesScreen,
                     name: DRoutes.testTypesScreen,
                     builder: (context, state) => BlocProvider(
-                      create: (context) => getIt<TestTypesScreenCubit>()..getAllTestTypes(),
+                      create: (context) =>
+                          getIt<TestTypesScreenCubit>()..getAllTestTypes(),
                       child: const TestTypesScreen(),
                     ),
+                  ),
+
+                  GoRoute(
+                    path: DRoutes.updateTestTypesScreen,
+                    name: DRoutes.updateTestTypesScreen,
+                    builder: (context, state) {
+                      final testTypeIdString =
+                          state.uri.queryParameters['testTypeId'];
+                      final testTypeIdInt = testTypeIdString == null
+                          ? null
+                          : int.parse(testTypeIdString);
+                      return BlocProvider(
+                        create: (context) =>
+                            getIt<UpdateTestTypesScreenCubit>()
+                              ..loadTestTypeInfoById(testTypeId: testTypeIdInt),
+                        child: const UpdateTestTypesScreen(),
+                      );
+                    },
                   ),
                 ],
               ),
