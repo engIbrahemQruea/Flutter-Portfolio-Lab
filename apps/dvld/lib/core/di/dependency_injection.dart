@@ -12,6 +12,7 @@ import 'package:dvld/features/manage_application/application_types/ui/logic/appl
 import 'package:dvld/features/manage_application/application_types/ui/logic/update_application_types_screen_cubit/update_application_types_screen_cubit.dart';
 import 'package:dvld/features/manage_application/test_types/data/data_sources/test_type_table.dart';
 import 'package:dvld/features/manage_application/test_types/data/index_data_test_type.dart';
+import 'package:dvld/features/manage_application/test_types/ui/logic/index_test_type_cubit.dart';
 import 'package:dvld/features/manage_application/test_types/ui/logic/test_types_screen_cubit/test_types_screen_cubit.dart';
 import 'package:dvld/features/manage_users/data/datasources/user_local_data_source.dart';
 import 'package:dvld/features/manage_users/data/datasources/user_table.dart';
@@ -215,5 +216,9 @@ Future<void> setupGetIt() async {
 
   getIt.registerFactory<TestTypesScreenCubit>(
     () => TestTypesScreenCubit(getIt()),
+  );
+
+  getIt.registerFactory<UpdateTestTypesScreenCubit>(
+    () => UpdateTestTypesScreenCubit(getIt(), getIt()),
   );
 }
