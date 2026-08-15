@@ -5,6 +5,12 @@ import 'package:dvld/features/login/data/login_repository_impl/login_repository_
 import 'package:dvld/features/login/domain/login_repository/login_repository.dart';
 import 'package:dvld/features/login/domain/login_use_cases/login_use_case.dart';
 import 'package:dvld/features/login/presentation/logic/login_screen_cubit/login_screen_cubit.dart';
+import 'package:dvld/features/manage_application/application_types/data/data_sources/application_type_table.dart';
+import 'package:dvld/features/manage_application/application_types/data/index_data_application_type.dart';
+import 'package:dvld/features/manage_application/application_types/domain/index_domain_application_type.dart';
+import 'package:dvld/features/manage_application/application_types/ui/logic/application_types_screen_cubit/application_types_screen_cubit.dart';
+import 'package:dvld/features/manage_application/application_types/ui/logic/update_application_types_screen_cubit/update_application_types_screen_cubit.dart';
+import 'package:dvld/features/manage_application/data/data_sources/test_type_table.dart';
 import 'package:dvld/features/manage_users/data/datasources/user_local_data_source.dart';
 import 'package:dvld/features/manage_users/data/datasources/user_table.dart';
 import 'package:dvld/features/manage_users/data/repositoriesImp/user_repository_impl.dart';
@@ -159,5 +165,33 @@ Future<void> setupGetIt() async {
   /// Change Password User Screen
   getIt.registerFactory<ChangePasswordUserCubit>(
     () => ChangePasswordUserCubit(getIt()),
+  );
+
+  /// Manage Application Features/Screens
+  appDatabase.registerTable(ApplicationTypeTable());
+  appDatabase.registerTable(TestTypeTable());
+
+  getIt.registerLazySingleton<ApplicationTypesRepository>(
+    () => ApplicationTypesRepositoryImpl(getIt()),
+  );
+
+  getIt.registerLazySingleton<ApplicationLocalDataSource>(
+    () => ApplicationLocalDataSource(appDatabase: getIt()),
+  );
+
+  getIt.registerLazySingleton(() => GetAllApplicationTypesUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => UpdateApplicationTypesUseCase(getIt()));
+
+  getIt.registerLazySingleton(
+    () => GetApplicationTypesInfoByIDUseCase(getIt()),
+  );
+
+  getIt.registerFactory<ApplicationTypesScreenCubit>(
+    () => ApplicationTypesScreenCubit(getIt()),
+  );
+
+  getIt.registerFactory<UpdateApplicationTypesScreenCubit>(
+    () => UpdateApplicationTypesScreenCubit(getIt(), getIt()),
   );
 }
