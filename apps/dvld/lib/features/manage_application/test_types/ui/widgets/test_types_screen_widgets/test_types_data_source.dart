@@ -46,10 +46,17 @@ class TestTypesDataSource extends DataGridSource {
               ? Alignment.center
               : Alignment.centerLeft,
           padding: EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text(
-            dataGridCell.value.toString(),
-            overflow: TextOverflow.ellipsis,
-          ),
+          child: dataGridCell.columnName == 'test_type_description'
+              ? Text(
+                  dataGridCell.value.toString(),
+                  maxLines: 2,
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                )
+              : Text(
+                  dataGridCell.value.toString(),
+                  overflow: TextOverflow.ellipsis,
+                ),
         );
       }).toList(),
     );
