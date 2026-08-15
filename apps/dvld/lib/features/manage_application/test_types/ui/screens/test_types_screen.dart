@@ -56,11 +56,12 @@ class TestTypesScreen extends StatelessWidget {
                       source: TestTypesDataSource(testTypes: testTypes),
                       selectionMode: SelectionMode.single,
                       allowSorting: true,
+                      allowColumnsResizing: true,
                       allowFiltering: true,
                       showColumnHeaderIconOnHover: true,
-                      columnWidthMode: ColumnWidthMode.auto,
+                      columnWidthMode: ColumnWidthMode.fitByColumnName,
                       columnWidthCalculationRange:
-                          ColumnWidthCalculationRange.allRows,
+                          ColumnWidthCalculationRange.visibleRows,
                       gridLinesVisibility: GridLinesVisibility.both,
                       headerGridLinesVisibility: GridLinesVisibility.both,
                       footer: Center(
