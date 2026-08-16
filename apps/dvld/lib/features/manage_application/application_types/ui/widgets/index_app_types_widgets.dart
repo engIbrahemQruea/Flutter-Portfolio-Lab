@@ -1,5 +1,0 @@
-export 'package:dvld/features/manage_application/application_types/ui/widgets/application_types_screen_widgets/application_types_data_source.dart';
-export 'package:dvld/features/manage_application/application_types/ui/widgets/update_application_types_screen_widgets/app_type_Id_text_field_widget.dart';
-export 'package:dvld/features/manage_application/application_types/ui/widgets/update_application_types_screen_widgets/app_type_fee_text_field_widget.dart';
-export 'package:dvld/features/manage_application/application_types/ui/widgets/update_application_types_screen_widgets/app_type_save_close_button_widget.dart';
-export 'package:dvld/features/manage_application/application_types/ui/widgets/update_application_types_screen_widgets/app_type_title_text_field_widget.dart';
