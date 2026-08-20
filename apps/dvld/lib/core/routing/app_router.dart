@@ -1,15 +1,16 @@
 import 'package:dvld/core/di/dependency_injection.dart';
 import 'package:dvld/core/routing/routes.dart';
-import 'package:dvld/features/dashboard/presentation/views/dash_board_screen.dart';
-import 'package:dvld/features/login/presentation/logic/login_screen_cubit/login_screen_cubit.dart';
-import 'package:dvld/features/login/presentation/screens/login_screen.dart';
 import 'package:dvld/features/applications/application_types/ui/logic/application_types_screen_cubit/application_types_screen_cubit.dart';
 import 'package:dvld/features/applications/application_types/ui/logic/update_application_types_screen_cubit/update_application_types_screen_cubit.dart';
 import 'package:dvld/features/applications/application_types/ui/screens/application_types_screen.dart';
 import 'package:dvld/features/applications/application_types/ui/screens/update_application_types_screen/update_application_types_screen.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/screens/add_update_local_driving_license_application_screen.dart';
 import 'package:dvld/features/applications/test_types/ui/logic/index_test_type_cubit.dart';
 import 'package:dvld/features/applications/test_types/ui/screens/index_test_types_screen.dart';
 import 'package:dvld/features/applications/test_types/ui/screens/update_test_types_screen.dart';
+import 'package:dvld/features/dashboard/presentation/views/dash_board_screen.dart';
+import 'package:dvld/features/login/presentation/logic/login_screen_cubit/login_screen_cubit.dart';
+import 'package:dvld/features/login/presentation/screens/login_screen.dart';
 import 'package:dvld/features/manage_users/presentation/logic/add_update_user_screen_cubit/add_update_user_form_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/logic/change_password_user_screen_cubit/cubit/change_password_user_cubit.dart';
 import 'package:dvld/features/manage_users/presentation/logic/cubit/manage_users_cubit.dart';
@@ -101,6 +102,16 @@ abstract class AppRouter {
                     ),
 
                     routes: [
+                      GoRoute(
+                        path: DRoutes.addUpdateLocalDrLiApplicationsScreen,
+                        name: DRoutes.addUpdateLocalDrLiApplicationsScreen,
+                        builder: (context, state) => BlocProvider(
+                          create: (context) => getIt<PersonSelectorCubit>(),
+                          child:
+                              const AddUpdateLocalDrivingLicenseApplicationScreen(),
+                        ),
+                      ),
+
                       GoRoute(
                         path: DRoutes.updateApplicationTypes,
                         name: DRoutes.updateApplicationTypes,
