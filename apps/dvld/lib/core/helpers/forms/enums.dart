@@ -1,4 +1,10 @@
-enum ScreenStatus { add, update }
+enum ScreenStatus {
+  add,
+  update;
+
+  bool get isAddMode => this == ScreenStatus.add;
+  bool get isUpdateMode => this == ScreenStatus.update;
+}
 
 enum RequestStatus {
   initial,
