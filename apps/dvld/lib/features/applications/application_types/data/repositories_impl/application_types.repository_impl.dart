@@ -9,7 +9,7 @@ import 'package:dvld/features/applications/application_types/domain/index_domain
 class ApplicationTypesRepositoryImpl implements ApplicationTypesRepository {
   const ApplicationTypesRepositoryImpl(this._applicationLocalDataSource);
 
-  final ApplicationLocalDataSource _applicationLocalDataSource;
+  final ApplicationTypesLocalDataSource _applicationLocalDataSource;
 
   @override
   Future<Either<Failure, List<ApplicationTypeEntity>>>
