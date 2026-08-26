@@ -1,19 +1,33 @@
 import 'package:dvld/core/database/app_database.dart';
 import 'package:dvld/core/helpers/shared_pref_helper.dart';
-import 'package:dvld/features/login/data/datasources/login_local_data_source.dart';
-import 'package:dvld/features/login/data/login_repository_impl/login_repository_impl.dart';
-import 'package:dvld/features/login/domain/login_repository/login_repository.dart';
-import 'package:dvld/features/login/domain/login_use_cases/login_use_case.dart';
-import 'package:dvld/features/login/presentation/logic/login_screen_cubit/login_screen_cubit.dart';
 import 'package:dvld/features/applications/application_types/data/data_sources/application_type_table.dart';
 import 'package:dvld/features/applications/application_types/data/index_data_application_type.dart';
 import 'package:dvld/features/applications/application_types/domain/index_domain_application_type.dart';
 import 'package:dvld/features/applications/application_types/ui/logic/application_types_screen_cubit/application_types_screen_cubit.dart';
 import 'package:dvld/features/applications/application_types/ui/logic/update_application_types_screen_cubit/update_application_types_screen_cubit.dart';
+import 'package:dvld/features/applications/applications_core/data/data_sources/application_table.dart';
+import 'package:dvld/features/applications/applications_core/data/repositories_impl/applications_repository_impl.dart';
+import 'package:dvld/features/applications/applications_core/domain/repositories/applications_repository.dart';
+import 'package:dvld/features/applications/applications_core/domain/use_cases/index_app_core_use_case.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/data_sources/license_class_table.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/data_sources/local_driving_license_application_local_data_source.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/data_sources/local_driving_license_application_table.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/data_sources/local_driving_license_application_view_table.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/data_sources/test_appointments_table.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/data_sources/test_table.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/repository_impl/local_driving_license_application_repository_impl.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/domain/repository/local_driving_license_application_repository.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/domain/usecases/get_all_license_classes_use_case.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/logic/add_update_local_driving_license_application_screen/add_update_local_dr_li_application_screen_cubit.dart';
 import 'package:dvld/features/applications/test_types/data/data_sources/test_type_table.dart';
 import 'package:dvld/features/applications/test_types/data/index_data_test_type.dart';
 import 'package:dvld/features/applications/test_types/ui/logic/index_test_type_cubit.dart';
-import 'package:dvld/features/applications/test_types/ui/logic/test_types_screen_cubit/test_types_screen_cubit.dart';
+import 'package:dvld/features/login/data/datasources/login_local_data_source.dart';
+import 'package:dvld/features/login/data/login_repository_impl/login_repository_impl.dart';
+import 'package:dvld/features/login/domain/login_repository/login_repository.dart';
+import 'package:dvld/features/login/domain/login_use_cases/get_data_shared_pref_use_case.dart';
+import 'package:dvld/features/login/domain/login_use_cases/login_use_case.dart';
+import 'package:dvld/features/login/presentation/logic/login_screen_cubit/login_screen_cubit.dart';
 import 'package:dvld/features/manage_users/data/datasources/user_local_data_source.dart';
 import 'package:dvld/features/manage_users/data/datasources/user_table.dart';
 import 'package:dvld/features/manage_users/data/repositoriesImp/user_repository_impl.dart';
@@ -220,5 +234,64 @@ Future<void> setupGetIt() async {
 
   getIt.registerFactory<UpdateTestTypesScreenCubit>(
     () => UpdateTestTypesScreenCubit(getIt(), getIt()),
+  );
+
+  /// Init Database
+  appDatabase.registerTable(LicenseClassTable());
+  appDatabase.registerTable(ApplicationTable());
+  appDatabase.registerTable(LocalDrivingLicenseApplicationTable());
+  appDatabase.registerTable(TestAppointmentsTable());
+  appDatabase.registerTable(TestTable());
+  appDatabase.registerTable(LocalDrivingLicenseApplicationViewTable());
+  //appDatabase.registerTable(DriversTable());
+
+  /// Feature Applications/Application Core
+  getIt.registerLazySingleton<ApplicationLocalDataSource>(
+    () => ApplicationLocalDataSource(appDatabase: getIt()),
+  );
+
+  getIt.registerLazySingleton<ApplicationsRepository>(
+    () => ApplicationsRepositoryImpl(getIt()),
+  );
+
+  getIt.registerLazySingleton(() => GetAllApplicationsUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => GetApplicationInfoByIDUseCase(getIt()));
+
+  getIt.registerLazySingleton(
+    () => GetActiveApplicationIDForLicenseClassUseCase(getIt()),
+  );
+
+  getIt.registerLazySingleton(() => GetActiveApplicationIDUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => IsActiveApplicationUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => AddApplicationUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => UpdateApplicationUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => CancelApplicationUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => SetCompleteApplicationUseCase(getIt()));
+
+  ///Feature Applications/Manage  Driving License Services /Local Screens
+  getIt.registerLazySingleton<LocalDrivingLicenseApplicationRepository>(
+    () => LocalDrivingLicenseApplicationRepositoryImpl(getIt()),
+  );
+
+  getIt.registerLazySingleton<LocalDrivingLicenseApplicationLocalDataSource>(
+    () => LocalDrivingLicenseApplicationLocalDataSource(getIt()),
+  );
+
+  getIt.registerLazySingleton(() => GetAllLicenseClassesUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => GetDataSharedPrefUseCase(getIt()));
+
+  getIt.registerLazySingleton(
+    () => GetActiveApplicationIDForLicenseClassUseCase(getIt()),
+  );
+
+  getIt.registerFactory<AddUpdateLocalDrLiApplicationScreenCubit>(
+    () => AddUpdateLocalDrLiApplicationScreenCubit(getIt(), getIt(), getIt()),
   );
 }
