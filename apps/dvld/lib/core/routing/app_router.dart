@@ -4,6 +4,7 @@ import 'package:dvld/features/applications/application_types/ui/logic/applicatio
 import 'package:dvld/features/applications/application_types/ui/logic/update_application_types_screen_cubit/update_application_types_screen_cubit.dart';
 import 'package:dvld/features/applications/application_types/ui/screens/application_types_screen.dart';
 import 'package:dvld/features/applications/application_types/ui/screens/update_application_types_screen/update_application_types_screen.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/logic/add_update_local_driving_license_application_screen/add_update_local_dr_li_application_screen_cubit.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/screens/add_update_local_driving_license_application_screen.dart';
 import 'package:dvld/features/applications/test_types/ui/logic/index_test_type_cubit.dart';
 import 'package:dvld/features/applications/test_types/ui/screens/index_test_types_screen.dart';
@@ -105,11 +106,36 @@ abstract class AppRouter {
                       GoRoute(
                         path: DRoutes.addUpdateLocalDrLiApplicationsScreen,
                         name: DRoutes.addUpdateLocalDrLiApplicationsScreen,
-                        builder: (context, state) => BlocProvider(
-                          create: (context) => getIt<PersonSelectorCubit>(),
-                          child:
-                              const AddUpdateLocalDrivingLicenseApplicationScreen(),
-                        ),
+                        builder: (context, state) {
+                          final localDrLiApplicationIdString = state
+                              .uri
+                              .queryParameters['localDrLiApplicationId'];
+                          final localDrLiApplicationIdInt =
+                              localDrLiApplicationIdString == null
+                              ? null
+                              : int.parse(localDrLiApplicationIdString);
+
+                          return MultiBlocProvider(
+                            providers: [
+                              BlocProvider(
+                                create: (context) =>
+                                    getIt<PersonSelectorCubit>(),
+                              ),
+                              BlocProvider(
+                                create: (context) =>
+                                    getIt<
+                                        AddUpdateLocalDrLiApplicationScreenCubit
+                                      >()
+                                      ..initAddUpdateLocalDrLiApplicationScreen(
+                                        localDrLiApplicationID:
+                                            localDrLiApplicationIdInt,
+                                      ),
+                              ),
+                            ],
+                            child:
+                                const AddUpdateLocalDrivingLicenseApplicationScreen(),
+                          );
+                        },
                       ),
 
                       GoRoute(
