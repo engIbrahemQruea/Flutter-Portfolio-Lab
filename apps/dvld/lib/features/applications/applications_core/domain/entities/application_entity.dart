@@ -1,6 +1,7 @@
 import 'package:dvld/features/applications/applications_core/domain/entities/application_status.dart';
+import 'package:equatable/equatable.dart';
 
-class ApplicationEntity {
+class ApplicationEntity extends Equatable {
   final int? applicationId;
   final int applicantPersonId;
   final DateTime applicationDate;
@@ -20,4 +21,16 @@ class ApplicationEntity {
     required this.paidFees,
     required this.createdByUserId,
   });
+
+  @override
+  List<Object?> get props => [
+    applicationId,
+    applicantPersonId,
+    applicationDate,
+    applicationTypeId,
+    applicationStatus,
+    lastStatusDate,
+    paidFees,
+    createdByUserId,
+  ];
 }
