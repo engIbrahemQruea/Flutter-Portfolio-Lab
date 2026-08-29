@@ -1,5 +1,20 @@
 /// Extensions for [DateTime?] with Null-Safety and double-digit formatting
 extension DateTimeExtensionX on DateTime? {
+  String get toFormattedDateTime {
+    if (this == null) return '';
+
+    final dayStr = this!.day.toString().padLeft(2, '0');
+    final monthStr = this!.month.toString();
+    final yearStr = this!.year;
+
+    final hour12 = this!.hour % 12 == 0 ? 12 : this!.hour % 12;
+    final minuteStr = this!.minute.toString().padLeft(2, '0');
+    final secondStr = this!.second.toString().padLeft(2, '0');
+    final period = this!.hour >= 12 ? 'PM' : 'AM';
+
+    return '$monthStr/$dayStr/$yearStr $hour12:$minuteStr:$secondStr $period';
+  }
+
   String get toFormattedDate {
     if (this == null) return '';
     final dayStr = this!.day.toString().padLeft(2, '0');
