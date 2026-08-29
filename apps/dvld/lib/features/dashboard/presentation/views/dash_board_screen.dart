@@ -72,7 +72,7 @@ final List<SubMenuItem> applicationsSubMenu = [
       SubMenuItem(
         title: 'Local Driving License',
         icon: Icons.circle,
-        route: '/applications/manage-local',
+        route: DRoutes.listLocalDrLiApplicationsScreen,
       ),
       SubMenuItem(
         title: 'International License',
