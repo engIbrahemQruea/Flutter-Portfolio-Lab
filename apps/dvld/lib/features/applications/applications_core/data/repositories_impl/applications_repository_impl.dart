@@ -21,8 +21,8 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
         applicationModel: applicationModelInput,
       );
       return Right(result);
-    } on LocalDatabaseException catch (e) {
-      return Left(LocalDatabaseException(e.toString()));
+    } on LocalDatabaseFailure catch (e) {
+      return Left(LocalDatabaseFailure(e.toString()));
     }
   }
 
@@ -35,8 +35,8 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
         applicationId: applicationId,
       );
       return Right(result);
-    } on LocalDatabaseException catch (e) {
-      return Left(LocalDatabaseException(e.toString()));
+    } on LocalDatabaseFailure catch (e) {
+      return Left(LocalDatabaseFailure(e.toString()));
     }
   }
 
@@ -51,8 +51,8 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
         applicationTypeId: applicationTypeId,
       );
       return Right(result);
-    } on LocalDatabaseException catch (e) {
-      return Left(LocalDatabaseException(e.toString()));
+    } on LocalDatabaseFailure catch (e) {
+      return Left(LocalDatabaseFailure(e.toString()));
     }
   }
 
@@ -70,8 +70,8 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
             licenseClassId: licenseClassId,
           );
       return Right(result);
-    } on LocalDatabaseException catch (e) {
-      return Left(LocalDatabaseException(e.toString()));
+    } on LocalDatabaseFailure catch (e) {
+      return Left(LocalDatabaseFailure(e.toString()));
     }
   }
 
@@ -90,8 +90,8 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
         applicationId: applicationId,
       );
       return Right(result.mapToEntity());
-    } on LocalDatabaseException catch (e) {
-      return Left(LocalDatabaseException(e.toString()));
+    } on LocalDatabaseFailure catch (e) {
+      return Left(LocalDatabaseFailure(e.toString()));
     }
   }
 
@@ -104,8 +104,8 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
         applicationId: applicationId,
       );
       return Right(result);
-    } on LocalDatabaseException catch (e) {
-      return Left(LocalDatabaseException(e.toString()));
+    } on LocalDatabaseFailure catch (e) {
+      return Left(LocalDatabaseFailure(e.toString()));
     }
   }
 
@@ -121,8 +121,8 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
         applicationModel: applicationModelInput,
       );
       return Right(result);
-    } on LocalDatabaseException catch (e) {
-      return Left(LocalDatabaseException(e.toString()));
+    } on LocalDatabaseFailure catch (e) {
+      return Left(LocalDatabaseFailure(e.toString()));
     }
   }
 
@@ -130,15 +130,15 @@ class ApplicationsRepositoryImpl implements ApplicationsRepository {
   Future<Either<Failure, bool>> updateApplicationStatus({
     required int applicationId,
     required int newStatus,
-  }) async{
+  }) async {
     try {
       final result = await _applicationLocalDataSource.updateApplicationStatus(
         applicationId: applicationId,
         status: newStatus,
       );
       return Right(result);
-    } on LocalDatabaseException catch (e) {
-      return Left(LocalDatabaseException(e.toString()));
+    } on LocalDatabaseFailure catch (e) {
+      return Left(LocalDatabaseFailure(e.toString()));
     }
   }
 }

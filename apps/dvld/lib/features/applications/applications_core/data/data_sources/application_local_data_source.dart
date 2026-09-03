@@ -25,7 +25,7 @@ class ApplicationLocalDataSource {
       }
       return ApplicationModel.fromMap(result.first);
     } on Exception catch (e) {
-      throw LocalDatabaseException(
+      throw LocalDatabaseFailure(
         'Failed To Get Application By Id ${e.toString()}',
       );
     }
@@ -37,7 +37,7 @@ class ApplicationLocalDataSource {
       final result = await db.query(ApplicationTable.tableName);
       return result.map((e) => ApplicationModel.fromMap(e)).toList();
     } on Exception catch (e) {
-      throw LocalDatabaseException(
+      throw LocalDatabaseFailure(
         'Failed To Get All Applications ${e.toString()}',
       );
     }
@@ -53,13 +53,11 @@ class ApplicationLocalDataSource {
         applicationModel.toMap(),
       );
       if (id <= 0) {
-        throw LocalDatabaseException(
-          'Failed To Add New Application In Database',
-        );
+        throw LocalDatabaseFailure('Failed To Add New Application In Database');
       }
       return id;
     } on Exception catch (e) {
-      throw LocalDatabaseException(
+      throw LocalDatabaseFailure(
         'Failed To Add New Application In Database ${e.toString()}',
       );
     }
@@ -81,7 +79,7 @@ class ApplicationLocalDataSource {
       }
       return true;
     } catch (e) {
-      throw LocalDatabaseException(
+      throw LocalDatabaseFailure(
         'Failed To Update Application ${e.toString()}',
       );
     }
@@ -100,7 +98,7 @@ class ApplicationLocalDataSource {
       }
       return true;
     } catch (e) {
-      throw LocalDatabaseException(
+      throw LocalDatabaseFailure(
         'Failed To Delete Application ${e.toString()}',
       );
     }
@@ -120,7 +118,7 @@ class ApplicationLocalDataSource {
       }
       return true;
     } on Exception catch (e) {
-      throw LocalDatabaseException(
+      throw LocalDatabaseFailure(
         'Failed To Get Application By Id ${e.toString()}',
       );
     }
@@ -151,7 +149,7 @@ class ApplicationLocalDataSource {
         throw NotFoundFailure('this application By Id Do\'nt exist');
       }
     } on Exception catch (e) {
-      throw LocalDatabaseException(
+      throw LocalDatabaseFailure(
         'Failed To Get Application By Id ${e.toString()}',
       );
     }
@@ -162,17 +160,18 @@ class ApplicationLocalDataSource {
     required int applicationTypeId,
     required int licenseClassId,
   }) async {
-    const String query =
+    final String query =
         '''
-    SELECT ${ApplicationTable.colId} 
-    FROM ${ApplicationTable.tableName}
-    INNER JOIN ${LocalDrivingLicenseApplicationTable.tableName} 
-      ON ${ApplicationTable.colId} = ${LocalDrivingLicenseApplicationTable.colApplicationId}
-    WHERE ${ApplicationTable.colApplicantPersonId} = ?
-      AND ${ApplicationTable.colApplicationTypeId} = ?
-      AND ${LocalDrivingLicenseApplicationTable.colLicenseClassId} = ?
-      AND ${ApplicationTable.colApplicationStatus} = 1;
+    SELECT App.${ApplicationTable.colId} 
+    FROM ${ApplicationTable.tableName} App
+    INNER JOIN ${LocalDrivingLicenseApplicationTable.tableName} LocalApp
+      ON App.${ApplicationTable.colId} = LocalApp.${LocalDrivingLicenseApplicationTable.colApplicationId}
+    WHERE App.${ApplicationTable.colApplicantPersonId} = ?
+      AND App.${ApplicationTable.colApplicationTypeId} = ?
+      AND LocalApp.${LocalDrivingLicenseApplicationTable.colLicenseClassId} = ?
+      AND App.${ApplicationTable.colApplicationStatus} = 1;
   ''';
+
     try {
       final db = await _appDatabase.database;
       final result = await db.rawQuery(query, [
@@ -182,19 +181,14 @@ class ApplicationLocalDataSource {
       ]);
 
       if (result.isEmpty) {
-        throw NotFoundFailure('this application By Id Do\'nt exist');
+        return -1;
       }
-      // return result.first['ActiveApplicationID'] as int;
 
-      /// Using Pattern Matching
-      if (result case [{ApplicationTable.colId: final int activeId}]) {
-        return activeId;
-      } else {
-        throw NotFoundFailure('this application By Id Do\'nt exist');
-      }
+      final firstRow = result.first;
+      return firstRow[ApplicationTable.colId] as int;
     } catch (e) {
-      throw LocalDatabaseException(
-        'Failed To Get Application By Id ${e.toString()}',
+      throw LocalDatabaseFailure(
+        'Failed To Get Application By Id: ${e.toString()}',
       );
     }
   }
@@ -219,8 +213,28 @@ class ApplicationLocalDataSource {
       }
       return true;
     } catch (e) {
-      throw LocalDatabaseException(
+      throw LocalDatabaseFailure(
         'Failed To Update Application ${e.toString()}',
+      );
+    }
+  }
+
+  Future<bool> doesPersonHaveActiveApplication({
+    required int personId,
+    required int applicationTypeId,
+  }) async {
+    try {
+      final db = await _appDatabase.database;
+      final result = await db.query(
+        ApplicationTable.tableName,
+        where:
+            '${ApplicationTable.colApplicantPersonId} = ? AND ${ApplicationTable.colApplicationTypeId} = ? AND ${ApplicationTable.colApplicationStatus} = ?',
+        whereArgs: [personId, applicationTypeId, 1],
+      );
+      return result.isNotEmpty;
+    } on Exception catch (e) {
+      throw LocalDatabaseFailure(
+        'Failed To Get Application By Id ${e.toString()}',
       );
     }
   }

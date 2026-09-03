@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:dvld/core/error/failure.dart';
 import 'package:dvld/features/applications/test_types/data/index_data_test_type.dart';
 
-
 /// Concrete implementation of [TestTypesRepository].
 ///
 /// Add dependencies only when this feature actually needs external I/O
@@ -22,7 +21,7 @@ class TestTypesRepositoryImpl implements TestTypesRepository {
         testTypeModel: testTypeModel,
       );
       return Right(currentId);
-    } on LocalDatabaseException catch (e) {
+    } on LocalDatabaseFailure catch (e) {
       return Left(DatabaseFailure(e.message));
     }
   }
@@ -32,7 +31,7 @@ class TestTypesRepositoryImpl implements TestTypesRepository {
     try {
       final testTypeModels = await _testTypeLocalDataSource.getAllTestTypes();
       return Right(testTypeModels.map((model) => model.mapToEntity()).toList());
-    } on LocalDatabaseException catch (e) {
+    } on LocalDatabaseFailure catch (e) {
       return Left(DatabaseFailure(e.message));
     }
   }
@@ -48,7 +47,7 @@ class TestTypesRepositoryImpl implements TestTypesRepository {
       return Right(testTypeModel.mapToEntity());
     } on NotFoundFailure catch (e) {
       return Left(NotFoundFailure(e.message));
-    } on LocalDatabaseException catch (e) {
+    } on LocalDatabaseFailure catch (e) {
       return Left(DatabaseFailure(e.message));
     }
   }
@@ -66,7 +65,7 @@ class TestTypesRepositoryImpl implements TestTypesRepository {
       return Right(result);
     } on NotFoundFailure catch (e) {
       return Left(NotFoundFailure(e.message));
-    } on LocalDatabaseException catch (e) {
+    } on LocalDatabaseFailure catch (e) {
       return Left(DatabaseFailure(e.message));
     }
   }

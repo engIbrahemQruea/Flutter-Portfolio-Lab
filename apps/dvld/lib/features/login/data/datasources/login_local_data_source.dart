@@ -25,7 +25,7 @@ class LoginLocalDataSource {
       }
       return LoginModel.fromMap(result.first);
     } on Exception catch (e) {
-      throw LocalDatabaseException(e.toString());
+      throw LocalDatabaseFailure(e.toString());
     }
   }
 }

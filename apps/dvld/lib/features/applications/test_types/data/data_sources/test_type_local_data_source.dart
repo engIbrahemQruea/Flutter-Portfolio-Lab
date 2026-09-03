@@ -14,7 +14,7 @@ class TestTypeLocalDataSource {
 
       return result.map((e) => TestTypeModel.fromMap(e)).toList();
     } on Exception catch (e) {
-      throw LocalDatabaseException(
+      throw LocalDatabaseFailure(
         'Failed To Get All Test Types ${e.toString()}',
       );
     }
@@ -34,7 +34,7 @@ class TestTypeLocalDataSource {
       }
       return TestTypeModel.fromMap(result.first);
     } on Exception catch (e) {
-      throw LocalDatabaseException(
+      throw LocalDatabaseFailure(
         'Failed To Get Test Type By Id ${e.toString()}',
       );
     }
@@ -49,7 +49,7 @@ class TestTypeLocalDataSource {
       );
       return id;
     } on Exception catch (e) {
-      throw LocalDatabaseException(
+      throw LocalDatabaseFailure(
         'Failed To Add New Test Type In Database ${e.toString()}',
       );
     }
@@ -57,7 +57,7 @@ class TestTypeLocalDataSource {
 
   Future<bool> updateTestType({required TestTypeModel testTypeModel}) async {
     if (testTypeModel.testTypeId == null) {
-      throw LocalDatabaseException(
+      throw LocalDatabaseFailure(
         'No Cannot Update Test Type Without testTypeId',
       );
     }
@@ -75,9 +75,7 @@ class TestTypeLocalDataSource {
       }
       return true;
     } catch (e) {
-      throw LocalDatabaseException(
-        'Failed To Update Test Type ${e.toString()}',
-      );
+      throw LocalDatabaseFailure('Failed To Update Test Type ${e.toString()}');
     }
   }
 }
