@@ -3,7 +3,6 @@ import 'package:dvld/core/error/failure.dart';
 import 'package:dvld/features/applications/application_types/data/data_sources/application_type_table.dart';
 import 'package:dvld/features/applications/application_types/data/models/application_type_model.dart';
 
-
 class ApplicationTypesLocalDataSource {
   ApplicationTypesLocalDataSource({required this.appDatabase});
 
@@ -25,7 +24,7 @@ class ApplicationTypesLocalDataSource {
       }
       return ApplicationTypeModel.fromMap(result.first);
     } on Exception catch (e) {
-      throw LocalDatabaseException(
+      throw LocalDatabaseFailure(
         'Failed To Get Application Type By Id ${e.toString()}',
       );
     }
@@ -38,7 +37,7 @@ class ApplicationTypesLocalDataSource {
 
       return result.map((e) => ApplicationTypeModel.fromMap(e)).toList();
     } on Exception catch (e) {
-      throw LocalDatabaseException(
+      throw LocalDatabaseFailure(
         'Failed To Get All Application Types ${e.toString()}',
       );
     }
@@ -55,7 +54,7 @@ class ApplicationTypesLocalDataSource {
       );
       return id;
     } on Exception catch (e) {
-      throw LocalDatabaseException(
+      throw LocalDatabaseFailure(
         'Failed To Add New Application Type In Database ${e.toString()}',
       );
     }
@@ -65,7 +64,7 @@ class ApplicationTypesLocalDataSource {
     required ApplicationTypeModel applicationTypeModel,
   }) async {
     if (applicationTypeModel.applicationTypeId == null) {
-      throw LocalDatabaseException(
+      throw LocalDatabaseFailure(
         'No Cannot Update Application Type Without applicationTypeId',
       );
     }
@@ -82,7 +81,7 @@ class ApplicationTypesLocalDataSource {
       }
       return true;
     } catch (e) {
-      throw LocalDatabaseException(
+      throw LocalDatabaseFailure(
         'Failed To Update Application Type ${e.toString()}',
       );
     }
