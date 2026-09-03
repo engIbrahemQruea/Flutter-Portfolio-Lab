@@ -18,7 +18,7 @@ class ApplicationTypesRepositoryImpl implements ApplicationTypesRepository {
       final appTypeModels = await _applicationLocalDataSource
           .getAllApplicationTypes();
       return Right(appTypeModels.map((model) => model.mapToEntity()).toList());
-    } on LocalDatabaseException catch (e) {
+    } on LocalDatabaseFailure catch (e) {
       return Left(DatabaseFailure(e.message));
     }
   }
@@ -33,7 +33,7 @@ class ApplicationTypesRepositoryImpl implements ApplicationTypesRepository {
       return Right(appTypeModel.mapToEntity());
     } on NotFoundFailure catch (e) {
       return Left(NotFoundFailure(e.message));
-    } on LocalDatabaseException catch (e) {
+    } on LocalDatabaseFailure catch (e) {
       return Left(DatabaseFailure(e.message));
     }
   }
@@ -50,7 +50,7 @@ class ApplicationTypesRepositoryImpl implements ApplicationTypesRepository {
         applicationTypeModel: appTypeModelInput,
       );
       return Right(currentId);
-    } on LocalDatabaseException catch (e) {
+    } on LocalDatabaseFailure catch (e) {
       return Left(DatabaseFailure(e.message));
     }
   }
@@ -69,7 +69,7 @@ class ApplicationTypesRepositoryImpl implements ApplicationTypesRepository {
       return Right(result);
     } on NotFoundFailure catch (e) {
       return Left(NotFoundFailure(e.message));
-    } on LocalDatabaseException catch (e) {
+    } on LocalDatabaseFailure catch (e) {
       return Left(DatabaseFailure(e.message));
     }
   }
