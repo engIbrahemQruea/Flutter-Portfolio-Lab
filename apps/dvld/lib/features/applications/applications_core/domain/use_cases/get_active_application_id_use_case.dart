@@ -9,9 +9,9 @@ class GetActiveApplicationIDUseCase extends BaseUseCase<int, ActiveParams> {
   final ApplicationsRepository _applicationsRepository;
   GetActiveApplicationIDUseCase(this._applicationsRepository);
   @override
-  Future<Either<Failure, int>> call([ActiveParams? params]) async {
+  Future<Either<Failure, int>> call(ActiveParams params) async {
     return _applicationsRepository.getActiveApplicationsID(
-      applicationTypeId: params!.applicationTypeId,
+      applicationTypeId: params.applicationTypeId,
       personId: params.personId,
     );
   }

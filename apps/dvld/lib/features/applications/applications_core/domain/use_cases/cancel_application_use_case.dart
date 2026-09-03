@@ -10,9 +10,9 @@ class CancelApplicationUseCase extends BaseUseCase<bool, int> {
   final ApplicationsRepository _applicationsRepository;
 
   @override
-  Future<Either<Failure, bool>> call([int? applicationId]) async {
+  Future<Either<Failure, bool>> call(int applicationId) async {
     return _applicationsRepository.updateApplicationStatus(
-      applicationId: applicationId!,
+      applicationId: applicationId,
       newStatus: ApplicationStatus.cancelled.value,
     );
   }

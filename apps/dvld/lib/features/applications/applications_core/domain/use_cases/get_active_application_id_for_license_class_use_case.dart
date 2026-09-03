@@ -14,9 +14,9 @@ class GetActiveApplicationIDForLicenseClassUseCase
   final ApplicationsRepository _applicationsRepository;
   GetActiveApplicationIDForLicenseClassUseCase(this._applicationsRepository);
   @override
-  Future<Either<Failure, int>> call([ActiveAppParams? params]) async {
+  Future<Either<Failure, int>> call(ActiveAppParams params) async {
     return _applicationsRepository.getActiveApplicationsIDForLicenseClass(
-      applicationTypeId: params!.applicationTypeId,
+      applicationTypeId: params.applicationTypeId,
       personId: params.personId,
       licenseClassId: params.licenseClassId,
     );
