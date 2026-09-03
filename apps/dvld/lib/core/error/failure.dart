@@ -17,8 +17,8 @@ class ServerFailure extends Failure {
   const ServerFailure(super.message);
 }
 
-class LocalDatabaseException extends DatabaseFailure {
-  const LocalDatabaseException([super.message = 'error in query database']);
+class LocalDatabaseFailure extends DatabaseFailure {
+  const LocalDatabaseFailure([super.message = 'error in query database']);
 }
 
 class LinkedRecordFailure extends DatabaseFailure {
