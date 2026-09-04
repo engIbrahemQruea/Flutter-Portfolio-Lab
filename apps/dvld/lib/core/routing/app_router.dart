@@ -10,9 +10,9 @@ import 'package:dvld/features/applications/driving_license_services/new_driving_
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/screens/local_driving_license_applications_list/logic/local_driving_license_applications_list_screen_cubit/local_driving_license_applications_list_screen_cubit.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/screens/show_local_driving_license_application_info/show_local_driving_license_application_info_screen.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/widgets/driving_license_application_info/logic/driving_license_application_info_cubit/driving_license_application_info_cubit.dart';
-import 'package:dvld/features/applications/test_types/ui/logic/index_test_type_cubit.dart';
-import 'package:dvld/features/applications/test_types/ui/screens/index_test_types_screen.dart';
-import 'package:dvld/features/applications/test_types/ui/screens/update_test_types_screen.dart';
+import 'package:dvld/features/tests/test_types/ui/logic/index_test_type_cubit.dart';
+import 'package:dvld/features/tests/test_types/ui/screens/index_test_types_screen.dart';
+import 'package:dvld/features/tests/test_types/ui/screens/update_test_types_screen.dart';
 import 'package:dvld/features/dashboard/presentation/views/dash_board_screen.dart';
 import 'package:dvld/features/login/presentation/logic/login_screen_cubit/login_screen_cubit.dart';
 import 'package:dvld/features/login/presentation/screens/login_screen.dart';
