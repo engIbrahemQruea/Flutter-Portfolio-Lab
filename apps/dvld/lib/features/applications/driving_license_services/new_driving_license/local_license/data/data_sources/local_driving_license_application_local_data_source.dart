@@ -1,4 +1,5 @@
 import 'package:dvld/core/database/app_database.dart';
+import 'package:dvld/core/error/failure.dart';
 import 'package:dvld/features/applications/applications_core/data/data_sources/application_table.dart';
 import 'package:dvld/features/applications/applications_core/data/models/application_model.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/data_sources/license_class_table.dart';
@@ -8,13 +9,7 @@ import 'package:dvld/features/applications/driving_license_services/new_driving_
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/models/local_driving_license_application_item_model.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/models/local_driving_license_application_model.dart';
 
-class LocalDataException implements Exception {
-  final String message;
-  const LocalDataException(this.message);
 
-  @override
-  String toString() => message;
-}
 
 class LocalDrivingLicenseApplicationLocalDataSource {
   LocalDrivingLicenseApplicationLocalDataSource(this.appDatabase);

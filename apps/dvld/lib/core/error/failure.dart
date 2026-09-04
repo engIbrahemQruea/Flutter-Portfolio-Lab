@@ -72,3 +72,11 @@ class UnexpectedFailure extends Failure {
     super.message = 'حدث خطأ غير متوقع، يرجى التواصل مع الدعم الفني',
   ]);
 }
+
+class LocalDataException implements Exception {
+  final String message;
+  const LocalDataException(this.message);
+
+  @override
+  String toString() => message;
+}
