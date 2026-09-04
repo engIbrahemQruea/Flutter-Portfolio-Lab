@@ -6,6 +6,10 @@ import 'package:dvld/features/applications/application_types/ui/screens/applicat
 import 'package:dvld/features/applications/application_types/ui/screens/update_application_types_screen/update_application_types_screen.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/logic/add_update_local_driving_license_application_screen/add_update_local_dr_li_application_screen_cubit.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/screens/add_update_local_driving_license_application_screen.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/screens/local_driving_license_applications_list/list_local_driving_license_applications_screen.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/screens/local_driving_license_applications_list/logic/local_driving_license_applications_list_screen_cubit/local_driving_license_applications_list_screen_cubit.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/screens/show_local_driving_license_application_info/show_local_driving_license_application_info_screen.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/widgets/driving_license_application_info/logic/driving_license_application_info_cubit/driving_license_application_info_cubit.dart';
 import 'package:dvld/features/applications/test_types/ui/logic/index_test_type_cubit.dart';
 import 'package:dvld/features/applications/test_types/ui/screens/index_test_types_screen.dart';
 import 'package:dvld/features/applications/test_types/ui/screens/update_test_types_screen.dart';
@@ -103,6 +107,50 @@ abstract class AppRouter {
                     ),
 
                     routes: [
+                      /// Feature Applications/Driving License Services/New Driving License/Local Driving License List Local Driving License Applications
+                      GoRoute(
+                        path: DRoutes.listLocalDrLiApplicationsScreen,
+                        name: DRoutes.listLocalDrLiApplicationsScreen,
+                        builder: (context, state) {
+                          return BlocProvider(
+                            create: (context) =>
+                                getIt<
+                                    LocalDrivingLicenseApplicationsListScreenCubit
+                                  >()
+                                  ..getAllLocalDrivingLicenseApplications(),
+                            child:
+                                const ListLocalDrivingLicenseApplicationsScreen(),
+                          );
+                        },
+                      ),
+
+                      /// Feature Applications/Driving License Services/New Driving License/Local Driving License Show Local Driving License Application
+                      GoRoute(
+                        path: DRoutes.showLocalDrLiApplicationsInfoScreen,
+                        name: DRoutes.showLocalDrLiApplicationsInfoScreen,
+                        builder: (context, state) {
+                          final localDrLiApplicationIdString = state
+                              .uri
+                              .queryParameters['localDrLiApplicationId'];
+                          final localDrLiApplicationIdInt =
+                              localDrLiApplicationIdString == null
+                              ? null
+                              : int.parse(localDrLiApplicationIdString);
+
+                          return BlocProvider(
+                            create: (context) =>
+                                getIt<DrivingLicenseApplicationInfoCubit>()
+                                  ..loadApplicationInfoByLocalDrivingLicenseAppID(
+                                    localDriLiceApplicationId:
+                                        localDrLiApplicationIdInt,
+                                  ),
+                            child:
+                                const ShowLocalDrivingLicenseApplicationInfoScreen(),
+                          );
+                        },
+                      ),
+
+                      ///Feature Applications/Driving License Services/New Driving License/Local Driving License Add Update Local Driving License Application
                       GoRoute(
                         path: DRoutes.addUpdateLocalDrLiApplicationsScreen,
                         name: DRoutes.addUpdateLocalDrLiApplicationsScreen,
