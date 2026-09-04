@@ -17,6 +17,7 @@ class GetAllLocalDrivingLicenseApplicationUseCase
   );
   @override
   Future<Either<Failure, List<LocalDrivingLicenseApplicationListItemEntity>>>
-  call(BaseUseCaseNoParams noParams) => localDrivingLicenseApplicationRepository
-      .getAllLocalDrivingLicenseApplications();
+  call([BaseUseCaseNoParams? noParams]) =>
+      localDrivingLicenseApplicationRepository
+          .getAllLocalDrivingLicenseApplications();
 }
