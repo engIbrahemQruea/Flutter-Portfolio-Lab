@@ -10,9 +10,6 @@ import 'package:dvld/features/applications/driving_license_services/new_driving_
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/screens/local_driving_license_applications_list/logic/local_driving_license_applications_list_screen_cubit/local_driving_license_applications_list_screen_cubit.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/screens/show_local_driving_license_application_info/show_local_driving_license_application_info_screen.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/widgets/driving_license_application_info/logic/driving_license_application_info_cubit/driving_license_application_info_cubit.dart';
-import 'package:dvld/features/tests/test_types/ui/logic/index_test_type_cubit.dart';
-import 'package:dvld/features/tests/test_types/ui/screens/index_test_types_screen.dart';
-import 'package:dvld/features/tests/test_types/ui/screens/update_test_types_screen.dart';
 import 'package:dvld/features/dashboard/presentation/views/dash_board_screen.dart';
 import 'package:dvld/features/login/presentation/logic/login_screen_cubit/login_screen_cubit.dart';
 import 'package:dvld/features/login/presentation/screens/login_screen.dart';
@@ -35,6 +32,10 @@ import 'package:dvld/features/people/presentation/person_details_screen/person_d
 import 'package:dvld/features/people/presentation/screens/people_screen.dart';
 import 'package:dvld/features/people/presentation/screens/sub_screens/add_update_people_screen.dart';
 import 'package:dvld/features/people/presentation/shared_widgets/person_selector/cubit/person_selector_cubit.dart';
+import 'package:dvld/features/tests/test_appointments/ui/screens/test_appointments_list_screen.dart';
+import 'package:dvld/features/tests/test_types/ui/logic/index_test_type_cubit.dart';
+import 'package:dvld/features/tests/test_types/ui/screens/index_test_types_screen.dart';
+import 'package:dvld/features/tests/test_types/ui/screens/update_test_types_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -202,6 +203,31 @@ abstract class AppRouter {
                                     applicationType: appTypeIdInt,
                                   ),
                             child: const UpdateApplicationTypesScreen(),
+                          );
+                        },
+                      ),
+
+                      /// Feature Tests/Test Appointments List Test Appointments
+                      GoRoute(
+                        path: DRoutes.listTestAppointmentsScreen,
+                        name: DRoutes.listTestAppointmentsScreen,
+                        builder: (context, state) {
+                          final localDrLiApplicationIdString = state
+                              .uri
+                              .queryParameters['localDrLiApplicationId'];
+                          final localDrLiApplicationIdInt =
+                              localDrLiApplicationIdString == null
+                              ? null
+                              : int.parse(localDrLiApplicationIdString);
+
+                          return BlocProvider(
+                            create: (context) =>
+                                getIt<DrivingLicenseApplicationInfoCubit>()
+                                  ..loadApplicationInfoByLocalDrivingLicenseAppID(
+                                    localDriLiceApplicationId:
+                                        localDrLiApplicationIdInt,
+                                  ),
+                            child: const TestAppointmentsListScreen(),
                           );
                         },
                       ),
