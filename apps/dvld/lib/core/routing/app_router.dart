@@ -32,6 +32,7 @@ import 'package:dvld/features/people/presentation/person_details_screen/person_d
 import 'package:dvld/features/people/presentation/screens/people_screen.dart';
 import 'package:dvld/features/people/presentation/screens/sub_screens/add_update_people_screen.dart';
 import 'package:dvld/features/people/presentation/shared_widgets/person_selector/cubit/person_selector_cubit.dart';
+import 'package:dvld/features/tests/test_appointments/ui/logic/test_appointments_list/test_appointments_list_cubit.dart';
 import 'package:dvld/features/tests/test_appointments/ui/screens/test_appointments_list_screen.dart';
 import 'package:dvld/features/tests/test_types/ui/logic/index_test_type_cubit.dart';
 import 'package:dvld/features/tests/test_types/ui/screens/index_test_types_screen.dart';
@@ -220,13 +221,22 @@ abstract class AppRouter {
                               ? null
                               : int.parse(localDrLiApplicationIdString);
 
-                          return BlocProvider(
-                            create: (context) =>
-                                getIt<DrivingLicenseApplicationInfoCubit>()
-                                  ..loadApplicationInfoByLocalDrivingLicenseAppID(
-                                    localDriLiceApplicationId:
-                                        localDrLiApplicationIdInt,
-                                  ),
+                          return MultiBlocProvider(
+                            providers: [
+                              BlocProvider(
+                                create: (context) =>
+                                    getIt<DrivingLicenseApplicationInfoCubit>()
+                                      ..loadApplicationInfoByLocalDrivingLicenseAppID(
+                                        localDriLiceApplicationId:
+                                            localDrLiApplicationIdInt,
+                                      ),
+                              ),
+                              BlocProvider(
+                                create: (context) =>
+                                    getIt<TestAppointmentsListCubit>()
+                                      ..getAllTestAppointments(),
+                              ),
+                            ],
                             child: const TestAppointmentsListScreen(),
                           );
                         },
