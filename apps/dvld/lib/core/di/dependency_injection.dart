@@ -16,17 +16,12 @@ import 'package:dvld/features/applications/driving_license_services/new_driving_
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/data_sources/local_driving_license_application_local_data_source.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/data_sources/local_driving_license_application_table.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/data_sources/local_driving_license_application_view_table.dart';
-import 'package:dvld/features/tests/test_appointments/data/data_sources/test_appointments_table.dart';
-import 'package:dvld/features/tests/tests_core/data/data_sources/test_table.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/repository_impl/local_driving_license_application_repository_impl.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/domain/repository/local_driving_license_application_repository.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/domain/usecases/index_local_license_use_case.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/logic/add_update_local_driving_license_application_screen/add_update_local_dr_li_application_screen_cubit.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/screens/local_driving_license_applications_list/logic/local_driving_license_applications_list_screen_cubit/local_driving_license_applications_list_screen_cubit.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/widgets/driving_license_application_info/logic/driving_license_application_info_cubit/driving_license_application_info_cubit.dart';
-import 'package:dvld/features/tests/test_types/data/data_sources/test_type_table.dart';
-import 'package:dvld/features/tests/test_types/data/index_data_test_type.dart';
-import 'package:dvld/features/tests/test_types/ui/logic/index_test_type_cubit.dart';
 import 'package:dvld/features/login/data/datasources/login_local_data_source.dart';
 import 'package:dvld/features/login/data/login_repository_impl/login_repository_impl.dart';
 import 'package:dvld/features/login/domain/login_repository/login_repository.dart';
@@ -70,6 +65,17 @@ import 'package:dvld/features/people/presentation/logic/add_pdate_form/add_updat
 import 'package:dvld/features/people/presentation/logic/cubit/get_all_people_cubit.dart';
 import 'package:dvld/features/people/presentation/person_details_screen/logic/person_details_cubit/person_details_cubit.dart';
 import 'package:dvld/features/people/presentation/shared_widgets/person_selector/cubit/person_selector_cubit.dart';
+import 'package:dvld/features/tests/test_appointments/data/data_sources/test_appointment_local_data_source.dart';
+import 'package:dvld/features/tests/test_appointments/data/data_sources/test_appointment_local_data_source_impl.dart';
+import 'package:dvld/features/tests/test_appointments/data/data_sources/test_appointments_table.dart';
+import 'package:dvld/features/tests/test_appointments/data/repositories_impl/test_appointments_repository_impl.dart';
+import 'package:dvld/features/tests/test_appointments/domain/use_cases/index_test_appointment_use_case.dart';
+import 'package:dvld/features/tests/test_appointments/ui/logic/test_appointments_list/test_appointments_list_cubit.dart';
+import 'package:dvld/features/tests/test_types/data/data_sources/test_type_table.dart';
+import 'package:dvld/features/tests/test_types/data/index_data_test_type.dart';
+import 'package:dvld/features/tests/test_types/ui/logic/index_test_type_cubit.dart';
+import 'package:dvld/features/tests/tests_core/data/data_sources/test_table.dart';
+import 'package:dvld/features/tests/tests_core/index_tests_core.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -367,5 +373,47 @@ Future<void> setupGetIt() async {
 
   getIt.registerFactory<DrivingLicenseApplicationInfoCubit>(
     () => DrivingLicenseApplicationInfoCubit(getIt()),
+  );
+
+  /// Feature Tests/Test_core
+
+  getIt.registerLazySingleton<TestLocalDataSource>(
+    () => TestLocalDataSourceImpl(getIt()),
+  );
+
+  getIt.registerLazySingleton<TestRepository>(() => TestRepositoryImpl());
+
+  /// Feature Tests/TestAppointments
+
+  getIt.registerLazySingleton<TestAppointmentLocalDataSource>(
+    () => TestAppointmentLocalDataSourceImpl(getIt()),
+  );
+
+  getIt.registerLazySingleton<TestAppointmentsRepository>(
+    () => TestAppointmentsRepositoryImpl(getIt()),
+  );
+
+  getIt.registerLazySingleton(() => GetAllTestAppointmentsUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => GetTestAppointmentInfoByIdUseCase(getIt()));
+
+  getIt.registerLazySingleton(
+    () => GetApplicationTestAppointmentsPerTestTypeUseCase(getIt()),
+  );
+
+  getIt.registerLazySingleton(() => GetLastTestAppointmentUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => GetTestAppointmentInfoByIdUseCase(getIt()));
+
+  getIt.registerLazySingleton(
+    () => GetTestIdByTestAppointmentIdUseCase(getIt()),
+  );
+
+  getIt.registerLazySingleton(() => UpdateTestAppointmentUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => AddTestAppointmentUseCase(getIt()));
+
+  getIt.registerFactory<TestAppointmentsListCubit>(
+    () => TestAppointmentsListCubit(getIt()),
   );
 }
