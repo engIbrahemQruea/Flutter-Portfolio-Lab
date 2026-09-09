@@ -403,8 +403,6 @@ Future<void> setupGetIt() async {
 
   getIt.registerLazySingleton(() => GetLastTestAppointmentUseCase(getIt()));
 
-  getIt.registerLazySingleton(() => GetTestAppointmentInfoByIdUseCase(getIt()));
-
   getIt.registerLazySingleton(
     () => GetTestIdByTestAppointmentIdUseCase(getIt()),
   );
