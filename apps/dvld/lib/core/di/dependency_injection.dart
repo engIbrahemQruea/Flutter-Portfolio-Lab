@@ -79,6 +79,8 @@ import 'package:dvld/features/tests/tests_core/index_tests_core.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../features/tests/test_appointments/data/data_sources/test_appointments_view_table.dart';
+
 final getIt = GetIt.instance;
 
 Future<void> setupGetIt() async {
@@ -381,9 +383,14 @@ Future<void> setupGetIt() async {
     () => TestLocalDataSourceImpl(getIt()),
   );
 
-  getIt.registerLazySingleton<TestRepository>(() => TestRepositoryImpl());
+  getIt.registerLazySingleton<TestRepository>(
+    () => TestRepositoryImpl(getIt()),
+  );
 
   /// Feature Tests/TestAppointments
+
+  appDatabase.registerTable(TestAppointmentsTable());
+  appDatabase.registerTable(TestAppointmentsViewTable());
 
   getIt.registerLazySingleton<TestAppointmentLocalDataSource>(
     () => TestAppointmentLocalDataSourceImpl(getIt()),
