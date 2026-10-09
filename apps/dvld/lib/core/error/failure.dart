@@ -80,3 +80,8 @@ class LocalDataException implements Exception {
   @override
   String toString() => message;
 }
+
+/// Failure From Validation (Business Constraints)
+class BusinessRuleFailure extends Failure {
+  const BusinessRuleFailure(super.message);
+}
