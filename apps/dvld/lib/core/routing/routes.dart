@@ -15,8 +15,13 @@ abstract class DRoutes {
   static const String showLocalDrLiApplicationsInfoScreen =
       '$applications/showLocalDrLiApplicationsInfoScreen';
 
+  static const String takeTestScreen = '$applications/takeTestScreen';
+
   static const String listTestAppointmentsScreen =
       '$applications/listTestAppointmentsScreen';
+
+  static const String scheduleTestWidgetScreen =
+      '$applications/scheduleTestWidgetScreen';
 
   static const String listLocalDrLiApplicationsScreen =
       '$applications/listLocalDrLiApplicationsScreen';
