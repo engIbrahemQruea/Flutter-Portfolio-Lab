@@ -2,9 +2,9 @@ import 'package:dvld/core/database/app_table.dart';
 import 'package:dvld/features/applications/applications_core/data/data_sources/application_table.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/data_sources/license_class_table.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/data_sources/local_driving_license_application_table.dart';
+import 'package:dvld/features/people/data/data_sources/local_data_sources/people_table.dart';
 import 'package:dvld/features/tests/test_appointments/data/data_sources/test_appointments_table.dart';
 import 'package:dvld/features/tests/tests_core/data/data_sources/test_table.dart';
-import 'package:dvld/features/people/data/data_sources/local_data_sources/people_table.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 
 class LocalDrivingLicenseApplicationViewTable implements AppTable {
