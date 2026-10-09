@@ -65,6 +65,10 @@ import 'package:dvld/features/people/presentation/logic/add_pdate_form/add_updat
 import 'package:dvld/features/people/presentation/logic/cubit/get_all_people_cubit.dart';
 import 'package:dvld/features/people/presentation/person_details_screen/logic/person_details_cubit/person_details_cubit.dart';
 import 'package:dvld/features/people/presentation/shared_widgets/person_selector/cubit/person_selector_cubit.dart';
+import 'package:dvld/features/tests/schedule_test/domain/use_case/get_schedule_test_info_use_case.dart';
+import 'package:dvld/features/tests/schedule_test/ui/logic/schedule_test/schedule_test_cubit.dart';
+import 'package:dvld/features/tests/take_test/domain/use_case/get_take_test_info_use_case.dart';
+import 'package:dvld/features/tests/take_test/ui/logic/take_test_cubit/take_test_cubit.dart';
 import 'package:dvld/features/tests/test_appointments/data/data_sources/test_appointment_local_data_source.dart';
 import 'package:dvld/features/tests/test_appointments/data/data_sources/test_appointment_local_data_source_impl.dart';
 import 'package:dvld/features/tests/test_appointments/data/data_sources/test_appointments_table.dart';
@@ -75,6 +79,7 @@ import 'package:dvld/features/tests/test_types/data/data_sources/test_type_table
 import 'package:dvld/features/tests/test_types/data/index_data_test_type.dart';
 import 'package:dvld/features/tests/test_types/ui/logic/index_test_type_cubit.dart';
 import 'package:dvld/features/tests/tests_core/data/data_sources/test_table.dart';
+import 'package:dvld/features/tests/tests_core/domain/use_cases/add_new_test_use_case.dart';
 import 'package:dvld/features/tests/tests_core/index_tests_core.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -387,6 +392,8 @@ Future<void> setupGetIt() async {
     () => TestRepositoryImpl(getIt()),
   );
 
+  getIt.registerLazySingleton(() => AddNewTestUseCase(getIt()));
+
   /// Feature Tests/TestAppointments
 
   appDatabase.registerTable(TestAppointmentsTable());
@@ -418,7 +425,28 @@ Future<void> setupGetIt() async {
 
   getIt.registerLazySingleton(() => AddTestAppointmentUseCase(getIt()));
 
+  getIt.registerLazySingleton(() => CanPrescheduleTestUseCase(getIt()));
+
   getIt.registerFactory<TestAppointmentsListCubit>(
-    () => TestAppointmentsListCubit(getIt()),
+    () => TestAppointmentsListCubit(getIt(), getIt(), getIt()),
+  );
+
+  // Feature Tests/ScheduleTest
+
+  getIt.registerLazySingleton(
+    () =>
+        GetScheduleTestInfoUseCase(getIt(), getIt(), getIt(), getIt(), getIt()),
+  );
+
+  getIt.registerFactory<ScheduleTestCubit>(() => ScheduleTestCubit(getIt()));
+
+  // Feature Tests/TakeTest
+
+  getIt.registerLazySingleton(
+    () => GetTakeTestInfoUseCase(getIt(), getIt(), getIt()),
+  );
+
+  getIt.registerFactory<TakeTestCubit>(
+    () => TakeTestCubit(getIt(), getIt(), getIt()),
   );
 }
