@@ -32,6 +32,11 @@ import 'package:dvld/features/people/presentation/person_details_screen/person_d
 import 'package:dvld/features/people/presentation/screens/people_screen.dart';
 import 'package:dvld/features/people/presentation/screens/sub_screens/add_update_people_screen.dart';
 import 'package:dvld/features/people/presentation/shared_widgets/person_selector/cubit/person_selector_cubit.dart';
+import 'package:dvld/features/tests/schedule_test/domain/entities/schedule_test_type.dart';
+import 'package:dvld/features/tests/schedule_test/ui/logic/schedule_test/schedule_test_cubit.dart';
+import 'package:dvld/features/tests/schedule_test/ui/screens/schedule_test_widget_screen.dart';
+import 'package:dvld/features/tests/take_test/ui/logic/take_test_cubit/take_test_cubit.dart';
+import 'package:dvld/features/tests/take_test/ui/screens/take_test_screen.dart';
 import 'package:dvld/features/tests/test_appointments/ui/logic/test_appointments_list/test_appointments_list_cubit.dart';
 import 'package:dvld/features/tests/test_appointments/ui/screens/test_appointments_list_screen.dart';
 import 'package:dvld/features/tests/test_types/ui/logic/index_test_type_cubit.dart';
@@ -220,6 +225,7 @@ abstract class AppRouter {
                               localDrLiApplicationIdString == null
                               ? null
                               : int.parse(localDrLiApplicationIdString);
+                          final testType = state.extra as ScheduleTestType;
 
                           return MultiBlocProvider(
                             providers: [
@@ -234,10 +240,62 @@ abstract class AppRouter {
                               BlocProvider(
                                 create: (context) =>
                                     getIt<TestAppointmentsListCubit>()
-                                      ..getAllTestAppointments(),
+                                      ..getTestAppointmentsPerTestType(
+                                        localDLapplicationID:
+                                            localDrLiApplicationIdInt!,
+                                        testTypeID: testType.value,
+                                      ),
                               ),
                             ],
-                            child: const TestAppointmentsListScreen(),
+                            child: TestAppointmentsListScreen(
+                              testType: testType,
+                            ),
+                          );
+                        },
+                      ),
+                      GoRoute(
+                        path: DRoutes.scheduleTestWidgetScreen,
+                        name: DRoutes.scheduleTestWidgetScreen,
+                        builder: (context, state) {
+                          final localDrLiApplicationIdString = state
+                              .uri
+                              .queryParameters['localDrLiApplicationId'];
+                          final localDrLiApplicationIdInt =
+                              localDrLiApplicationIdString == null
+                              ? null
+                              : int.parse(localDrLiApplicationIdString);
+                          final testType = state.extra as ScheduleTestType;
+                          // final previousCubit =
+                          //     state.extra as DrivingLicenseApplicationInfoCubit;
+                          return BlocProvider(
+                            create: (context) =>
+                                getIt<ScheduleTestCubit>()..loadData(
+                                  localAppId: localDrLiApplicationIdInt!,
+                                  testType: testType,
+                                  appointmentId: null,
+                                ),
+                            child: const ScheduleTestWidgetScreen(),
+                          );
+                        },
+                      ),
+
+                      GoRoute(
+                        path: DRoutes.takeTestScreen,
+                        name: DRoutes.takeTestScreen,
+                        builder: (context, state) {
+                          final testAppointmentIdString =
+                              state.uri.queryParameters['testAppointmentId'];
+                          final testAppointmentIdInt =
+                              testAppointmentIdString == null
+                              ? null
+                              : int.parse(testAppointmentIdString);
+
+                          return BlocProvider(
+                            create: (context) => getIt<TakeTestCubit>()
+                              ..loadTakeTestData(
+                                testAppointmentID: testAppointmentIdInt!,
+                              ),
+                            child: const TakeTestScreen(),
                           );
                         },
                       ),
