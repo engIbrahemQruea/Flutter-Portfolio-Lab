@@ -14,7 +14,7 @@ class CreateLocalDrivingLicenseApplicationParams extends Equatable {
 
   @override
   List<Object?> get props => [
-    applicationEntity,
+    applicationEntity, 
     licenseClassId,
     localDriLiceApplicationId,
   ];
