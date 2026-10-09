@@ -10,6 +10,7 @@ class InfoItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: .min,
       children: [
         Text('$label: ', style: const TextStyle(fontWeight: FontWeight.bold)),
         horizontalSpace(5),
