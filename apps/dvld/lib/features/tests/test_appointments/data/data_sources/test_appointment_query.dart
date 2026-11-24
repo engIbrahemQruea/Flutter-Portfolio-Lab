@@ -10,4 +10,12 @@ class TestAppointmentQuery {
     AND ${TestAppointmentsTable.colIsLocked} = 0
   LIMIT 1;
 ''';
+
+  static const String updateSpecialTestAppointmentQuery =
+      '''
+  UPDATE ${TestAppointmentsTable.tableName}
+  SET ${TestAppointmentsTable.colIsLocked} = 1,
+   ${TestAppointmentsTable.colRetakeTestApplicationID} = ?
+  WHERE ${TestAppointmentsTable.colTestAppointmentID} = ?;
+''';
 }

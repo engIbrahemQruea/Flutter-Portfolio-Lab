@@ -16,6 +16,7 @@ final class TestAppointmentsViewTable implements AppTable {
   static const String colTestAppointmentID = 'TestAppointmentID';
   static const String colLocalDrivingLicenseApplicationID =
       'LocalDrivingLicenseApplicationID';
+  static const String colPersonID = 'PersonID';
   static const String colTestTypeTitle = 'TestTypeTitle';
   static const String colClassName = 'ClassName';
   static const String colAppointmentDate = 'AppointmentDate';
@@ -23,7 +24,7 @@ final class TestAppointmentsViewTable implements AppTable {
   static const String colFullName = 'FullName';
   static const String colIsLocked = 'IsLocked';
 
- static const String createViewQuery =
+  static const String createViewQuery =
       '''
     CREATE VIEW $viewName AS
     SELECT 
@@ -33,6 +34,7 @@ final class TestAppointmentsViewTable implements AppTable {
         lc.${LicenseClassTable.colName} AS $colClassName,
         ta.${TestAppointmentsTable.colAppointmentDate} AS $colAppointmentDate,
         ta.${TestAppointmentsTable.colPaidFees} AS $colPaidFees,
+        p.${PersonTable.colId} AS $colPersonID,
         p.${PersonTable.colFirstName} || ' ' || p.${PersonTable.colSecondName} || COALESCE(' ' || p.${PersonTable.colThirdName}, '') || ' ' || p.${PersonTable.colLastName} AS $colFullName,
         ta.${TestAppointmentsTable.colIsLocked} AS $colIsLocked
     FROM ${TestAppointmentsTable.tableName} ta

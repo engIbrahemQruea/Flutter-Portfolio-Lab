@@ -1,11 +1,17 @@
 import 'package:dvld/core/database/app_database.dart';
+import 'package:dvld/core/domain/value_objects/app_ids.dart';
 import 'package:dvld/core/error/failure.dart';
+import 'package:dvld/features/applications/application_types/application_types_helper/enum_application_types.dart';
+import 'package:dvld/features/applications/applications_core/data/data_sources/application_table.dart';
+import 'package:dvld/features/applications/applications_core/data/models/application_model.dart';
+import 'package:dvld/features/applications/applications_core/domain/entities/application_status.dart';
 import 'package:dvld/features/tests/test_appointments/data/data_sources/test_appointment_local_data_source.dart';
 import 'package:dvld/features/tests/test_appointments/data/data_sources/test_appointment_query.dart';
 import 'package:dvld/features/tests/test_appointments/data/data_sources/test_appointments_table.dart';
 import 'package:dvld/features/tests/test_appointments/data/data_sources/test_appointments_view_table.dart';
 import 'package:dvld/features/tests/test_appointments/data/models/read_model/test_appointment_item_model.dart';
 import 'package:dvld/features/tests/test_appointments/data/models/test_appointment_model.dart';
+import 'package:dvld/features/tests/test_appointments/domain/entities/param/create_schedule_and_retake_test_application_param.dart';
 
 class TestAppointmentLocalDataSourceImpl
     implements TestAppointmentLocalDataSource {
@@ -129,7 +135,7 @@ class TestAppointmentLocalDataSourceImpl
   }
 
   @override
-  Future<bool> updateTestAppointment({
+  Future<int> updateTestAppointment({
     required TestAppointmentModel testAppointmentModel,
   }) async {
     try {
@@ -141,9 +147,87 @@ class TestAppointmentLocalDataSourceImpl
         whereArgs: [testAppointmentModel.testAppointmentID],
       );
 
-      return rowsAffected > 0;
+      return rowsAffected;
     } catch (e) {
       throw LocalDataException('Failed to update test appointment: $e');
+    }
+  }
+
+  @override
+  Future<bool> updateSpecialTestAppointment({
+    required int testAppointmentID,
+    required int currentUserId,
+    required DateTime date,
+  }) async {
+    try {
+      final db = await _database.database;
+      final rowsAffected = await db.rawUpdate(
+        TestAppointmentQuery.updateSpecialTestAppointmentQuery,
+        [testAppointmentID, currentUserId, date],
+      );
+
+      return rowsAffected > 0;
+    } catch (e) {
+      throw LocalDataException('Failed to update special test appointment: $e');
+    }
+  }
+
+  @override
+  Future<int> createScheduleAndRetakeApplicationTestAppointment({
+    required CreateScheduleAndRetakeTestApplicationParams createdTestAppParams,
+  }) async {
+    try {
+      final db = await _database.database;
+
+      return await db.transaction<int>((txn) async {
+        final now = DateTime.now();
+
+        final applicationModel = ApplicationModel(
+          applicantPersonId: createdTestAppParams.personID,
+          applicationDate: now,
+          applicationTypeId: EnumApplicationTypes.retakeTest.value,
+          applicationStatus: ApplicationStatus.completed,
+          lastStatusDate: now,
+          paidFees: createdTestAppParams.paidFees,
+          createdByUserId: createdTestAppParams.currentUserId,
+        );
+
+        final newApplicationID = await txn.insert(
+          ApplicationTable.tableName,
+          applicationModel.toMap(),
+        );
+
+        if (newApplicationID <= 0) {
+          throw StateError('Failed to create retake application.');
+        }
+
+        final testAppModel = TestAppointmentModel(
+          appointmentDate: createdTestAppParams.selectedDate,
+          paidFees: createdTestAppParams.testFees,
+          isLocked: false,
+          testTypeID: TestTypeId(createdTestAppParams.testTypeID),
+          localDrLiApplicationID: LocalLicenseAppId(
+            createdTestAppParams.localDLApplicationID,
+          ),
+          createdByUserID: UserId(createdTestAppParams.currentUserId),
+          retakeTestApplicationID: RetakeTestApplicationId(newApplicationID),
+        );
+
+        final newTestAppID = await txn.insert(
+          TestAppointmentsTable.tableName,
+          testAppModel.toMap(),
+        );
+
+        if (newTestAppID <= 0) {
+          throw StateError('Failed to create test appointment.');
+        }
+
+        return newApplicationID;
+      });
+    } catch (e) {
+      throw LocalDataException(
+        'Failed to create schedule and retake application test appointment: $e',
+      );
     }
   }
 }
