@@ -1,4 +1,5 @@
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/domain/read_entity/local_driving_license_application_details_read_entity.dart';
+import 'package:dvld/features/login/domain/entities/login_entity.dart';
 import 'package:dvld/features/tests/schedule_test/domain/entities/schedule_constraints.dart';
 import 'package:dvld/features/tests/schedule_test/domain/entities/schedule_test_creation_mode.dart';
 import 'package:dvld/features/tests/test_appointments/domain/entities/test_appointment_entity.dart';
@@ -8,6 +9,7 @@ import 'package:equatable/equatable.dart';
 final class ScheduleTestInfoEntity extends Equatable {
   final TestAppointmentEntity? testAppointment;
   final TestTypeEntity? testType;
+  final LoginEntity? loginEntity;
   final LocalDrivingLicenseApplicationDetailsReadEntity
   localApplicationDetailsReadEntity;
   final ScheduleTestCreationMode scheduleTestCreationMode;
@@ -22,6 +24,7 @@ final class ScheduleTestInfoEntity extends Equatable {
   const ScheduleTestInfoEntity({
     this.testAppointment,
     this.testType,
+    this.loginEntity,
     required this.localApplicationDetailsReadEntity,
     required this.trialNumber,
     required this.testFees,
@@ -31,15 +34,18 @@ final class ScheduleTestInfoEntity extends Equatable {
     required this.constraint,
   });
 
-  double get testFee => localApplicationDetailsReadEntity
-      .applicationTypeEntity
-      .applicationTypeFees;
+  
   double get totalFees => testFees + retakeFees;
 
   bool get canSchedule => constraint is NoConstraintViolated;
+
+  int get currentUserId => loginEntity?.userId ?? 0;
+
+  
   ScheduleTestInfoEntity copyWith({
     TestAppointmentEntity? testAppointment,
     TestTypeEntity? testType,
+    LoginEntity? loginEntity,
     LocalDrivingLicenseApplicationDetailsReadEntity?
     localApplicationDetailsReadEntity,
     ScheduleTestCreationMode? scheduleTestCreationMode,
@@ -51,6 +57,7 @@ final class ScheduleTestInfoEntity extends Equatable {
   }) => ScheduleTestInfoEntity(
     testAppointment: testAppointment ?? this.testAppointment,
     testType: testType ?? this.testType,
+    loginEntity: loginEntity ?? this.loginEntity,
     localApplicationDetailsReadEntity:
         localApplicationDetailsReadEntity ??
         this.localApplicationDetailsReadEntity,
@@ -67,6 +74,7 @@ final class ScheduleTestInfoEntity extends Equatable {
   List<Object?> get props => [
     testAppointment,
     testType,
+    loginEntity,
     localApplicationDetailsReadEntity,
     scheduleTestCreationMode,
     mode,

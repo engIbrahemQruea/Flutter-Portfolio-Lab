@@ -21,24 +21,18 @@ class PrerequisiteTestNotPassedConstraint extends ScheduleConstraint {
   const PrerequisiteTestNotPassedConstraint(this.requiredTest);
 }
 
+extension ScheduleConstraintUiX on ScheduleConstraint {
+  bool get canSchedule => this is NoConstraintViolated;
 
+  bool get isLocked => this is AppointmentLockedConstraint;
 
-
-
-
-
-// class ScheduleConstraints {
-//   final bool isAllowed;
-//   final String? blockingMessage;
-//   final bool isLocked;
-
-//   const ScheduleConstraints.allowed()
-//       : isAllowed = true,
-//         blockingMessage = null,
-//         isLocked = false;
-
-//   const ScheduleConstraints.blocked({required String message, bool isLocked = false})
-//       : isAllowed = false,
-//         blockingMessage = message,
-//         isLocked = isLocked;
-// }
+  String? get blockingMessage => switch (this) {
+    NoConstraintViolated() => null,
+    ActiveAppointmentExistsConstraint() =>
+      'Person Already has an active appointment for this test',
+    AppointmentLockedConstraint() =>
+      'Person already sat for the test, appointment locked.',
+    PrerequisiteTestNotPassedConstraint(:final requiredTest) =>
+      'Cannot Schedule, ${requiredTest.name} should be passed first',
+  };
+}
