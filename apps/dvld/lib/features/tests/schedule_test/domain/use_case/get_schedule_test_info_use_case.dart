@@ -1,6 +1,8 @@
+import 'package:dvld/core/helpers/constance.dart';
 import 'package:dvld/features/applications/application_types/domain/index_domain_application_type.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/domain/read_entity/local_driving_license_application_details_read_entity.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/domain/usecases/get_driving_license_application_info_use_case.dart';
+import 'package:dvld/features/login/domain/login_use_cases/get_data_shared_pref_use_case.dart';
 import 'package:dvld/features/tests/schedule_test/domain/entities/schedule_constraints.dart';
 import 'package:dvld/features/tests/schedule_test/domain/entities/schedule_test_creation_mode.dart';
 import 'package:dvld/features/tests/schedule_test/domain/entities/schedule_test_info_entity.dart';
@@ -15,7 +17,7 @@ class LoadScheduleTestInfoParams {
   final ScheduleTestType testType;
   final int? testAppointmentID;
 
-  bool get isAddNew => testAppointmentID != null;
+  bool get isAddNew => testAppointmentID == null;
 
   ScheduleMode get mode => isAddNew ? ScheduleMode.addNew : ScheduleMode.update;
 
@@ -33,6 +35,7 @@ class GetScheduleTestInfoUseCase {
     this._testAppointmentsRepository,
     this._testTypesRepository,
     this._applicationTypesRepository,
+    this._getDataSharedPrefUseCase,
   );
 
   final GetDrivingLicenseApplicationInfoUseCase
@@ -45,6 +48,8 @@ class GetScheduleTestInfoUseCase {
   final TestTypesRepository _testTypesRepository;
 
   final ApplicationTypesRepository _applicationTypesRepository;
+
+  final GetDataSharedPrefUseCase _getDataSharedPrefUseCase;
 
   Future<Either<Failure, ScheduleTestInfoEntity>> call(
     LoadScheduleTestInfoParams infoParams,
@@ -63,8 +68,12 @@ class GetScheduleTestInfoUseCase {
         localAppDetailsReadEntity = value;
     }
 
+    final loggedInUser = await _getDataSharedPrefUseCase.call(
+      stringKey: sharedPrefKeyCurrentUser,
+    );
+
     TestAppointmentEntity? testAppointment;
-    if (infoParams.isAddNew) {
+    if (!infoParams.isAddNew) {
       final resultTestAppointment = await _testAppointmentsRepository
           .getTestAppointmentInfoByID(
             testAppointmentID: infoParams.testAppointmentID!,
@@ -99,9 +108,9 @@ class GetScheduleTestInfoUseCase {
       () => false,
     );
     final totalTrials = (results[1] as Either<Failure, int>).getOrElse(() => 0);
-    final testFees = (results[2] as Either<Failure, TestTypeEntity>)
-        .map((testType) => testType.testTypeFees)
-        .getOrElse(() => 0.0);
+    final testTypeEntity = (results[2] as Either<Failure, TestTypeEntity>)
+        .map((testType) => testType)
+        .getOrElse(() => TestTypeEntity.empty());
 
     final retakeFees = (results[3] as Either<Failure, ApplicationTypeEntity>)
         .map((appType) => appType.applicationTypeFees)
@@ -124,16 +133,14 @@ class GetScheduleTestInfoUseCase {
     return Right(
       ScheduleTestInfoEntity(
         testAppointment: testAppointment,
-        // testType: results[2] as Either<Failure, TestTypeEntity>,
+        testType: testTypeEntity,
+        loginEntity: loggedInUser,
         localApplicationDetailsReadEntity: localAppDetailsReadEntity,
         scheduleTestCreationMode: creationMode,
         mode: infoParams.mode,
         constraint: constraint,
         trialNumber: totalTrials,
-        testFees: testFees,
-        // testFees: infoParams.isAddNew
-        //     ? testFees
-        //     : (testAppointment?.paidFees.toDouble() ?? 0.0),
+        testFees: testTypeEntity.testTypeFees,
         retakeFees: actualRetakeFees,
       ),
     );
@@ -163,7 +170,7 @@ class GetScheduleTestInfoUseCase {
     if (prerequisite != null) {
       final hasPassedPrerequisite = await _testRepository.doesPassTestType(
         localDLApplicationID: params.localDriLiceApplicationId,
-        testTypeID: testType.value,
+        testTypeID: prerequisite.value,
       );
       if (!hasPassedPrerequisite.getOrElse(() => false)) {
         return PrerequisiteTestNotPassedConstraint(prerequisite);
