@@ -1,4 +1,5 @@
 import 'package:dvld/core/routing/routing.dart';
+import 'package:dvld/features/tests/schedule_test/domain/entities/schedule_test_type.dart';
 import 'package:dvld/features/tests/test_appointments/ui/widgets/menu_test_appointment/test_appointment_menu_action.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_context_menu/flutter_context_menu.dart';
@@ -41,12 +42,22 @@ Future<bool> handleTestAppointmentMenuAction(
   BuildContext context,
   TestAppointmentMenuAction action,
   int testAppointmentId,
+  int? localDrLiApplicationId,
+  ScheduleTestType testType,
 ) async {
   bool isOperationSuccess = false;
   switch (action) {
     case TestAppointmentMenuAction.editApp:
-      // Handle edit appointment action
-      return true;
+      final result = await context.pushNamed<bool>(
+        DRoutes.scheduleTestWidgetScreen,
+        extra: testType,
+        queryParameters: {
+          'localDrLiApplicationId': (localDrLiApplicationId ?? 0).toString(),
+          'testAppointmentId': testAppointmentId.toString(),
+        },
+      );
+      isOperationSuccess = result ?? false;
+      break;
     case TestAppointmentMenuAction.takeTest:
       final result = await context.pushNamed<bool>(
         DRoutes.takeTestScreen,
