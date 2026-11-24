@@ -27,18 +27,23 @@ class TestAppointmentTitleTableAndAddButton extends StatelessWidget {
               .localDrLiAppId,
         );
 
+    final personID = context.select<DrivingLicenseApplicationInfoCubit, int?>(
+      (cubit) => cubit
+          .state
+          .localDrLiApplicationDetailsReadEntity
+          ?.personEntity
+          .personId,
+    );
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          'Test Appointments',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
+        Text('Applications', style: Theme.of(context).textTheme.titleLarge),
         BlocListener<TestAppointmentsListCubit, TestAppointmentsListCubitState>(
           listenWhen: (previous, current) =>
               previous.canPrescheduleTestStatus !=
               current.canPrescheduleTestStatus,
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state.canPrescheduleTestStatus.isFailure) {
               AppDialogs.showFailure(
                 context: context,
@@ -49,7 +54,7 @@ class TestAppointmentTitleTableAndAddButton extends StatelessWidget {
                     'An unexpected error occurred',
               );
             } else if (state.canPrescheduleTestStatus.isSuccess) {
-              context.pushNamed(
+              final result = await context.pushNamed<bool>(
                 DRoutes.scheduleTestWidgetScreen,
                 extra: testType,
                 queryParameters: {
@@ -57,6 +62,9 @@ class TestAppointmentTitleTableAndAddButton extends StatelessWidget {
                       .toString(),
                 },
               );
+              if (result == true && context.mounted) {
+                context.read<TestAppointmentsListCubit>().refresh();
+              }
             }
           },
           child: AppButton.custom(
@@ -70,6 +78,7 @@ class TestAppointmentTitleTableAndAddButton extends StatelessWidget {
                         .canPrescheduleTest(
                           testTypeId: testType.value,
                           localDlApplicationId: localDrLiApplicationId,
+                          personID: personID!,
                         );
                   },
           ),
