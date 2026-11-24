@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 final class TestAppointmentItemEntity extends Equatable {
   final int testAppointmentID;
   final int localDrivingLicenseApplicationID;
+  final int personID;
   final String testTypeTitle;
   final String className;
   final DateTime appointmentDate;
@@ -13,6 +14,7 @@ final class TestAppointmentItemEntity extends Equatable {
   const TestAppointmentItemEntity({
     required this.testAppointmentID,
     required this.localDrivingLicenseApplicationID,
+    required this.personID,
     required this.testTypeTitle,
     required this.className,
     required this.appointmentDate,
@@ -25,6 +27,7 @@ final class TestAppointmentItemEntity extends Equatable {
   List<Object?> get props => [
     testAppointmentID,
     localDrivingLicenseApplicationID,
+    personID,
     testTypeTitle,
     className,
     appointmentDate,
