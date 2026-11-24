@@ -106,8 +106,9 @@ Future<bool> handleLocalAppMenuAction(
   BuildContext context, {
   required LocalApplicationMenuAction action,
   required int localApplicationId,
+  required int personId,
 }) async {
-  bool isOperationSuccess = false;
+  final cubit = context.read<LocalDrivingLicenseApplicationsListScreenCubit>();
 
   switch (action) {
     case LocalApplicationMenuAction.showAppDetails:
@@ -117,8 +118,7 @@ Future<bool> handleLocalAppMenuAction(
           'localDrLiApplicationId': localApplicationId.toString(),
         },
       );
-      isOperationSuccess = result ?? false;
-      break;
+      return result ?? false;
 
     case LocalApplicationMenuAction.editApp:
       final result = await context.pushNamed<bool>(
@@ -127,8 +127,7 @@ Future<bool> handleLocalAppMenuAction(
           'localDrLiApplicationId': localApplicationId.toString(),
         },
       );
-      isOperationSuccess = result ?? false;
-      break;
+      return result ?? false;
 
     case LocalApplicationMenuAction.deleteApp:
       final confirmAction = await AppDialogs.showConfirmation(
@@ -141,23 +140,32 @@ Future<bool> handleLocalAppMenuAction(
         message: 'Are you sure you want to delete this application?',
       );
 
-      if (confirmAction == true && context.mounted) {
-        await context
-            .read<LocalDrivingLicenseApplicationsListScreenCubit>()
-            .deleteLocalDrivingLicenseApplication(
-              localDriLiceApplicationId: localApplicationId,
-            );
-        if (!context.mounted) return false;
+      if (confirmAction != true || !context.mounted) return false;
 
-        await AppDialogs.showSuccess(
+      await cubit.deleteLocalDrivingLicenseApplication(
+        localDriLiceApplicationId: localApplicationId,
+      );
+      if (!context.mounted) return false;
+
+      final stateAfterDelete = cubit.state;
+      if (stateAfterDelete.loadLocalAppStatus.isFailure) {
+        await AppDialogs.showFailure(
           context: context,
-          title: "Success",
-          buttonText: "OK",
-          message: 'Application Deleted Successfully',
+          title: 'Error',
+          buttonText: 'OK',
+          message:
+              stateAfterDelete.errorMessage ?? 'Failed to delete application.',
         );
-        isOperationSuccess = true;
+        return false;
       }
-      break;
+
+      await AppDialogs.showSuccess(
+        context: context,
+        title: 'Success',
+        buttonText: 'OK',
+        message: 'Application Deleted Successfully',
+      );
+      return true;
 
     case LocalApplicationMenuAction.cancelApp:
       final confirmCancel = await AppDialogs.showConfirmation(
@@ -170,87 +178,80 @@ Future<bool> handleLocalAppMenuAction(
         message: 'Are you sure you want to cancel this application?',
       );
 
-      if (confirmCancel == true && context.mounted) {
-        await context
-            .read<LocalDrivingLicenseApplicationsListScreenCubit>()
-            .cancelApplication(localDriLiceApplicationId: localApplicationId);
-        if (!context.mounted) return false;
+      if (confirmCancel != true || !context.mounted) return false;
 
-        await AppDialogs.showSuccess(
+      await cubit.cancelApplication(
+        localDriLiceApplicationId: localApplicationId,
+      );
+      if (!context.mounted) return false;
+
+      final stateAfterCancel = cubit.state;
+      if (stateAfterCancel.loadLocalAppStatus.isFailure) {
+        await AppDialogs.showFailure(
           context: context,
-          title: "Success",
-          buttonText: "OK",
-          message: 'Application Cancelled Successfully',
+          title: 'Error',
+          buttonText: 'OK',
+          message:
+              stateAfterCancel.errorMessage ?? 'Failed to cancel application.',
         );
-        isOperationSuccess = true;
+        return false;
       }
-      break;
+
+      await AppDialogs.showSuccess(
+        context: context,
+        title: 'Success',
+        buttonText: 'OK',
+        message: 'Application Cancelled Successfully',
+      );
+      return true;
 
     case LocalApplicationMenuAction.scheduleVisionTest:
-      final result = await context.pushNamed<bool>(
-        DRoutes.listTestAppointmentsScreen,
-        extra: ScheduleTestType.vision,
-        queryParameters: {
-          'localDrLiApplicationId': localApplicationId.toString(),
-        },
-      );
-      isOperationSuccess = result ?? false;
-      break;
     case LocalApplicationMenuAction.scheduleWriteTest:
-      final result = await context.pushNamed<bool>(
-        DRoutes.listTestAppointmentsScreen,
-        extra: ScheduleTestType.written,
-
-        queryParameters: {
-          'localDrLiApplicationId': localApplicationId.toString(),
-        },
-      );
-      isOperationSuccess = result ?? false;
-      break;
     case LocalApplicationMenuAction.scheduleStreetTest:
+    case LocalApplicationMenuAction.scheduleTests:
+      final testType = switch (action) {
+        LocalApplicationMenuAction.scheduleVisionTest =>
+          ScheduleTestType.vision,
+        LocalApplicationMenuAction.scheduleWriteTest =>
+          ScheduleTestType.written,
+        LocalApplicationMenuAction.scheduleStreetTest =>
+          ScheduleTestType.street,
+        _ => null,
+      };
+
       final result = await context.pushNamed<bool>(
         DRoutes.listTestAppointmentsScreen,
-        extra: ScheduleTestType.street,
-
+        extra: testType,
         queryParameters: {
           'localDrLiApplicationId': localApplicationId.toString(),
         },
       );
-      isOperationSuccess = result ?? false;
-      break;
-    case LocalApplicationMenuAction.scheduleTests:
-      // final result = await context.pushNamed<bool>(
-      //   DRoutes.scheduleTestScreen,
-      //   queryParameters: {
-      //     'id': localApplicationId.toString(),
-      //     'testType': action.name,
-      //   },
-      // );
-      // isOperationSuccess = result ?? false;
-      break;
+      return result ?? false;
 
     case LocalApplicationMenuAction.issueDLFirstTime:
-      // final result = await context.pushNamed<bool>(
-      //   DRoutes.issueLicenseFirstTimeScreen,
-      //   queryParameters: {'id': localApplicationId.toString()},
-      // );
-      // isOperationSuccess = result ?? false;
-      break;
+      final result = await context.pushNamed<bool>(
+        DRoutes.issueFirstLicenseScreen,
+        queryParameters: {
+          'localDrLiApplicationId': localApplicationId.toString(),
+        },
+      );
+      return result ?? false;
 
     case LocalApplicationMenuAction.showLicense:
-      // await context.pushNamed(
-      //   DRoutes.showLicenseScreen,
-      //   queryParameters: {'id': localApplicationId.toString()},
-      // );
-      break;
+      final result = await context.pushNamed<bool>(
+        DRoutes.showLicenseInfoScreen,
+        queryParameters: {
+          'localDrLiApplicationId': localApplicationId.toString(),
+          'licenseId': 0.toString(),
+        },
+      );
+      return result ?? false;
 
     case LocalApplicationMenuAction.showPersonLicenseHistory:
-      // await context.pushNamed(
-      //   DRoutes.personLicenseHistoryScreen,
-      //   queryParameters: {'id': localApplicationId.toString()},
-      // );
-      break;
+      await context.pushNamed(
+        DRoutes.showPersonLicenseHistoryScreen,
+        queryParameters: {'personId': personId.toString()},
+      );
+      return false;
   }
-
-  return isOperationSuccess;
 }
