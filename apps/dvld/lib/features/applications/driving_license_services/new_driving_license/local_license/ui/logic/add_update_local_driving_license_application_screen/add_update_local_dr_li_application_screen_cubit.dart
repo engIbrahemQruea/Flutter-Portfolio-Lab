@@ -27,6 +27,7 @@ class AddUpdateLocalDrLiApplicationScreenCubit
     this._createLocalDrLiApplicationAndApplicationsUseCase,
     this._getLocalDrLiApplicationInfoByIdUseCase,
     this._updateLocalDrivingLicenseClassUseCase,
+    this._isLicenseExistUseCase,
   ) : super(AddUpdateLocalDrLiApplicationScreenCubitState());
 
   final GetAllLicenseClassesUseCase _getAllLicenseClassesUseCase;
@@ -40,6 +41,8 @@ class AddUpdateLocalDrLiApplicationScreenCubit
   _getLocalDrLiApplicationInfoByIdUseCase;
   final UpdateLocalDrivingLicenseApplicationAndApplicationsUseCase
   _updateLocalDrivingLicenseClassUseCase;
+
+  final IsLicenseExistUseCase _isLicenseExistUseCase;
 
   Future<void> _setApplicationTypeFees() async {
     final applicationType = await _getApplicationTypesInfoByIDUseCase.call(
@@ -202,10 +205,11 @@ class AddUpdateLocalDrLiApplicationScreenCubit
     );
 
     // /// Check if the person already has a license for the selected license class
-    // final isLicenseExistResult = await _isLicenseExistByPersonIdUseCase.call((
-    //   personId: state.personSelectedId!,
-    //   licenseClassId: state.selectedLicenseClassId,
-    // ));
+    // final isLicenseExistResult = await _isLicenseExistUseCase.call(
+    //   localDrLApp: state.localDriLiceApplicationId!,
+    //   //personId: state.personSelectedId!,
+    //   // licenseClassId: state.selectedLicenseClassId,
+    // );
 
     // bool hasLicenseError = false;
     // bool isLicenseExist = false;
