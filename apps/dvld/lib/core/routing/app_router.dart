@@ -4,13 +4,39 @@ import 'package:dvld/features/applications/application_types/ui/logic/applicatio
 import 'package:dvld/features/applications/application_types/ui/logic/update_application_types_screen_cubit/update_application_types_screen_cubit.dart';
 import 'package:dvld/features/applications/application_types/ui/screens/application_types_screen.dart';
 import 'package:dvld/features/applications/application_types/ui/screens/update_application_types_screen/update_application_types_screen.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/issue_first_license/logic/issue_first_license_cubit/issue_first_license_cubit.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/issue_first_license/screen/issue_first_license_screen.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/logic/add_update_local_driving_license_application_screen/add_update_local_dr_li_application_screen_cubit.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/screens/add_update_local_driving_license_application_screen.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/screens/local_driving_license_applications_list/list_local_driving_license_applications_screen.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/screens/local_driving_license_applications_list/logic/local_driving_license_applications_list_screen_cubit/local_driving_license_applications_list_screen_cubit.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/screens/show_local_driving_license_application_info/show_local_driving_license_application_info_screen.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/widgets/driving_license_application_info/logic/driving_license_application_info_cubit/driving_license_application_info_cubit.dart';
+import 'package:dvld/features/applications/driving_license_services/renew_license_app/ui/logic/renew_license_app_cubit/renew_license_app_cubit.dart';
+import 'package:dvld/features/applications/driving_license_services/renew_license_app/ui/renew_license_app_screen.dart';
+import 'package:dvld/features/applications/release_detained_license/ui/logic/release_detained_license_cubit/release_detained_license_cubit.dart';
+import 'package:dvld/features/applications/release_detained_license/ui/screen/release_detained_license_screen.dart';
+import 'package:dvld/features/applications/replace_license/ui/logic/replace_license_screen_cubit/replace_license_cubit.dart';
+import 'package:dvld/features/applications/replace_license/ui/screen/replace_license_screen.dart';
 import 'package:dvld/features/dashboard/presentation/views/dash_board_screen.dart';
+import 'package:dvld/features/drivers/ui/logic/drivers_screen_cubit/drivers_screen_cubit.dart';
+import 'package:dvld/features/drivers/ui/screen/drivers_screen.dart';
+import 'package:dvld/features/licenses/detain_licenses/ui/screens/detain_license_list_screen/detain_license_list_screen.dart';
+import 'package:dvld/features/licenses/detain_licenses/ui/screens/detain_license_list_screen/logic/detained_licenses_list_cubit/detained_licenses_list_cubit.dart';
+import 'package:dvld/features/licenses/detain_licenses/ui/screens/detain_license_screen/detain_license_screen.dart';
+import 'package:dvld/features/licenses/detain_licenses/ui/screens/detain_license_screen/logic/detain_license_cubit/detain_license_cubit.dart';
+import 'package:dvld/features/licenses/international_license/ui/screens/international_license_list_screen/international_license_list_screen.dart';
+import 'package:dvld/features/licenses/international_license/ui/screens/international_license_list_screen/logic/international_license_list_cubit/international_license_list_cubit.dart';
+import 'package:dvld/features/licenses/international_license/ui/screens/new_international_license_screen/logic/new_international_license_cubit/new_international_license_cubit.dart';
+import 'package:dvld/features/licenses/international_license/ui/screens/new_international_license_screen/new_international_license_screen.dart';
+import 'package:dvld/features/licenses/international_license/ui/screens/show_international_license_info_screen/logic/cubit/show_international_license_info_cubit.dart';
+import 'package:dvld/features/licenses/international_license/ui/screens/show_international_license_info_screen/show_international_license_info_screen.dart';
+import 'package:dvld/features/licenses/licenses_core/ui/control_widgets/driver_license_info_with_filter/logic/driver_license_info_with_filter_cubit/driver_license_info_with_filter_cubit.dart';
+import 'package:dvld/features/licenses/licenses_core/ui/control_widgets/license_history_widgets/ui/logic/driver_licenses_history_control_cubit/driver_licenses_history_control_cubit.dart';
+import 'package:dvld/features/licenses/licenses_core/ui/license_history_screen/ui/logic/cubit/person_license_history_screen_cubit.dart';
+import 'package:dvld/features/licenses/licenses_core/ui/license_history_screen/ui/screens/person_license_history_screen.dart';
+import 'package:dvld/features/licenses/licenses_core/ui/show_license_info_screen/logic/show_license_info_cubit/show_license_info_cubit.dart';
+import 'package:dvld/features/licenses/licenses_core/ui/show_license_info_screen/show_license_info_screen.dart';
 import 'package:dvld/features/login/presentation/logic/login_screen_cubit/login_screen_cubit.dart';
 import 'package:dvld/features/login/presentation/screens/login_screen.dart';
 import 'package:dvld/features/manage_users/presentation/logic/add_update_user_screen_cubit/add_update_user_form_cubit.dart';
@@ -157,6 +183,65 @@ abstract class AppRouter {
                         },
                       ),
 
+                      /// Feature Applications/Detained Licenses
+                      GoRoute(
+                        path: DRoutes.detainLicenseScreen,
+                        name: DRoutes.detainLicenseScreen,
+                        builder: (context, state) => MultiBlocProvider(
+                          providers: [
+                            BlocProvider(
+                              create: (context) =>
+                                  getIt<DriverLicenseInfoWithFilterCubit>(),
+                            ),
+                            BlocProvider(
+                              create: (context) =>
+                                  getIt<DetainLicenseCubit>()..initialize(),
+                            ),
+                          ],
+                          child: const DetainLicenseScreen(),
+                        ),
+                      ),
+
+                      /// Feature Applications/ Release Detained Licenses
+                      GoRoute(
+                        path: DRoutes.releaseDetainedLicenseScreen,
+                        name: DRoutes.releaseDetainedLicenseScreen,
+                        builder: (context, state) {
+                          final licenseIdString =
+                              state.uri.queryParameters['licenseId'];
+                          final licenseId = licenseIdString == null
+                              ? null
+                              : int.parse(licenseIdString);
+                          return MultiBlocProvider(
+                            providers: [
+                              BlocProvider(
+                                create: (context) =>
+                                    getIt<DriverLicenseInfoWithFilterCubit>(),
+                              ),
+                              BlocProvider(
+                                create: (context) =>
+                                    getIt<ReleaseDetainedLicenseCubit>()
+                                      ..getReleaseDetails(licenseId ?? 0),
+                              ),
+                            ],
+                            child: ReleaseDetainedLicenseScreen(
+                              licenseId: licenseId,
+                            ),
+                          );
+                        },
+                      ),
+
+                      GoRoute(
+                        path: DRoutes.listDetainedLicensesScreen,
+                        name: DRoutes.listDetainedLicensesScreen,
+                        builder: (context, state) => BlocProvider(
+                          create: (context) =>
+                              getIt<DetainedLicensesListCubit>()
+                                ..getAllDetainLicenses(),
+                          child: const DetainLicenseListScreen(),
+                        ),
+                      ),
+
                       ///Feature Applications/Driving License Services/New Driving License/Local Driving License Add Update Local Driving License Application
                       GoRoute(
                         path: DRoutes.addUpdateLocalDrLiApplicationsScreen,
@@ -191,6 +276,59 @@ abstract class AppRouter {
                                 const AddUpdateLocalDrivingLicenseApplicationScreen(),
                           );
                         },
+                      ),
+
+                      /// Feature Applications/Driving License Services/New Driving License/International Driving License
+                      GoRoute(
+                        path: DRoutes.newInternationalLicenseScreen,
+                        name: DRoutes.newInternationalLicenseScreen,
+                        builder: (context, state) => MultiBlocProvider(
+                          providers: [
+                            BlocProvider(
+                              create: (context) =>
+                                  getIt<DriverLicenseInfoWithFilterCubit>(),
+                            ),
+                            BlocProvider(
+                              create: (context) =>
+                                  getIt<NewInternationalLicenseCubit>()
+                                    ..getInitDetails(),
+                            ),
+                          ],
+                          child: const NewInternationalLicenseScreen(),
+                        ),
+                      ),
+
+                      GoRoute(
+                        path: DRoutes.showInternationalLicenseInfoScreen,
+                        name: DRoutes.showInternationalLicenseInfoScreen,
+                        builder: (context, state) {
+                          final internationalIdString =
+                              state.uri.queryParameters['internationalId'];
+                          final internationalIdInt =
+                              internationalIdString == null
+                              ? null
+                              : int.parse(internationalIdString);
+                          return BlocProvider(
+                            create: (context) =>
+                                getIt<ShowInternationalLicenseInfoCubit>()
+                                  ..getInternationalLicenseDetailsByInternationalId(
+                                    internationalLicenseId:
+                                        internationalIdInt ?? 0,
+                                  ),
+                            child: const ShowInternationalLicenseInfoScreen(),
+                          );
+                        },
+                      ),
+
+                      GoRoute(
+                        path: DRoutes.internationalLicenseListScreen,
+                        name: DRoutes.internationalLicenseListScreen,
+                        builder: (context, state) => BlocProvider(
+                          create: (context) =>
+                              getIt<InternationalLicenseListCubit>()
+                                ..getAllInternationalLicenses(),
+                          child: const InternationalLicenseListScreen(),
+                        ),
                       ),
 
                       GoRoute(
@@ -253,6 +391,144 @@ abstract class AppRouter {
                           );
                         },
                       ),
+
+                      // goRoute for menu screen
+                      GoRoute(
+                        path: DRoutes.issueFirstLicenseScreen,
+                        name: DRoutes.issueFirstLicenseScreen,
+
+                        builder: (context, state) {
+                          final localDrLiApplicationIdString = state
+                              .uri
+                              .queryParameters['localDrLiApplicationId'];
+                          final localDrLiApplicationIdInt =
+                              localDrLiApplicationIdString == null
+                              ? null
+                              : int.parse(localDrLiApplicationIdString);
+                          return MultiBlocProvider(
+                            providers: [
+                              BlocProvider(
+                                create: (context) =>
+                                    getIt<DrivingLicenseApplicationInfoCubit>()
+                                      ..loadApplicationInfoByLocalDrivingLicenseAppID(
+                                        localDriLiceApplicationId:
+                                            localDrLiApplicationIdInt,
+                                      ),
+                              ),
+                              BlocProvider(
+                                create: (context) =>
+                                    getIt<IssueFirstLicenseCubit>()
+                                      ..setLocalDLAppId(
+                                        localDLApplicationId:
+                                            localDrLiApplicationIdInt!,
+                                      ),
+                              ),
+                            ],
+                            child: const IssueFirstLicenseScreen(),
+                          );
+                        },
+                      ),
+
+                      GoRoute(
+                        path: DRoutes.showLicenseInfoScreen,
+                        name: DRoutes.showLicenseInfoScreen,
+                        builder: (context, state) {
+                          final localDrLiApplicationIdString = state
+                              .uri
+                              .queryParameters['localDrLiApplicationId'];
+                          final localDrLiApplicationIdInt =
+                              localDrLiApplicationIdString == null
+                              ? null
+                              : int.parse(localDrLiApplicationIdString);
+
+                          final licenseIdString =
+                              state.uri.queryParameters['licenseId'];
+                          final licenseIdInt = licenseIdString == null
+                              ? null
+                              : int.parse(licenseIdString);
+                          return BlocProvider(
+                            create: (context) =>
+                                getIt<ShowLicenseInfoCubit>()
+                                  ..fetchLicenseDetailsInfoById(
+                                    localDLAppId: localDrLiApplicationIdInt!,
+                                    licenseId: licenseIdInt!,
+                                  ),
+                            child: const ShowLicenseInfoScreen(),
+                          );
+                        },
+                      ),
+
+                      GoRoute(
+                        path: DRoutes.showPersonLicenseHistoryScreen,
+                        name: DRoutes.showPersonLicenseHistoryScreen,
+                        builder: (context, state) {
+                          final personIdString =
+                              state.uri.queryParameters['personId'];
+                          final personIdInt = personIdString == null
+                              ? null
+                              : int.parse(personIdString);
+                          return MultiBlocProvider(
+                            providers: [
+                              BlocProvider(
+                                create: (context) =>
+                                    getIt<PersonSelectorCubit>(),
+                              ),
+                              BlocProvider(
+                                create: (context) =>
+                                    getIt<DriverLicensesHistoryControlCubit>(),
+                              ),
+                              BlocProvider(
+                                create: (context) =>
+                                    getIt<PersonLicenseHistoryScreenCubit>(),
+                              ),
+                            ],
+                            child: PersonLicenseHistoryScreen(
+                              personId: personIdInt,
+                            ),
+                          );
+                        },
+                      ),
+
+                      GoRoute(
+                        path: DRoutes.renewLicenseAppScreen,
+                        name: DRoutes.renewLicenseAppScreen,
+                        builder: (context, state) {
+                          return MultiBlocProvider(
+                            providers: [
+                              BlocProvider(
+                                create: (context) =>
+                                    getIt<DriverLicenseInfoWithFilterCubit>(),
+                              ),
+                              BlocProvider(
+                                create: (context) =>
+                                    getIt<RenewLicenseAppCubit>(),
+                              ),
+                            ],
+                            child: const RenewLicenseAppScreen(),
+                          );
+                        },
+                      ),
+
+                      GoRoute(
+                        path: DRoutes.replaceLicenseAppScreen,
+                        name: DRoutes.replaceLicenseAppScreen,
+                        builder: (context, state) {
+                          return MultiBlocProvider(
+                            providers: [
+                              BlocProvider(
+                                create: (context) =>
+                                    getIt<DriverLicenseInfoWithFilterCubit>(),
+                              ),
+                              BlocProvider(
+                                create: (context) =>
+                                    getIt<ReplaceLicenseCubit>(),
+                              ),
+                            ],
+                            child: const ReplaceLicenseScreen(),
+                          );
+                        },
+                      ),
+
                       GoRoute(
                         path: DRoutes.scheduleTestWidgetScreen,
                         name: DRoutes.scheduleTestWidgetScreen,
@@ -265,14 +541,18 @@ abstract class AppRouter {
                               ? null
                               : int.parse(localDrLiApplicationIdString);
                           final testType = state.extra as ScheduleTestType;
-                          // final previousCubit =
-                          //     state.extra as DrivingLicenseApplicationInfoCubit;
+                          final testAppointmentIdString =
+                              state.uri.queryParameters['testAppointmentId'];
+                          final testAppointmentIdInt =
+                              testAppointmentIdString == null
+                              ? null
+                              : int.parse(testAppointmentIdString);
                           return BlocProvider(
                             create: (context) =>
                                 getIt<ScheduleTestCubit>()..loadData(
                                   localAppId: localDrLiApplicationIdInt!,
                                   testType: testType,
-                                  appointmentId: null,
+                                  appointmentId: testAppointmentIdInt,
                                 ),
                             child: const ScheduleTestWidgetScreen(),
                           );
@@ -360,13 +640,8 @@ abstract class AppRouter {
                           ? null
                           : int.parse(personIdString);
                       return BlocProvider(
-                        create: (context) => AddUpdateFormCubit(
-                          getIt(),
-                          getIt(),
-                          getIt(),
-                          getIt(),
-                          getIt(),
-                        )..getAllCountries(),
+                        create: (context) =>
+                            getIt<AddUpdateFormCubit>()..getAllCountries(),
                         child: AddUpdatePeopleScreen(personId: personIdInt),
                       );
                     },
@@ -396,8 +671,13 @@ abstract class AppRouter {
               GoRoute(
                 path: DRoutes.drivers,
                 name: DRoutes.drivers,
-                builder: (context, state) =>
-                    const Center(child: Text('Drivers Screen')),
+                builder: (context, state) => Center(
+                  child: BlocProvider(
+                    create: (context) =>
+                        getIt<DriversScreenCubit>()..fetchAllDrivers(),
+                    child: DriversScreen(),
+                  ),
+                ),
               ),
             ],
           ),

@@ -36,10 +36,10 @@ class PersonSelector extends StatelessWidget {
             builder: (context, state) {
               log('1');
               return IgnorePointer(
-                ignoring: isFilterEnabled!,
+                ignoring: isFilterEnabled,
                 child: AnimatedOpacity(
                   duration: const Duration(milliseconds: 200),
-                  opacity: isFilterEnabled! ? 0.5 : 1,
+                  opacity: isFilterEnabled ? 0.5 : 1,
                   child: SizedBox(
                     width: double.infinity,
                     height: 80,

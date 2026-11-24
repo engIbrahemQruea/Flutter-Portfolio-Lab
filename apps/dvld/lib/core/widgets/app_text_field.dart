@@ -1,9 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AppTextField extends StatelessWidget {
   const AppTextField({
-    Key? key,
+    super.key,
     required this.label,
     this.controller,
     this.initialValue,
@@ -11,6 +12,7 @@ class AppTextField extends StatelessWidget {
     this.autoFocus,
     this.validator,
     this.keyboardType,
+    this.inputFormatter,
     this.textInputAction,
     this.prefixIcon,
     this.hintText,
@@ -25,7 +27,7 @@ class AppTextField extends StatelessWidget {
     this.maxLength,
     this.onTap,
     this.onChanged,
-  }) : super(key: key);
+  });
 
   final String label;
   final TextEditingController? controller;
@@ -33,6 +35,7 @@ class AppTextField extends StatelessWidget {
   final FocusNode? focusNode;
   final bool? autoFocus;
   final String? Function(String?)? validator;
+  final List<TextInputFormatter>? inputFormatter;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final IconData? prefixIcon;
@@ -58,6 +61,7 @@ class AppTextField extends StatelessWidget {
       focusNode: focusNode,
       autofocus: autoFocus ?? false,
       validator: validator,
+      inputFormatters: inputFormatter,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
       obscureText: obscureText,

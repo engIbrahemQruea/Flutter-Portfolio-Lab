@@ -13,6 +13,13 @@ class TestTypeEntity extends Equatable {
   final String testTypeDescription;
   final double testTypeFees;
 
+  factory TestTypeEntity.empty() => const TestTypeEntity(
+    testTypeId: null,
+    testTypeTitle: '',
+    testTypeDescription: '',
+    testTypeFees: 0,
+  );
+
   @override
   List<Object?> get props => [
     testTypeId,

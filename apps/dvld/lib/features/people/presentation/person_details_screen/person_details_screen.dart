@@ -18,63 +18,70 @@ class PersonDetailsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(centerTitle: true, title: const Text('Person Details')),
       body: SafeArea(
-        child: Column(
-          children: [
-            verticalSpace(20),
-            BlocBuilder<PersonDetailsCubit, PersonDetailsState>(
-              // buildWhen: (previous, current) => previous != current,
-              builder: (context, state) {
-                if (state is PersonDetailsLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+        child: Padding(
+          padding: const .symmetric(horizontal: 15, vertical: 10),
+          child: Column(
+            children: [
+              verticalSpace(20),
+              BlocBuilder<PersonDetailsCubit, PersonDetailsState>(
+                // buildWhen: (previous, current) => previous != current,
+                builder: (context, state) {
+                  if (state is PersonDetailsLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-                if (state is PersonDetailsSuccess) {
-                  return PersonInformationCard(
-                    person: state.peopleEntity,
-                    countryName: context.read<PersonDetailsCubit>().countryName,
-                    onEdit: state.peopleEntity == null
-                        ? null
-                        : (personId) async {
-                            final result = await context.pushNamed<bool>(
-                              DRoutes.addUpdatePeopleScreen,
-                              queryParameters: {
-                                'personId': personId.toString(),
-                              },
-                            );
-                            if (result == true && context.mounted) {
-                              context
-                                  .read<PersonDetailsCubit>()
-                                  .getInfoPersonDetailsById(personID: personId);
-                            }
-                          },
-                  );
-                }
-                if (state is PersonDetailsFailure) {
-                  return Center(child: Text(state.errorMessage));
-                }
-                return const Center(child: Text('Something went wrong'));
-              },
-            ),
-            verticalSpace(20),
+                  if (state is PersonDetailsSuccess) {
+                    return PersonInformationCard(
+                      person: state.peopleEntity,
+                      countryName: context
+                          .read<PersonDetailsCubit>()
+                          .countryName,
+                      onEdit: state.peopleEntity == null
+                          ? null
+                          : (personId) async {
+                              final result = await context.pushNamed<bool>(
+                                DRoutes.addUpdatePeopleScreen,
+                                queryParameters: {
+                                  'personId': personId.toString(),
+                                },
+                              );
+                              if (result == true && context.mounted) {
+                                context
+                                    .read<PersonDetailsCubit>()
+                                    .getInfoPersonDetailsById(
+                                      personID: personId,
+                                    );
+                              }
+                            },
+                    );
+                  }
+                  if (state is PersonDetailsFailure) {
+                    return Center(child: Text(state.errorMessage));
+                  }
+                  return const Center(child: Text('Something went wrong'));
+                },
+              ),
+              verticalSpace(20),
 
-            Row(
-              mainAxisAlignment: .center,
-              children: [
-                AppButton.icon(
-                  label: 'Close',
-                  icon: Icon(Icons.close, color: Colors.red, size: 25),
-                  onPressed: () => context.pop(),
-                ),
-                horizontalSpace(20),
+              Row(
+                mainAxisAlignment: .center,
+                children: [
+                  AppButton.icon(
+                    label: 'Close',
+                    icon: Icon(Icons.close, color: Colors.red, size: 25),
+                    onPressed: () => context.pop(),
+                  ),
+                  horizontalSpace(20),
 
-                AppButton.icon(
-                  label: 'Close && Refresh',
-                  icon: Icon(Icons.close, color: Colors.red, size: 25),
-                  onPressed: () => context.pop(true),
-                ),
-              ],
-            ),
-          ],
+                  AppButton.icon(
+                    label: 'Close && Refresh',
+                    icon: Icon(Icons.close, color: Colors.red, size: 25),
+                    onPressed: () => context.pop(true),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

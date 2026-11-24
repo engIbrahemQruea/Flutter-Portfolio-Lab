@@ -1,0 +1,2 @@
+export 'package:dvld/features/tests/test_appointments/data/models/test_appointment_model.dart';
+export 'package:dvld/features/tests/test_appointments/data/repositories_impl/test_appointments_repository_impl.dart';
