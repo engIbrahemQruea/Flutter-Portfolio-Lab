@@ -20,7 +20,7 @@ class BlocConsumerTakeTest extends StatelessWidget {
             title: 'Success ',
             message: 'Test saved successfully',
             buttonText: 'OK',
-            onPressed: () => context.pop(),
+            onPressed: () => context.pop(true),
           );
         }
         if (state.takeTestStatus.isFailure) {
@@ -47,13 +47,14 @@ class BlocConsumerTakeTest extends StatelessWidget {
           );
         }
 
-        final takeTestInfo = (state.takeTestStatus.isLoaded)
+        final takeTestInfo =
+            (state.takeTestStatus.isLoaded || state.takeTestStatus.isSuccess)
             ? state.takeTestInfoEntity
             : null;
         return Column(
           spacing: 16,
           children: [
-            ScheduledTestInfoCard( takeTestInfo: takeTestInfo!),
+            ScheduledTestInfoCard(takeTestInfo: takeTestInfo!),
             TakeTestInfo(),
 
             SaveCloseTakeTestWidget(),

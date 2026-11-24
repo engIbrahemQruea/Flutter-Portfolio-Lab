@@ -36,6 +36,7 @@ class TakeTestCubit extends Cubit<TakeTestCubitState> {
               takeTestInfoEntity.testEntity?.testResult.value == 1
               ? true
               : false,
+          isLucked: takeTestInfoEntity.testAppointmentEntity.isLocked,
           notes: takeTestInfoEntity.testEntity?.notes,
         ),
       ),
@@ -76,7 +77,11 @@ class TakeTestCubit extends Cubit<TakeTestCubitState> {
         ),
       ),
       (_) => emit(
-        state.copyWith(takeTestStatus: TakeTestStatus.success, isLucked: true),
+        state.copyWith(
+          takeTestStatus: TakeTestStatus.success,
+          takeTestInfoEntity: state.takeTestInfoEntity,
+          isLucked: true,
+        ),
       ),
     );
   }

@@ -10,6 +10,9 @@ class SaveCloseTakeTestWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLocked = context.select(
+      (TakeTestCubit cubit) => cubit.state.isLucked,
+    );
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       spacing: 10,
@@ -21,29 +24,23 @@ class SaveCloseTakeTestWidget extends StatelessWidget {
         ),
         AppButton.custom(
           label: 'Save',
-          icon: Icon(Icons.save, color: Colors.green),
-          onPressed: () async {
-            final result = await AppDialogs.showConfirmation(
-              context: context,
-              title: 'Confirm Save',
-              confirmText: 'Yes',
-              cancelText: 'No',
-              confirmColor: Colors.green,
-              message: 'Are you sure you want to save the test?',
-            );
-            if (result == true) {
-              final resultSave = await context
-                  .read<TakeTestCubit>()
-                  .saveTakeTest();
+          icon: const Icon(Icons.save, color: Colors.green),
+          onPressed: isLocked
+              ? null
+              : () async {
+                  final result = await AppDialogs.showConfirmation(
+                    context: context,
+                    title: 'Confirm Save',
+                    confirmText: 'Yes',
+                    cancelText: 'No',
+                    confirmColor: Colors.green,
+                    message: 'Are you sure you want to save the test?',
+                  );
 
-              AppDialogs.showSuccess(
-                context: context,
-                title: 'Success',
-                buttonText: 'OK',
-                message: 'Test saved successfully!',
-              );
-            }
-          },
+                  if (result case true when context.mounted) {
+                    await context.read<TakeTestCubit>().saveTakeTest();
+                  }
+                },
         ),
       ],
     );
