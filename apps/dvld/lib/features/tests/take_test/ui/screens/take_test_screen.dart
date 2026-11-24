@@ -1,7 +1,4 @@
-import 'package:dvld/core/widgets/app_button.dart';
 import 'package:dvld/features/tests/take_test/ui/screens/widgets/bloc_consumer_take_test.dart';
-import 'package:dvld/features/tests/take_test/ui/screens/widgets/scheduled_test_info_card.dart';
-import 'package:dvld/features/tests/take_test/ui/screens/widgets/take_test_info.dart';
 import 'package:flutter/material.dart';
 
 enum ResultTest { Pass, Fail }
