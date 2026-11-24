@@ -69,21 +69,21 @@ class TestRepositoryImpl implements TestRepository {
   }
 
   @override
-  Future<Either<Failure, int>>
+  Future<Either<Failure, TestEntity>>
   getLastTestByPersonIDAndTestTypeIDAndLicenseClassID({
     required int personID,
     required int testTypeID,
     required int licenseClassID,
   }) async {
-    // return await _guard(() async {
-    //   return await _testLocalDataSource.getLastTestByPersonIDAndTestTypeIDAndLicenseClassID(
-    //     personID: personID,
-    //     testTypeID: testTypeID,
-    //     licenseClassID: licenseClassID,
-    //   );
-    // });
-    // TODO: implement getPassedTestsCountByLocalDLApplicationID
-    throw UnimplementedError();
+    return await _guard(() async {
+      final model = await _testLocalDataSource
+          .getLastTestByPersonIDAndTestTypeIDAndLicenseClassID(
+            personID: personID,
+            testTypeID: testTypeID,
+            licenseClassID: licenseClassID,
+          );
+      return model.mapToEntity();
+    });
   }
 
   @override

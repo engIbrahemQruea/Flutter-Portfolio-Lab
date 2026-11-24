@@ -11,7 +11,7 @@ abstract class TestRepository {
     required int localDLApplicationID,
   });
 
-  Future<Either<Failure, int>>
+  Future<Either<Failure, TestEntity>>
   getLastTestByPersonIDAndTestTypeIDAndLicenseClassID({
     required int personID,
     required int testTypeID,
