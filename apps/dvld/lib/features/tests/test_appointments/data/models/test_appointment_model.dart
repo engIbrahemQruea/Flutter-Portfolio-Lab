@@ -5,7 +5,7 @@ import 'package:dvld/features/tests/test_appointments/domain/entities/test_appoi
 
 class TestAppointmentModel extends DataMapper<TestAppointmentEntity> {
   const TestAppointmentModel({
-    required this.testAppointmentID,
+    this.testAppointmentID,
     required this.appointmentDate,
     required this.paidFees,
     required this.isLocked,
@@ -15,7 +15,7 @@ class TestAppointmentModel extends DataMapper<TestAppointmentEntity> {
     this.retakeTestApplicationID,
   });
 
-  final TestAppointmentId testAppointmentID;
+  final TestAppointmentId? testAppointmentID;
   final DateTime appointmentDate;
   final double paidFees;
   final bool isLocked;
@@ -54,7 +54,8 @@ class TestAppointmentModel extends DataMapper<TestAppointmentEntity> {
   Map<String, dynamic> toMap() {
     return {
       // Dart تقوم بالتحويل الضمني من int إلى Extension Type بدون أي Constructor Overhead
-      TestAppointmentsTable.colTestAppointmentID: testAppointmentID,
+      if (testAppointmentID != null)
+        TestAppointmentsTable.colTestAppointmentID: testAppointmentID,
       TestAppointmentsTable.colAppointmentDate: appointmentDate
           .toIso8601String(),
       TestAppointmentsTable.colPaidFees: paidFees,
@@ -69,7 +70,7 @@ class TestAppointmentModel extends DataMapper<TestAppointmentEntity> {
 
   factory TestAppointmentModel.fromEntity(TestAppointmentEntity entity) {
     return TestAppointmentModel(
-      testAppointmentID: entity.testAppointmentID ?? TestAppointmentId(0),
+      testAppointmentID: entity.testAppointmentID,
       appointmentDate: entity.appointmentDate,
       paidFees: entity.paidFees,
       isLocked: entity.isLocked,

@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 class TestAppointmentItemModel extends DataMapper<TestAppointmentItemEntity> {
   final int testAppointmentID;
   final int localDrivingLicenseApplicationID;
+  final int personID;
   final String testTypeTitle;
   final String className;
   final DateTime appointmentDate;
@@ -17,6 +18,7 @@ class TestAppointmentItemModel extends DataMapper<TestAppointmentItemEntity> {
   const TestAppointmentItemModel({
     required this.testAppointmentID,
     required this.localDrivingLicenseApplicationID,
+    required this.personID,
     required this.testTypeTitle,
     required this.className,
     required this.appointmentDate,
@@ -32,6 +34,7 @@ class TestAppointmentItemModel extends DataMapper<TestAppointmentItemEntity> {
       localDrivingLicenseApplicationID:
           map[TestAppointmentsViewTable.colLocalDrivingLicenseApplicationID]
               as int,
+      personID: map[TestAppointmentsViewTable.colPersonID] as int,
       testTypeTitle: map[TestAppointmentsViewTable.colTestTypeTitle] as String,
       className: map[TestAppointmentsViewTable.colClassName] as String,
       appointmentDate: DateTime.parse(
@@ -52,6 +55,7 @@ class TestAppointmentItemModel extends DataMapper<TestAppointmentItemEntity> {
       TestAppointmentsViewTable.colTestAppointmentID: testAppointmentID,
       TestAppointmentsViewTable.colLocalDrivingLicenseApplicationID:
           localDrivingLicenseApplicationID,
+      TestAppointmentsViewTable.colPersonID: personID,
       TestAppointmentsViewTable.colTestTypeTitle: testTypeTitle,
       TestAppointmentsViewTable.colClassName: className,
       TestAppointmentsViewTable.colAppointmentDate: appointmentDate
@@ -67,6 +71,7 @@ class TestAppointmentItemModel extends DataMapper<TestAppointmentItemEntity> {
     return TestAppointmentItemEntity(
       testAppointmentID: testAppointmentID,
       localDrivingLicenseApplicationID: localDrivingLicenseApplicationID,
+      personID: personID,
       testTypeTitle: testTypeTitle,
       className: className,
       appointmentDate: appointmentDate,
@@ -80,6 +85,7 @@ class TestAppointmentItemModel extends DataMapper<TestAppointmentItemEntity> {
   TestAppointmentItemModel copyWith({
     int? testAppointmentID,
     int? localDrivingLicenseApplicationID,
+    int? personID,
     String? testTypeTitle,
     String? className,
     DateTime? appointmentDate,
@@ -92,6 +98,7 @@ class TestAppointmentItemModel extends DataMapper<TestAppointmentItemEntity> {
       localDrivingLicenseApplicationID:
           localDrivingLicenseApplicationID ??
           this.localDrivingLicenseApplicationID,
+      personID: personID ?? this.personID,
       testTypeTitle: testTypeTitle ?? this.testTypeTitle,
       className: className ?? this.className,
       appointmentDate: appointmentDate ?? this.appointmentDate,
