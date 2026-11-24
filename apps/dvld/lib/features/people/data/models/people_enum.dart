@@ -1,7 +1,7 @@
 enum Gender {
-  unknown(0),
-  male(1),
-  female(2);
+  male(0),
+  female(1),
+  unknown(2);
 
   final int databaseValue;
 
