@@ -1,5 +1,4 @@
 import 'package:dvld/core/helpers/extensions_x/date_time_extensions_x.dart';
-import 'package:dvld/features/tests/test_appointments/domain/entities/read_entities/test_appointment_item_entity.dart';
 import 'package:dvld/features/tests/test_appointments/domain/entities/test_appointment_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -24,9 +23,9 @@ class ListTestAppointmentsDataSource extends DataGridSource {
                 columnName: 'paidFees',
                 value: dataGridRow.paidFees,
               ),
-              DataGridCell<bool>(
+              DataGridCell<String>(
                 columnName: 'isLocked',
-                value: dataGridRow.isLocked,
+                value: dataGridRow.isLocked == true ? 'Locked' : 'Unlocked',
               ),
             ],
           ),
