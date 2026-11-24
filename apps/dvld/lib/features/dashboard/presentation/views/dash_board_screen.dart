@@ -1,10 +1,6 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:dvld/core/routing/routing.dart';
 import 'package:flutter/material.dart';
 
-// ============================================================
-// MODELS
-// ============================================================
 class SubMenuItem {
   final String title;
   final IconData icon;
@@ -19,9 +15,6 @@ class SubMenuItem {
   });
 }
 
-// ============================================================
-// DATA
-// ============================================================
 final List<SubMenuItem> applicationsSubMenu = [
   const SubMenuItem(
     title: 'Driving Licenses Services',
@@ -39,29 +32,29 @@ final List<SubMenuItem> applicationsSubMenu = [
           SubMenuItem(
             title: 'International License',
             icon: Icons.circle,
-            route: '/applications/new-international',
+            route: DRoutes.newInternationalLicenseScreen,
           ),
         ],
       ),
       SubMenuItem(
         title: 'Renew Driving License',
         icon: Icons.autorenew,
-        route: '/applications/renew',
+        route: DRoutes.renewLicenseAppScreen,
       ),
       SubMenuItem(
         title: 'Replacement for Lost/Damaged',
         icon: Icons.find_replace,
-        route: '/applications/replacement',
+        route: DRoutes.replaceLicenseAppScreen,
       ),
       SubMenuItem(
         title: 'Release Detained License',
         icon: Icons.lock_open,
-        route: '/applications/release',
+        route: DRoutes.releaseDetainedLicenseScreen,
       ),
       SubMenuItem(
         title: 'Retake Test',
         icon: Icons.refresh,
-        route: '/applications/retake',
+        route: DRoutes.listLocalDrLiApplicationsScreen,
       ),
     ],
   ),
@@ -77,7 +70,7 @@ final List<SubMenuItem> applicationsSubMenu = [
       SubMenuItem(
         title: 'International License',
         icon: Icons.circle,
-        route: '/applications/manage-international',
+        route: DRoutes.internationalLicenseListScreen,
       ),
     ],
   ),
@@ -88,17 +81,17 @@ final List<SubMenuItem> applicationsSubMenu = [
       SubMenuItem(
         title: 'Manage Detained Licenses',
         icon: Icons.circle,
-        route: '/applications/detained-list',
+        route: DRoutes.listDetainedLicensesScreen,
       ),
       SubMenuItem(
         title: 'Detain License',
         icon: Icons.circle,
-        route: '/applications/detain',
+        route: DRoutes.detainLicenseScreen,
       ),
       SubMenuItem(
         title: 'Release Detained License',
         icon: Icons.circle,
-        route: '/applications/release-detain',
+        route: DRoutes.releaseDetainedLicenseScreen,
       ),
     ],
   ),
