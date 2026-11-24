@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:dvld/core/routing/routing.dart';
 import 'package:dvld/features/tests/schedule_test/domain/entities/schedule_constraints.dart';
 import 'package:dvld/features/tests/schedule_test/domain/entities/schedule_test_info_entity.dart';
 import 'package:dvld/features/tests/schedule_test/ui/logic/schedule_test/schedule_test_cubit.dart';
@@ -14,11 +15,21 @@ class BlocConsumerScheduleTest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ScheduleTestCubit, ScheduleTestCubitState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is ScheduleTestSuccess) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.message)));
+          final messenger = ScaffoldMessenger.of(context);
+          messenger.clearSnackBars();
+          await messenger
+              .showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  duration: const Duration(milliseconds: 900),
+                ),
+              )
+              .closed;
+
+          if (!context.mounted) return;
+          context.pop(true);
         }
       },
       builder: (context, state) {
@@ -36,10 +47,7 @@ class BlocConsumerScheduleTest extends StatelessWidget {
             child: CircularProgressIndicator(),
           ),
           ScheduleTestSuccess(:final message) => Center(child: Text(message)),
-          ScheduleTestLoaded(:final info, :final selectedDate) => _buildForm(
-            context,
-            info,
-          ),
+          ScheduleTestLoaded(:final info) => _buildForm(context, info),
         };
       },
     );
@@ -47,39 +55,25 @@ class BlocConsumerScheduleTest extends StatelessWidget {
 }
 
 Widget _buildForm(BuildContext context, ScheduleTestInfoEntity info) {
-  final constraintMessage = switch (info.constraint) {
-    NoConstraintViolated() => null,
-    ActiveAppointmentExistsConstraint() =>
-      "Person Already has an active appointment for this test",
-    AppointmentLockedConstraint() =>
-      "Person already sat for the test, appointment locked.",
-    PrerequisiteTestNotPassedConstraint(:final requiredTest) =>
-      "Cannot Schedule, ${requiredTest.name} should be passed first",
-  };
-
   return Column(
     spacing: 10,
-    crossAxisAlignment: .center,
-
+    crossAxisAlignment: CrossAxisAlignment.center,
     children: [
-      if (constraintMessage != null)
+      if (info.constraint.blockingMessage case final message?)
         Container(
           padding: const EdgeInsets.all(8),
           color: Colors.red.shade100,
           child: Text(
-            constraintMessage,
+            message,
             style: const TextStyle(
               color: Colors.red,
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
-      ScheduleTestInfo(
-        info: info,
-      ),
-
-      RetakeTestInfo(testAppointment: info,),
-      ScheduleTestSaveButton(),
+      ScheduleTestInfo(info: info),
+      RetakeTestInfo(info: info),
+      ScheduleTestSaveButton(info: info),
     ],
   );
 }
