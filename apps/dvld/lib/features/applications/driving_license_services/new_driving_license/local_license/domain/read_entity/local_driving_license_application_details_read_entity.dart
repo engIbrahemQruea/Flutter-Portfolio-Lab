@@ -13,6 +13,7 @@ class LocalDrivingLicenseApplicationDetailsReadEntity extends Equatable {
   final PeopleEntity personEntity;
   final ApplicationTypeEntity applicationTypeEntity;
   final UserEntity userEntity;
+  final int ? passedTestsCount;
 
   const LocalDrivingLicenseApplicationDetailsReadEntity({
     required this.localApplicationEntity,
@@ -21,6 +22,7 @@ class LocalDrivingLicenseApplicationDetailsReadEntity extends Equatable {
     required this.personEntity,
     required this.applicationTypeEntity,
     required this.userEntity,
+     this.passedTestsCount
   });
 
   @override
@@ -31,5 +33,6 @@ class LocalDrivingLicenseApplicationDetailsReadEntity extends Equatable {
     personEntity,
     applicationTypeEntity,
     userEntity,
+    passedTestsCount
   ];
 }
