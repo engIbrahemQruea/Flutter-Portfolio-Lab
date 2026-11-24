@@ -15,6 +15,16 @@ abstract class DRoutes {
   static const String showLocalDrLiApplicationsInfoScreen =
       '$applications/showLocalDrLiApplicationsInfoScreen';
 
+/// Features Manage Applications / International License
+        static const String newInternationalLicenseScreen =
+      '$applications/newInternationalLicenseScreen';
+
+  static const String internationalLicenseListScreen =
+      '$applications/internationalLicenseListScreen';
+
+  static const String showInternationalLicenseInfoScreen =
+      '$applications/showInternationalLicenseInfoScreen';
+
   static const String takeTestScreen = '$applications/takeTestScreen';
 
   static const String listTestAppointmentsScreen =
@@ -25,6 +35,30 @@ abstract class DRoutes {
 
   static const String listLocalDrLiApplicationsScreen =
       '$applications/listLocalDrLiApplicationsScreen';
+
+
+  static const String issueFirstLicenseScreen =
+      '$applications/issueFirstLicenseScreen';
+
+  static const String showLicenseInfoScreen =
+      '$applications/showLicenseInfoScreen';
+
+  static const String showPersonLicenseHistoryScreen =
+      '$applications/showPersonLicenseHistoryScreen';
+
+  static const renewLicenseAppScreen = '$applications/renewLicenseAppScreen';
+
+  static const replaceLicenseAppScreen =
+      '$applications/replaceLicenseAppScreen';
+
+  /// Features Manage Applications / Detained Licenses
+  static const String detainLicenseScreen = '$applications/detainLicenseScreen';
+
+  static const String listDetainedLicensesScreen =
+      '$applications/listDetainedLicensesScreen';
+
+  static const releaseDetainedLicenseScreen =
+      '$applications/releaseDetainedLicenseScreen';
 
   /// People Screen And Sub Screens
   static const String peopleScreen = '/peopleScreen';
@@ -42,5 +76,5 @@ abstract class DRoutes {
       '$manageUsersScreen/changePasswordUserScreen';
 
   /// Drivers Screen
-  static const String drivers = '/drivers';
+  static const String drivers = '/driversScreen';
 }
