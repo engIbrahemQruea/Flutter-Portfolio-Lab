@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:dvld/core/routing/routing.dart';
+import 'package:dvld/core/widgets/app_button.dart';
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/widgets/driving_license_application_info/driving_license_application_info.dart';
 import 'package:dvld/features/tests/schedule_test/domain/entities/schedule_test_type.dart';
 import 'package:dvld/features/tests/schedule_test/ui/screens/widgets/schedule_test_type_presentation_x.dart';
@@ -82,14 +84,6 @@ class TestAppointmentsListScreen extends StatelessWidget {
                         final selectedApp = testAppointments[rowIndex - 1];
                         final selectedTestId = selectedApp.testAppointmentID;
 
-                        // final cubit = context
-                        //     .read<
-                        //       LocalDrivingLicenseApplicationsListScreenCubit
-                        //     >();
-
-                        // await cubit.getLocalApplicationMenuPermissions(
-                        //   localDLAppItemEntity: selectedApp,
-                        // );
 
                         if (!context.mounted) return;
 
@@ -107,20 +101,23 @@ class TestAppointmentsListScreen extends StatelessWidget {
                           context,
                           selectedAction,
                           selectedTestId!,
+                          selectedApp.localDrLiApplicationID,
+                          testType,
                         );
 
                         if (isSuccess && context.mounted) {
-                          //   context
-                          //       .read<
-                          //         LocalDrivingLicenseApplicationsListScreenCubit
-                          //       >()
-                          //       .getAllLocalDrivingLicenseApplications();
+                          context.read<TestAppointmentsListCubit>().refresh();
                         }
                       },
                       columns: _buildGridColumns(),
                     ),
                   );
                 },
+              ),
+              AppButton.icon(
+                label: 'Close',
+                icon: Icon(Icons.close),
+                onPressed: () => context.pop(true),
               ),
             ],
           ),
