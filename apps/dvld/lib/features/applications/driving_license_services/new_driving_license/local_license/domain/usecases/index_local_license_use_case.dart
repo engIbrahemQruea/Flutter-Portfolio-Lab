@@ -10,5 +10,7 @@ export 'package:dvld/features/applications/driving_license_services/new_driving_
 export 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/domain/usecases/get_local_application_menu_permissions_use_case.dart';
 export 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/domain/usecases/update_local_driving_license_application_and_applications_use_case.dart';
 export 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/domain/usecases/delete_local_dr_li_app_and_application_use_case.dart';
+export 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/domain/usecases/issue_first_license_use_case.dart';
+export 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/domain/usecases/is_license_exist_use_case.dart';
 
 

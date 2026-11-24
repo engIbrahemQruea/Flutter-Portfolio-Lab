@@ -4,6 +4,7 @@ import 'package:dvld/features/applications/driving_license_services/new_driving_
 import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/domain/repository/local_driving_license_application_repository.dart';
 import 'package:dvld/features/manage_users/domain/repositories/user_repository.dart';
 import 'package:dvld/features/people/domain/repos/people_repos.dart';
+import 'package:dvld/features/tests/tests_core/domain/use_cases/index_tests_core_use_cases.dart';
 
 class GetDrivingLicenseApplicationInfoUseCase {
   GetDrivingLicenseApplicationInfoUseCase(
@@ -12,6 +13,7 @@ class GetDrivingLicenseApplicationInfoUseCase {
     this._peopleRepos,
     this._applicationTypesRepository,
     this._userRepository,
+    this._getPassedTestCountUseCase,
   );
   final LocalDrivingLicenseApplicationRepository
   _localDrLiApplicationRepository;
@@ -24,8 +26,11 @@ class GetDrivingLicenseApplicationInfoUseCase {
 
   final UserRepository _userRepository;
 
-  Future<Either<Failure, LocalDrivingLicenseApplicationDetailsReadEntity>>
-  call(int localDriLiceApplicationId) async {
+  final GetPassedTestCountUseCase _getPassedTestCountUseCase;
+
+  Future<Either<Failure, LocalDrivingLicenseApplicationDetailsReadEntity>> call(
+    int localDriLiceApplicationId,
+  ) async {
     final resultLocalDrLiApplication = await _localDrLiApplicationRepository
         .getLocalDrivingLicenseApplicationInfoByID(
           localDriLiceApplicationId: localDriLiceApplicationId,
@@ -39,6 +44,14 @@ class GetDrivingLicenseApplicationInfoUseCase {
             .getApplicationInfoByID(
               applicationId: localDrLiAppEntity.applicationId,
             );
+
+        final passedTestResult = await _getPassedTestCountUseCase(
+          localDriLiceApplicationId,
+        );
+        final passedTestCount = passedTestResult.fold(
+          (failure) => 0,
+          (count) => count,
+        );
 
         return resultApplication.fold((failure) => Left(failure), (
           appEntity,
@@ -78,6 +91,7 @@ class GetDrivingLicenseApplicationInfoUseCase {
                         userEntity: userEntity!,
                         personEntity: personEntity!,
                         applicationTypeEntity: appTypeEntity,
+                        passedTestsCount: passedTestCount,
                       );
                   return Right(updated);
                 });
