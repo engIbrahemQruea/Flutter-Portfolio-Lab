@@ -8,6 +8,7 @@ final class LocalDrivingLicenseApplicationListItemEntity extends Equatable {
   final DateTime applicationDate;
   final int passedTestCount;
   final String status;
+  final int personId;
 
   const LocalDrivingLicenseApplicationListItemEntity({
     required this.localDrLiAppViewId,
@@ -17,6 +18,7 @@ final class LocalDrivingLicenseApplicationListItemEntity extends Equatable {
     required this.applicationDate,
     required this.passedTestCount,
     required this.status,
+    required this.personId,
   });
 
   @override
@@ -28,5 +30,6 @@ final class LocalDrivingLicenseApplicationListItemEntity extends Equatable {
     applicationDate,
     passedTestCount,
     status,
+    personId
   ];
 }
