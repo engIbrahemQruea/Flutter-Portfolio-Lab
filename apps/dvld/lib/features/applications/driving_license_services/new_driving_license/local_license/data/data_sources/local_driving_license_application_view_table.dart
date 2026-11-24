@@ -11,6 +11,7 @@ class LocalDrivingLicenseApplicationViewTable implements AppTable {
   static const String viewName = 'local_driving_license_applications_view';
 
   static const String colId = 'local_driving_license_application_id';
+  static const String colPersonId = 'person_id';
   static const String colClassName = 'class_name';
   static const String colNationalNo = 'national_no';
   static const String colFullName = 'full_name';
@@ -24,6 +25,7 @@ class LocalDrivingLicenseApplicationViewTable implements AppTable {
     SELECT 
         ldla.${LocalDrivingLicenseApplicationTable.colId},
         lc.${LicenseClassTable.colName} ,
+        p.${PersonTable.colId} AS $colPersonId,
         p.${PersonTable.colNationalNo},
         p.${PersonTable.colFirstName} || ' ' || p.${PersonTable.colSecondName} || COALESCE(' ' || p.${PersonTable.colThirdName}, '') || ' ' || p.${PersonTable.colLastName} AS $colFullName,
         a.${ApplicationTable.colApplicationDate},
