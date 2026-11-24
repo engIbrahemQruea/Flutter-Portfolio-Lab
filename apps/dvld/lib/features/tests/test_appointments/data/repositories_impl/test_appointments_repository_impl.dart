@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dvld/core/error/failure.dart';
 import 'package:dvld/features/tests/test_appointments/data/data_sources/test_appointment_local_data_source.dart';
 import 'package:dvld/features/tests/test_appointments/data/models/test_appointment_model.dart';
+import 'package:dvld/features/tests/test_appointments/domain/entities/param/create_schedule_and_retake_test_application_param.dart';
 import 'package:dvld/features/tests/test_appointments/domain/entities/read_entities/test_appointment_item_entity.dart';
 import 'package:dvld/features/tests/test_appointments/domain/entities/test_appointment_entity.dart';
 import 'package:dvld/features/tests/test_appointments/domain/index_domain_test_appointments.dart';
@@ -121,7 +122,7 @@ class TestAppointmentsRepositoryImpl implements TestAppointmentsRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> updateTestAppointment({
+  Future<Either<Failure, int>> updateTestAppointment({
     required TestAppointmentEntity testAppointmentEntity,
   }) async {
     return _guard(() async {
@@ -130,5 +131,29 @@ class TestAppointmentsRepositoryImpl implements TestAppointmentsRepository {
         testAppointmentModel: model,
       );
     });
+  }
+
+  @override
+  Future<Either<Failure, bool>> updateSpecialTestAppointment({
+    required int testAppointmentID,
+    required int currentUserId,
+    required DateTime date,
+  }) {
+    // TODO: implement updateSpecialTestAppointment
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<Failure, int>>
+  createScheduleAndRetakeApplicationTestAppointment({
+    required CreateScheduleAndRetakeTestApplicationParams
+    createScAndReTestAppParams,
+  }) async {
+    return _guard(() async {
+      return await _testLocalDataSource
+          .createScheduleAndRetakeApplicationTestAppointment(
+        createdTestAppParams: createScAndReTestAppParams,
+      );
+  });
   }
 }

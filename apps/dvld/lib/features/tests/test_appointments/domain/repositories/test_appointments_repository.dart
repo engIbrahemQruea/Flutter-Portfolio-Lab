@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:dvld/core/error/failure.dart';
+import 'package:dvld/features/tests/test_appointments/domain/entities/param/create_schedule_and_retake_test_application_param.dart';
 import 'package:dvld/features/tests/test_appointments/domain/entities/read_entities/test_appointment_item_entity.dart';
 import 'package:dvld/features/tests/test_appointments/domain/entities/test_appointment_entity.dart';
 
@@ -37,7 +38,19 @@ abstract class TestAppointmentsRepository {
     required TestAppointmentEntity testAppointmentEntity,
   });
 
-  Future<Either<Failure, bool>> updateTestAppointment({
+  Future<Either<Failure, int>> updateTestAppointment({
     required TestAppointmentEntity testAppointmentEntity,
+  });
+
+  Future<Either<Failure, bool>> updateSpecialTestAppointment({
+    required int testAppointmentID,
+    required int currentUserId,
+    required DateTime date,
+  });
+
+  Future<Either<Failure, int>>
+  createScheduleAndRetakeApplicationTestAppointment({
+    required CreateScheduleAndRetakeTestApplicationParams
+    createScAndReTestAppParams,
   });
 }
