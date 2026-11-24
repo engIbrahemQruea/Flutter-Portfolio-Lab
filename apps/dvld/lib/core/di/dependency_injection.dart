@@ -1,8 +1,31 @@
 import 'package:dvld/core/database/app_database.dart';
 import 'package:dvld/core/helpers/shared_pref_helper.dart';
+import 'package:dvld/features/applications/application_types/data/data_sources/application_type_table.dart';
+import 'package:dvld/features/applications/application_types/data/index_data_application_type.dart';
+import 'package:dvld/features/applications/application_types/domain/index_domain_application_type.dart';
+import 'package:dvld/features/applications/application_types/ui/logic/application_types_screen_cubit/application_types_screen_cubit.dart';
+import 'package:dvld/features/applications/application_types/ui/logic/update_application_types_screen_cubit/update_application_types_screen_cubit.dart';
+import 'package:dvld/features/applications/applications_core/data/data_sources/application_local_data_source.dart';
+import 'package:dvld/features/applications/applications_core/data/data_sources/application_table.dart';
+import 'package:dvld/features/applications/applications_core/data/repositories_impl/applications_repository_impl.dart';
+import 'package:dvld/features/applications/applications_core/domain/repositories/applications_repository.dart';
+import 'package:dvld/features/applications/applications_core/domain/use_cases/index_app_core_use_case.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/data_sources/drivers_table.dart'
+    show DriversTable;
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/data_sources/license_class_table.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/data_sources/local_driving_license_application_local_data_source.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/data_sources/local_driving_license_application_table.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/data_sources/local_driving_license_application_view_table.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/data/repository_impl/local_driving_license_application_repository_impl.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/domain/repository/local_driving_license_application_repository.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/domain/usecases/index_local_license_use_case.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/logic/add_update_local_driving_license_application_screen/add_update_local_dr_li_application_screen_cubit.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/screens/local_driving_license_applications_list/logic/local_driving_license_applications_list_screen_cubit/local_driving_license_applications_list_screen_cubit.dart';
+import 'package:dvld/features/applications/driving_license_services/new_driving_license/local_license/ui/widgets/driving_license_application_info/logic/driving_license_application_info_cubit/driving_license_application_info_cubit.dart';
 import 'package:dvld/features/login/data/datasources/login_local_data_source.dart';
 import 'package:dvld/features/login/data/login_repository_impl/login_repository_impl.dart';
 import 'package:dvld/features/login/domain/login_repository/login_repository.dart';
+import 'package:dvld/features/login/domain/login_use_cases/get_data_shared_pref_use_case.dart';
 import 'package:dvld/features/login/domain/login_use_cases/login_use_case.dart';
 import 'package:dvld/features/login/presentation/logic/login_screen_cubit/login_screen_cubit.dart';
 import 'package:dvld/features/manage_users/data/datasources/user_local_data_source.dart';
@@ -42,8 +65,21 @@ import 'package:dvld/features/people/presentation/logic/add_pdate_form/add_updat
 import 'package:dvld/features/people/presentation/logic/cubit/get_all_people_cubit.dart';
 import 'package:dvld/features/people/presentation/person_details_screen/logic/person_details_cubit/person_details_cubit.dart';
 import 'package:dvld/features/people/presentation/shared_widgets/person_selector/cubit/person_selector_cubit.dart';
+import 'package:dvld/features/tests/test_appointments/data/data_sources/test_appointment_local_data_source.dart';
+import 'package:dvld/features/tests/test_appointments/data/data_sources/test_appointment_local_data_source_impl.dart';
+import 'package:dvld/features/tests/test_appointments/data/data_sources/test_appointments_table.dart';
+import 'package:dvld/features/tests/test_appointments/data/repositories_impl/test_appointments_repository_impl.dart';
+import 'package:dvld/features/tests/test_appointments/domain/use_cases/index_test_appointment_use_case.dart';
+import 'package:dvld/features/tests/test_appointments/ui/logic/test_appointments_list/test_appointments_list_cubit.dart';
+import 'package:dvld/features/tests/test_types/data/data_sources/test_type_table.dart';
+import 'package:dvld/features/tests/test_types/data/index_data_test_type.dart';
+import 'package:dvld/features/tests/test_types/ui/logic/index_test_type_cubit.dart';
+import 'package:dvld/features/tests/tests_core/data/data_sources/test_table.dart';
+import 'package:dvld/features/tests/tests_core/index_tests_core.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../features/tests/test_appointments/data/data_sources/test_appointments_view_table.dart';
 
 final getIt = GetIt.instance;
 
@@ -159,5 +195,230 @@ Future<void> setupGetIt() async {
   /// Change Password User Screen
   getIt.registerFactory<ChangePasswordUserCubit>(
     () => ChangePasswordUserCubit(getIt()),
+  );
+
+  /// Feature Applications/Application Core
+  getIt.registerLazySingleton<ApplicationsRepository>(
+    () => ApplicationsRepositoryImpl(getIt()),
+  );
+
+  getIt.registerLazySingleton<ApplicationLocalDataSource>(
+    () => ApplicationLocalDataSource(getIt()),
+  );
+
+  getIt.registerLazySingleton(() => GetAllApplicationsUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => GetApplicationInfoByIDUseCase(getIt()));
+
+  getIt.registerLazySingleton(
+    () => GetActiveApplicationIDForLicenseClassUseCase(getIt()),
+  );
+
+  getIt.registerLazySingleton(() => GetActiveApplicationIDUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => IsActiveApplicationUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => AddApplicationUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => UpdateApplicationUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => CancelApplicationUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => SetCompleteApplicationUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => DeleteApplicationUseCase(getIt()));
+
+  /// Features Applications/Application Types
+  appDatabase.registerTable(ApplicationTypeTable());
+
+  getIt.registerLazySingleton<ApplicationTypesRepository>(
+    () => ApplicationTypesRepositoryImpl(getIt()),
+  );
+
+  getIt.registerLazySingleton<ApplicationTypesLocalDataSource>(
+    () => ApplicationTypesLocalDataSource(appDatabase: getIt()),
+  );
+
+  getIt.registerLazySingleton(() => GetAllApplicationTypesUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => UpdateApplicationTypesUseCase(getIt()));
+
+  getIt.registerLazySingleton(
+    () => GetApplicationTypesInfoByIDUseCase(getIt()),
+  );
+
+  getIt.registerFactory<ApplicationTypesScreenCubit>(
+    () => ApplicationTypesScreenCubit(getIt()),
+  );
+
+  getIt.registerFactory<UpdateApplicationTypesScreenCubit>(
+    () => UpdateApplicationTypesScreenCubit(getIt(), getIt()),
+  );
+
+  /// Manage Test Types Features/Screens
+  appDatabase.registerTable(TestTypeTable());
+
+  getIt.registerLazySingleton<TestTypesRepository>(
+    () => TestTypesRepositoryImpl(getIt()),
+  );
+
+  getIt.registerLazySingleton<TestTypeLocalDataSource>(
+    () => TestTypeLocalDataSource(appDatabase: getIt()),
+  );
+
+  getIt.registerLazySingleton(() => GetAllTestTypesUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => GetTestTypesInfoByIDUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => UpdateTestTypesUseCase(getIt()));
+
+  getIt.registerFactory<TestTypesScreenCubit>(
+    () => TestTypesScreenCubit(getIt()),
+  );
+
+  getIt.registerFactory<UpdateTestTypesScreenCubit>(
+    () => UpdateTestTypesScreenCubit(getIt(), getIt()),
+  );
+
+  /// Init Database
+  appDatabase.registerTable(LicenseClassTable());
+  appDatabase.registerTable(ApplicationTable());
+  appDatabase.registerTable(LocalDrivingLicenseApplicationTable());
+  appDatabase.registerTable(TestAppointmentsTable());
+  appDatabase.registerTable(TestTable());
+  appDatabase.registerTable(LocalDrivingLicenseApplicationViewTable());
+  appDatabase.registerTable(DriversTable());
+
+  ///Feature Applications/Manage  Driving License Services /Local Screens
+  getIt.registerLazySingleton<LocalDrivingLicenseApplicationRepository>(
+    () => LocalDrivingLicenseApplicationRepositoryImpl(getIt()),
+  );
+
+  getIt.registerLazySingleton<LocalDrivingLicenseApplicationLocalDataSource>(
+    () => LocalDrivingLicenseApplicationLocalDataSource(getIt()),
+  );
+
+  getIt.registerLazySingleton(() => GetAllLicenseClassesUseCase(getIt()));
+
+  getIt.registerLazySingleton(
+    () => GetLicenseClassByLicenseClassIdUseCase(getIt()),
+  );
+
+  getIt.registerLazySingleton(() => GetDataSharedPrefUseCase(getIt()));
+
+  getIt.registerLazySingleton(
+    () => CreateLocalDrivingLicenseApplicationAndApplicationsUseCase(getIt()),
+  );
+
+  getIt.registerLazySingleton(
+    () => UpdateLocalDrivingLicenseApplicationAndApplicationsUseCase(getIt()),
+  );
+
+  getIt.registerLazySingleton(
+    () => GetLocalDrivingLicenseApplicationInfoByIdUseCase(
+      getIt(),
+      getIt(),
+      getIt(),
+    ),
+  );
+
+  getIt.registerFactory<AddUpdateLocalDrLiApplicationScreenCubit>(
+    () => AddUpdateLocalDrLiApplicationScreenCubit(
+      getIt(),
+      getIt(),
+      getIt(),
+      getIt(),
+      getIt(),
+      getIt(),
+      getIt(),
+    ),
+  );
+
+  /// Local Driving License Application List && Cubit
+  getIt.registerLazySingleton(
+    () => GetAllLocalDrivingLicenseApplicationUseCase(getIt()),
+  );
+
+  getIt.registerLazySingleton(
+    () => GetLocalApplicationMenuPermissionsUseCase(),
+  );
+
+  getIt.registerLazySingleton(
+    () => DeleteLocalDrivingLicenseApplicationUseCase(getIt()),
+  );
+
+  getIt.registerLazySingleton(
+    () => DeleteLocalDrLiAppAndApplicationUseCase(getIt()),
+  );
+
+  getIt.registerFactory<LocalDrivingLicenseApplicationsListScreenCubit>(
+    () => LocalDrivingLicenseApplicationsListScreenCubit(
+      getIt(),
+      getIt(),
+      getIt(),
+      getIt(),
+      getIt(),
+    ),
+  );
+
+  /// Local Driving License Application Info && Cubit / Reusable Widgets
+
+  getIt.registerLazySingleton<GetDrivingLicenseApplicationInfoUseCase>(
+    () => GetDrivingLicenseApplicationInfoUseCase(
+      getIt(),
+      getIt(),
+      getIt(),
+      getIt(),
+      getIt(),
+    ),
+  );
+
+  getIt.registerFactory<DrivingLicenseApplicationInfoCubit>(
+    () => DrivingLicenseApplicationInfoCubit(getIt()),
+  );
+
+  /// Feature Tests/Test_core
+
+  getIt.registerLazySingleton<TestLocalDataSource>(
+    () => TestLocalDataSourceImpl(getIt()),
+  );
+
+  getIt.registerLazySingleton<TestRepository>(
+    () => TestRepositoryImpl(getIt()),
+  );
+
+  /// Feature Tests/TestAppointments
+
+  appDatabase.registerTable(TestAppointmentsTable());
+  appDatabase.registerTable(TestAppointmentsViewTable());
+
+  getIt.registerLazySingleton<TestAppointmentLocalDataSource>(
+    () => TestAppointmentLocalDataSourceImpl(getIt()),
+  );
+
+  getIt.registerLazySingleton<TestAppointmentsRepository>(
+    () => TestAppointmentsRepositoryImpl(getIt()),
+  );
+
+  getIt.registerLazySingleton(() => GetAllTestAppointmentsUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => GetTestAppointmentInfoByIdUseCase(getIt()));
+
+  getIt.registerLazySingleton(
+    () => GetApplicationTestAppointmentsPerTestTypeUseCase(getIt()),
+  );
+
+  getIt.registerLazySingleton(() => GetLastTestAppointmentUseCase(getIt()));
+
+  getIt.registerLazySingleton(
+    () => GetTestIdByTestAppointmentIdUseCase(getIt()),
+  );
+
+  getIt.registerLazySingleton(() => UpdateTestAppointmentUseCase(getIt()));
+
+  getIt.registerLazySingleton(() => AddTestAppointmentUseCase(getIt()));
+
+  getIt.registerFactory<TestAppointmentsListCubit>(
+    () => TestAppointmentsListCubit(getIt()),
   );
 }

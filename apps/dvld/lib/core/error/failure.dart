@@ -17,8 +17,8 @@ class ServerFailure extends Failure {
   const ServerFailure(super.message);
 }
 
-class LocalDatabaseException extends DatabaseFailure {
-  const LocalDatabaseException([super.message = 'error in query database']);
+class LocalDatabaseFailure extends DatabaseFailure {
+  const LocalDatabaseFailure([super.message = 'error in query database']);
 }
 
 class LinkedRecordFailure extends DatabaseFailure {
@@ -71,4 +71,17 @@ class UnexpectedFailure extends Failure {
   const UnexpectedFailure([
     super.message = 'حدث خطأ غير متوقع، يرجى التواصل مع الدعم الفني',
   ]);
+}
+
+class LocalDataException implements Exception {
+  final String message;
+  const LocalDataException(this.message);
+
+  @override
+  String toString() => message;
+}
+
+/// Failure From Validation (Business Constraints)
+class BusinessRuleFailure extends Failure {
+  const BusinessRuleFailure(super.message);
 }

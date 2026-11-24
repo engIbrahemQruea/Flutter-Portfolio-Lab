@@ -1,4 +1,6 @@
-class PeopleEntity {
+import 'package:equatable/equatable.dart';
+
+class PeopleEntity extends Equatable {
   final int? personId;
   final String nationalNo;
   final String firstName;
@@ -30,4 +32,21 @@ class PeopleEntity {
   });
 
   String get fullName => '$firstName $secondName ${thirdName ?? ''} $lastName';
+
+  @override
+  List<Object?> get props => [
+    personId,
+    nationalNo,
+    firstName,
+    secondName,
+    thirdName,
+    lastName,
+    dateOfBirth,
+    gender,
+    address,
+    phone,
+    email,
+    nationalityCountryId,
+    imagePath,
+  ];
 }
