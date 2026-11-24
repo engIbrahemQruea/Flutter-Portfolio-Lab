@@ -21,7 +21,7 @@ class TextRichLinkShowInfo extends StatelessWidget {
               decorationStyle: TextDecorationStyle.wavy,
             ),
             mouseCursor: SystemMouseCursors.precise,
-            recognizer: TapGestureRecognizer()..onTap = () => onLinkTap,
+            recognizer: TapGestureRecognizer()..onTap = () => onLinkTap?.call(),
           ),
         ],
       ),
