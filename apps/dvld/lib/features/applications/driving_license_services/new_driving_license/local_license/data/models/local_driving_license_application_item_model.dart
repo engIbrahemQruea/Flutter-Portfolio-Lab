@@ -5,6 +5,7 @@ import 'package:dvld/features/applications/driving_license_services/new_driving_
 class LocalDrivingLicenseApplicationItemModel
     extends DataMapper<LocalDrivingLicenseApplicationListItemEntity> {
   final int localDrLiAppViewId;
+  final int personId;
   final String className;
   final String nationalNo;
   final String fullName;
@@ -14,6 +15,7 @@ class LocalDrivingLicenseApplicationItemModel
 
   const LocalDrivingLicenseApplicationItemModel({
     required this.localDrLiAppViewId,
+    required this.personId,
     required this.className,
     required this.nationalNo,
     required this.fullName,
@@ -28,6 +30,8 @@ class LocalDrivingLicenseApplicationItemModel
     return LocalDrivingLicenseApplicationItemModel(
       localDrLiAppViewId:
           map[LocalDrivingLicenseApplicationViewTable.colId] as int,
+      personId:
+          map[LocalDrivingLicenseApplicationViewTable.colPersonId] as int,
       className:
           map[LocalDrivingLicenseApplicationViewTable.colClassName] as String,
       nationalNo:
@@ -49,6 +53,7 @@ class LocalDrivingLicenseApplicationItemModel
   LocalDrivingLicenseApplicationListItemEntity mapToEntity() =>
       LocalDrivingLicenseApplicationListItemEntity(
         localDrLiAppViewId: localDrLiAppViewId,
+        personId: personId,
         className: className,
         nationalNo: nationalNo,
         fullName: fullName,

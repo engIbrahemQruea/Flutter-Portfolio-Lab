@@ -13,21 +13,23 @@ class ShowLocalDrivingLicenseApplicationInfoScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          child: Column(
-            crossAxisAlignment: .end,
-            spacing: 10,
-            children: [
-              const DrivingLicenseApplicationInfo(),
-              AppButton.icon(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                label: 'Close',
-                icon: const Icon(Icons.close, color: Colors.red),
-              ),
-            ],
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            child: Column(
+              crossAxisAlignment: .end,
+              spacing: 10,
+              children: [
+                const DrivingLicenseApplicationInfo(),
+                AppButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  label: 'Close',
+                  icon: const Icon(Icons.close, color: Colors.red),
+                ),
+              ],
+            ),
           ),
         ),
       ),

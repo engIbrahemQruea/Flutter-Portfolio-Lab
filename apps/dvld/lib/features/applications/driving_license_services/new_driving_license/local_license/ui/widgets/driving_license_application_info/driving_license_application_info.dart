@@ -59,6 +59,11 @@ class DrivingLicenseApplicationInfo extends StatelessWidget {
               localDrLiAppEntity: state
                   .localDrLiApplicationDetailsReadEntity
                   ?.localApplicationEntity,
+              passedTestCount:
+                  state
+                      .localDrLiApplicationDetailsReadEntity
+                      ?.passedTestsCount ??
+                  0,
             ),
             verticalSpace(10),
             ApplicationBasicInfo(
